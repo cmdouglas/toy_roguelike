@@ -1,4 +1,5 @@
 import libtcodpy as libtcod
+from gameobjects.player import Player
 import logging
 
 class Tile(object):
@@ -157,6 +158,7 @@ class Board(object):
         self.width = width
         self.height = height
         self.objects = []
+        self.player_pos = (0, 0)
         
         self.tiles = [[Tile(self, (x, y)) for y in xrange(self.height)] 
             for x in range(self.width)]
@@ -181,6 +183,9 @@ class Board(object):
             self.objects.append(ob)
             ob.tile = tile
             ob.on_spawn()
+            if type(ob) == Player:
+                self.player_pos = pos
+                logging.debug('player_pos: %s' % (self.player_pos,))
         
         except(GameObjectPlacementException):
             logging.error("Couldn't place object %s at position %s", ob, pos)
@@ -205,6 +210,9 @@ class Board(object):
                 old_tile.remove_object(ob)
                 new_tile.add_object(ob)
                 ob.tile = new_tile
+                if type(ob) == Player:
+                    self.player_pos = new_pos
+                    logging.debug('player_pos: %s' % (self.player_pos,))
                 
                 return True
                 

@@ -111,8 +111,8 @@ class TestCavern(TestBoard):
 class TestCircle(TestBoard):
     def setup(self):
         self.fill()
-        startpos = (40, 22)
-        c = Circle(startpos, 12 )
+        startpos = (self.width/2, self.height/2)
+        c = Circle(startpos, 20)
         
         for point in c.points:
             tile = self[point]

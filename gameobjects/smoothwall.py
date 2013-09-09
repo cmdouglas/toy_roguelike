@@ -4,7 +4,7 @@ import logging
 from gameobjects.wall import Wall
 
 class SmoothWall(Wall):
-    """A wall that updates it's glyph based """
+    """A wall that updates it's glyph based on surrounding tiles"""
     color=libtcod.grey
     char = ' '
     
