@@ -3,7 +3,7 @@ from board.base import Board
 from gameobjects.wall import Wall
 from gameobjects.smoothwall import SmoothWall
 from gameobjects.player import Player
-from util.shape import Rectangle, Circle
+from util.shape import Rectangle, Circle, Ellipse
 
 import random
 import logging
@@ -112,7 +112,7 @@ class TestCircle(TestBoard):
     def setup(self):
         self.fill()
         startpos = (self.width/2, self.height/2)
-        c = Circle(startpos, 50)
+        c = Ellipse(startpos, 15, 45)
         
         for point in c.points:
             tile = self[point]

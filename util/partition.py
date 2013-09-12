@@ -3,6 +3,9 @@
 """
 TOP, BOTTOM, LEFT, RIGHT = 0, 1, 2, 3
 
+class PartitionException(object):
+    pass
+
 class Partition(object):
 
     def __init__(self, ul_pos, width, height):
@@ -120,8 +123,14 @@ class Partition(object):
             
         return partitions
         
-    def subpartition_bsp(self, max_size, min_size):
-        pass
+    def subpartition_bsp(self, min_width, min_height):
+        """recursively divide in 2 until all pieces are between min_size and 
+        2*min_size.
+        """
+        if self.width < min_width or self.height < min_height:
+            raise PartitionException('subpartition_bsp created a partition'
+                ' that was too small!')
+        
     
     
         

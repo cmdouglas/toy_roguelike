@@ -1,3 +1,5 @@
+import math
+import logging
 
 class Shape(object):
     points = []
@@ -8,7 +10,7 @@ class Rectangle(Shape):
     width = 0
     height = 0
     
-    def __init__(self, midpoint, width, height, border=False):
+    def __init__(self, midpoint, width, height):
         self.midpoint = midpoint
         self.width = width
         self.height = height
@@ -29,7 +31,7 @@ class Rectangle(Shape):
 class Circle(Shape):
     radius = 0
 
-    def __init__(self, midpoint, radius, border=False):
+    def __init__(self, midpoint, radius):
         self.midpoint = midpoint
         self.radius = radius
         
@@ -43,9 +45,54 @@ class Circle(Shape):
                     else:
                         self.points.append((x+midx, y+midy))
     
-    def contains_point(self, pos):
-        x, y = pos
+    def contains_point(self, p):
+        x, y = p
         return (x+0.5)**2 + (y+0.5)**2 <= self.radius**2
+        
+    def on_border(self, pos):
+        x, y = pos
+        return not (
+            self.contains_point((x-1, y-1)) and
+            self.contains_point((x-1, y)) and
+            self.contains_point((x-1, y+1)) and
+            self.contains_point((x, y-1)) and
+            self.contains_point((x, y+1)) and
+            self.contains_point((x+1, y-1)) and
+            self.contains_point((x+1, y)) and
+            self.contains_point((x+1, y+1))
+        )
+        
+class Ellipse(Shape):
+    rx = 0
+    ry = 0
+    
+    def __init__(self, midpoint, rx, ry):
+        self.midpoint = midpoint
+        self.rx = rx
+        self.ry = ry
+        
+        midx, midy = self.midpoint
+        
+        for x in xrange(-1*self.rx, self.rx+1):
+            for y in xrange(-1*self.ry, self.ry+1):
+                if self.contains_point((x+midx, y+midy)):
+                    if self.on_border((x+midx, y+midy)):
+                        self.border.append((x+midx, y+midy))
+                    else:
+                        self.points.append((x+midx, y+midy))
+
+                    
+    def contains_point(self, p):
+        x, y = p
+        midx, midy = self.midpoint
+        
+        vx = ((float(x) - float(midx))**2 / float(self.rx)**2);
+        vy = ((float(y) - float(midy))**2 / float(self.ry)**2)
+        
+        v = vx + vy
+        
+        return v <= 1.0
+
         
     def on_border(self, pos):
         x, y = pos
