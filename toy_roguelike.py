@@ -77,7 +77,7 @@ def draw_board(board, center):
  
 def game_loop():
     logging.info("generating board")
-    board = TestCircle(90, 60)
+    board = TestCircle(100, 100)
     logging.info("board generated")
     center = board.player_pos
     draw_board(board, center)

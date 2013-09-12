@@ -18,7 +18,7 @@ class TestBoard(Board):
     def fill(self):
         for row in self.tiles:
             for tile in row:
-                self.add_object(SmoothWall(), tile.pos)
+                self.add_object(Wall(), tile.pos)
     
 class BasicBoard(TestBoard):
     def setup(self):
@@ -112,10 +112,15 @@ class TestCircle(TestBoard):
     def setup(self):
         self.fill()
         startpos = (self.width/2, self.height/2)
-        c = Circle(startpos, 20)
+        c = Circle(startpos, 50)
         
         for point in c.points:
             tile = self[point]
             self.remove_object(tile.objects['obstacle'])
+            
+        for point in c.border:
+            tile = self[point]
+            self.remove_object(tile.objects['obstacle'])
+            self.add_object(SmoothWall(), point)
             
         self.add_object(Player(), startpos)

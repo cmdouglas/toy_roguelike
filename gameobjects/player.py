@@ -1,5 +1,6 @@
 import libtcodpy as libtcod
 
+import game_input
 from errors import GameEndException
 from gameobjects.base import Actor
 
@@ -8,7 +9,7 @@ class Player(Actor):
     char = '@'
     
     def process_turn(self):
-        key = libtcod.console_wait_for_keypress(True)
+        key = game_input.wait_for_keypress()
         #movement keys
         if key.vk == libtcod.KEY_UP or key.c == ord('k'):
             self.move(0, -1)
