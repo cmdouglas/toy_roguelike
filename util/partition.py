@@ -1,9 +1,11 @@
 """
 
 """
-TOP, BOTTOM, LEFT, RIGHT = 0, 1, 2, 3
+import random
+import collections
 
-class PartitionException(object):
+
+class PartitionException(Exception):
     pass
 
 class Partition(object):
@@ -12,8 +14,6 @@ class Partition(object):
         self.ul_pos = ul_pos
         self.width = width
         self.height = height
-        self.adjacent = []
-        self.connected = []
         
     def __repr__(self):
         return "Partition(%s, %s, %s)" % (self.ul_pos, self.width, self.height)
@@ -24,88 +24,6 @@ class Partition(object):
         return (self_x <= x < self_x + self.width and
                 self_y <= y < self_y + self.height)
         
-    def find_adjacent_points(self, other, side):
-        self_left, self_top = self.ul_pos
-        self_bottom = self_top + self.height - 1
-        self_right = self_left + self.width - 1
-        
-        other_left, other_top = other.ul_pos
-        other_right = other_left + other.width - 1
-        other_bottom = other_top + other.height - 1
-        
-        points = []
-        
-        if side == TOP:
-            left = max(self_left, other_left)
-            right = min(self_right, other_right)
-            
-            points = [(i, self_top) for i in range(left, right+1)]
-            
-        elif side == BOTTOM:
-            left = max(self_left, other_left)
-            right = min(self_right, other_right)
-            
-            points = [(i, self_bottom) for i in range(left, right+1)]
-
-        elif side == LEFT:
-            top = min(self_top, other_top)
-            bottom = max(self_bottom, other_bottom)
-            
-            points = [(self_left, i) for i in range(top, bottom+1)]
-            
-        elif side == RIGHT:
-            top = min(self_top, other_top)
-            bottom = max(self_bottom, other_bottom)
-            
-            points = [(self_right, i) for i in range(top, bottom+1)]
-            
-        return points
-        
-    def find_neighbors(self, others):
-        self_left, self_top = self.ul_pos
-        self_bottom = self_top + self.height - 1
-        self_right = self_left + self.width - 1
-        
-        for other in others:
-            if other is self:
-                continue
-
-            if other in self.adjacent:
-                continue
-
-            other_left, other_top = other.ul_pos
-            other_right = other_left + other.width - 1
-            other_bottom = other_top + other.height - 1
-                
-            # adjacent on top
-            if (self_top - 1 == other_bottom and
-                other_left <= self_right and
-                self_left <= other_right):
-                
-                self.adjacent.append((other, self.find_adjacent_points(other, TOP)))
-               
-            # adjacent on bottom 
-            elif (self_bottom + 1 == other_top and
-                other_left <= self_right and
-                self_left <= other_right):
-                
-                self.adjacent.append((other, self.find_adjacent_points(other, BOTTOM)))
-            
-            # adjacent on left
-            elif (self_left - 1 == other_right and
-                other_top <= self_bottom and
-                self_top <= other_bottom):
-                
-                self.adjacent.append((other, self.find_adjacent_points(other, LEFT)))
-            
-            # adjacent on right
-            elif (self_right + 1 == other_left and
-                other_top <= self_bottom and
-                self_top <= other_bottom):
-                
-                self.adjacent.append((other, self.find_adjacent_points(other, RIGHT)))
-                    
-        return self.adjacent
     
     def subpartition_simple_grid(self, partition_width, partition_height):
         assert self.width % partition_width == 0
@@ -117,9 +35,6 @@ class Partition(object):
             for x in range(self.width / partition_width):
                 ulcorner = (x * partition_width, y * partition_height)
                 partitions.append(Partition(ulcorner, partition_width, partition_height))
-                
-        for p in partitions:
-            p.find_neighbors(partitions)
             
         return partitions
         
@@ -127,10 +42,63 @@ class Partition(object):
         """recursively divide in 2 until all pieces are between min_size and 
         2*min_size.
         """
+        
+        def split_horizontal(p):
+            ul_x, ul_y = p.ul_pos
+            print "choosing a horizontal point between %s and %s" % (ul_x + min_width, ul_x + p.width - min_width + 1)
+            
+            split_pos = (random.choice(
+                range(ul_x + min_width, ul_x + p.width - min_width + 1)), ul_y)
+                
+            split_x, split_y = split_pos
+                
+            return([Partition(p.ul_pos, split_x-ul_x, p.height), 
+                    Partition(split_pos, ul_x + p.width - split_x, p.height)])
+                    
+        def split_vertical(p):
+            ul_x, ul_y = p.ul_pos
+            print "choosing a vertical point between %s and %s" % (ul_y + min_height, ul_y + p.height - min_height + 1)
+            
+            split_pos = (ul_x, random.choice(
+                range(ul_y + min_height, ul_y + p.height - min_height + 1)))
+                
+            split_x, split_y = split_pos
+                
+            return([Partition(p.ul_pos, p.width, split_y-ul_y), 
+                    Partition(split_pos, p.width, ul_y + p.height - split_y)])
+                    
+        def flatten(l):
+            for el in l:
+                if (isinstance(el, collections.Iterable) and 
+                    not isinstance(el, basestring)):
+                    for sub in flatten(el):
+                        yield sub
+                else:
+                    yield el
+        
         if self.width < min_width or self.height < min_height:
-            raise PartitionException('subpartition_bsp created a partition'
-                ' that was too small!')
+            print self
+            raise PartitionException("Partition too small!")
         
-    
-    
+        splith = (self.width > 2*min_width)
+        splitv = (self.height > 2*min_height)
         
+        new_partitions = None
+        
+        if splith and splitv:
+            new_partitions = random.choice([
+                split_horizontal, split_vertical])(self)
+            
+        elif splith:
+            new_partitions = split_horizontal(self)
+            
+        elif splitv:
+            new_partitions = split_vertical(self)
+            
+        else:
+            return self
+            
+        return list(flatten([p.subpartition_bsp(min_width, min_height) 
+            for p in new_partitions]))
+
+            
