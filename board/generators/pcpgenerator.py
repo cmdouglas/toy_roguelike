@@ -15,6 +15,7 @@ from board import base
 from board.generators import maparea
 from board.generators.painters import painter
 from board.generators.painters import shapedroom
+from board.generators.painters import tunnel
 from gameobjects import wall
 
     
@@ -47,7 +48,11 @@ class PainterStrategy(object):
 class RandomPainterStrategy(PainterStrategy):
     def __init__(self):
         self.painters = [
-            shapedroom.RectangularRoomPainter()
+            shapedroom.RectangularRoomPainter(),
+            shapedroom.CircularRoomPainter(),
+            shapedroom.EllipticalRoomPainter(),
+            tunnel.SimpleTunnelPainter(),
+            tunnel.SnakeyTunnelPainter()
         ]
         
     def paint(self, board, areas):
