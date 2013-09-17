@@ -23,7 +23,7 @@ class Rectangle(Shape):
             for y in xrange(starty, starty+self.height+1):
                 if (x == startx or x == self.width+1 or 
                     y == starty or y == self.height+1):
-                    self.boarder.append(x+midx, y+midy)
+                    self.border.append((x+midx, y+midy))
                 else:
                     self.points.append((x+midx, y+midy))
 

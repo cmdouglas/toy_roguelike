@@ -25,7 +25,7 @@ class Partition(object):
                 self_y <= y < self_y + self.height)
         
     
-    def subpartition_simple_grid(self, partition_width, partition_height):
+    def subpartition_regular_grid(self, partition_width, partition_height):
         assert self.width % partition_width == 0
         assert self.height % partition_height == 0
         
@@ -45,7 +45,6 @@ class Partition(object):
         
         def split_horizontal(p):
             ul_x, ul_y = p.ul_pos
-            print "choosing a horizontal point between %s and %s" % (ul_x + min_width, ul_x + p.width - min_width + 1)
             
             split_pos = (random.choice(
                 range(ul_x + min_width, ul_x + p.width - min_width + 1)), ul_y)
@@ -57,7 +56,6 @@ class Partition(object):
                     
         def split_vertical(p):
             ul_x, ul_y = p.ul_pos
-            print "choosing a vertical point between %s and %s" % (ul_y + min_height, ul_y + p.height - min_height + 1)
             
             split_pos = (ul_x, random.choice(
                 range(ul_y + min_height, ul_y + p.height - min_height + 1)))
