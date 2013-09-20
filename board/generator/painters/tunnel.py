@@ -1,9 +1,17 @@
 import random
 from util import dice
-from board.generators.painters import painter
+from board.generator.painters import painter
+from gameobjects import wall
 
-class SimpleTunnelPainter(painter.Painter):
+class TunnelPainter(painter.Painter):
+    def area_meets_requirements(self, area):
+        # no dead end tunnels
+        return len(area.connections) >= 2
+
+class SimpleTunnelPainter(TunnelPainter):
     def paint(self, board, area):
+        self.fill(board, area, wall.Wall)
+        
         area_left, area_top = area.ul_pos
         
         area_left += 2
@@ -15,8 +23,10 @@ class SimpleTunnelPainter(painter.Painter):
             #print "connecting point %s to %s" % (rectangle_center, pos)
             self.draw_corridor(board, center, pos)
             
-class SnakeyTunnelPainter(painter.Painter):
+class SnakeyTunnelPainter(TunnelPainter):
     def paint(self, board, area):
+        self.fill(board, area, wall.Wall)
+        
         area_left, area_top = area.ul_pos
         
         area_left += 2

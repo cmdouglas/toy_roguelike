@@ -20,7 +20,13 @@ class MapArea(object):
         
     def __repr__(self):
         return "MapArea(%s, %s, %s)" % (self.ul_pos, self.width, self.height)
-        
+
+    def contains_point(self, p):
+        x, y = p
+        self_x, self_y = self.ul_pos
+        return (self_x <= x < self_x + self.width and
+                self_y <= y < self_y + self.height)
+
     def get_all_points(self):
         x0, y0 = self.ul_pos
         

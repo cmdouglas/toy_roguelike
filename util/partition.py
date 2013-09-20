@@ -17,13 +17,6 @@ class Partition(object):
         
     def __repr__(self):
         return "Partition(%s, %s, %s)" % (self.ul_pos, self.width, self.height)
-        
-    def contains_point(self, p):
-        x, y = p
-        self_x, self_y = self.ulpos
-        return (self_x <= x < self_x + self.width and
-                self_y <= y < self_y + self.height)
-        
     
     def subpartition_regular_grid(self, partition_width, partition_height):
         assert self.width % partition_width == 0

@@ -2,15 +2,17 @@ import math
 import logging
 
 class Shape(object):
-    points = []
-    border = []
-    midpoint = (0, 0)
+    def __init__(self):
+        self.points = []
+        self.border = []
+        self.midpoint = (0, 0)
     
 class Rectangle(Shape):
     width = 0
     height = 0
     
     def __init__(self, midpoint, width, height):
+        super(Rectangle, self).__init__()
         self.midpoint = midpoint
         self.width = width
         self.height = height
@@ -21,8 +23,8 @@ class Rectangle(Shape):
         
         for x in xrange(startx, startx+self.width+1):
             for y in xrange(starty, starty+self.height+1):
-                if (x == startx or x == self.width+1 or 
-                    y == starty or y == self.height+1):
+                if (x == startx or x == startx + self.width or 
+                    y == starty or y == starty + self.height):
                     self.border.append((x+midx, y+midy))
                 else:
                     self.points.append((x+midx, y+midy))
@@ -32,6 +34,8 @@ class Circle(Shape):
     radius = 0
 
     def __init__(self, midpoint, radius):
+        super(Circle, self).__init__()
+        
         self.midpoint = midpoint
         self.radius = radius
         
@@ -67,6 +71,8 @@ class Ellipse(Shape):
     ry = 0
     
     def __init__(self, midpoint, rx, ry):
+        super(Ellipse, self).__init__()
+        
         self.midpoint = midpoint
         self.rx = rx
         self.ry = ry

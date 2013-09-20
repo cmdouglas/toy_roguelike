@@ -8,7 +8,7 @@ import logging
 from gameobjects.player import Player
 from gameobjects.wall import Wall
 from board.testboard import BasicBoard, TestCavern, TestCircle
-from board.generators import pcpgenerator
+from board.generator import generator
 from errors import GameEndException
 
 SCREEN_WIDTH=80
@@ -78,8 +78,8 @@ def draw_board(board, center):
  
 def game_loop():
     logging.info("generating board")
-    generator = pcpgenerator.PCPGenerator()
-    board = generator.generate()
+    g = generator.Generator()
+    board = g.generate()
     logging.info("board generated")
     center = board.player_pos
     draw_board(board, center)

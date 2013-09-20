@@ -1,4 +1,5 @@
 import libtcodpy as libtcod
+from gameobjects.smoothwall import SmoothWall
 from gameobjects.player import Player
 import logging
 
@@ -6,6 +7,8 @@ class Tile(object):
     def __init__(self, board, pos):
         self.pos = pos
         self.board = board
+        self.visible = False
+        self.seen = False
         self.objects = {
             'obstacle': None,
             'actor': None,
@@ -168,6 +171,9 @@ class Board(object):
     def setup(self):
         pass
     
+    def get_visible_points(self, pos, radius):
+        pass
+    
     def __getitem__(self, pos):
         x, y = pos
         return self.tiles[x][y]
@@ -193,7 +199,7 @@ class Board(object):
         
     def remove_object(self, ob):
         if not ob:
-            logging.warn("Trying to remove an object that doesn't exist!")
+            #logging.warn("Trying to remove an object that doesn't exist!")
             return
             
         ob.tile.remove_object(ob)

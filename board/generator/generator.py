@@ -1,21 +1,14 @@
-"""
-PCP generator (Partition, Connect, Paint)
-
-1.  Partitions the board into areas according to some strategy
-2.  Connects the areas to one another according to some strategy
-3.  Paints each individual area according to some strategy
-
-"""
 
 import random
 
 from util import dice
 from util import partition
 from board import base
-from board.generators import maparea
-from board.generators.painters import painter
-from board.generators.painters import shapedroom
-from board.generators.painters import tunnel
+from board.generator import maparea
+from board.generator.painters import painter
+from board.generator.painters import shapedroom
+from board.generator.painters import tunnel
+from board.generator.painters import cave
 from gameobjects import wall
 
     
@@ -37,6 +30,19 @@ class RegularGridPartitionStrategy(PartitionStrategy):
             area.find_neighbors(areas)
         
         return areas
+
+class BSPPartitionStrategy(object):
+    def partition(self, board, min_width, min_height):
+        part = partition.Partition((0, 0), board.width, board.height)
+        
+        ps = part.subpartition_bsp(min_width, min_height)
+        
+        areas = [maparea.MapArea(p) for p in ps]
+        for area in areas:
+            area.find_neighbors(areas)
+        
+        return areas
+
      
 class ConnectionStrategy(object):
     pass
@@ -51,17 +57,18 @@ class RandomPainterStrategy(PainterStrategy):
             shapedroom.RectangularRoomPainter(),
             shapedroom.CircularRoomPainter(),
             shapedroom.EllipticalRoomPainter(),
-            tunnel.SimpleTunnelPainter(),
-            tunnel.SnakeyTunnelPainter()
+            #tunnel.SimpleTunnelPainter(),
+            tunnel.SnakeyTunnelPainter(),
+            cave.CavePainter()
         ]
         
     def paint(self, board, areas):
         player_start = random.choice(areas)
         for area in areas:
-            painter = random.choice(self.painters)
-            painter.fill(board, area, wall.Wall)
-        for area in areas:
-            painter = random.choice(self.painters)
+            painter = random.choice([
+                p for p in self.painters  if p.area_meets_requirements(area)
+            ])
+            
             painter.paint(board, area)
             
             if area == player_start:
@@ -113,15 +120,15 @@ class SimpleWebConnectionStrategy(ConnectionStrategy):
                         frontier.append(area)
                 
 
-class PCPGenerator(object):
+class Generator(object):
     def __init__(self):
-        self.partition_strategy = RegularGridPartitionStrategy()
+        self.partition_strategy = BSPPartitionStrategy()
         self.connection_strategy = SimpleWebConnectionStrategy()
         self.painter_strategy = RandomPainterStrategy()
         
     def generate(self, width=100, height=100):
         board = base.Board(width, height)
-        areas = self.partition_strategy.partition(board, 25, 25)
+        areas = self.partition_strategy.partition(board, 20, 20)
         self.connection_strategy.connect(areas)
         self.painter_strategy.paint(board, areas)
         
