@@ -64,7 +64,7 @@ def draw_board(board, center):
     #draw screen
     for x, row in enumerate(board.tiles[ul_x:(ul_x + SCREEN_WIDTH)]):
         for y, tile in enumerate(row[ul_y:(ul_y + SCREEN_HEIGHT)]):
- 
+            
             char, color, bgcolor = tile.draw()
             
             # logging.info('drawing "%s" at %s' % (char, (x, y)));
@@ -81,7 +81,7 @@ def game_loop():
     g = generator.Generator()
     board = g.generate()
     logging.info("board generated")
-    center = board.player_pos
+    center = board.player.tile.pos
     draw_board(board, center)
     while not libtcod.console_is_window_closed():
         try:
@@ -89,7 +89,7 @@ def game_loop():
                 if ob.can_act:
                     changed = ob.process_turn()
                     if changed:
-                        center = board.player_pos
+                        center = board.player.tile.pos
                         draw_board(board, center)
         except(GameEndException):
             break

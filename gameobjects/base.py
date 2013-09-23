@@ -1,7 +1,7 @@
 import libtcodpy as libtcod
 
 class GameObject(object):
-    color = libtcod.white
+    color = libtcod.light_gray
     bgcolor = libtcod.black
     char = ' '
     blocks_movement = False

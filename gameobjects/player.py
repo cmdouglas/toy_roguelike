@@ -7,6 +7,15 @@ from gameobjects.base import Actor
 class Player(Actor):
     color = libtcod.white
     char = '@'
+    sight_radius = 10
+    
+    def on_spawn(self):
+        self.tile.board.show_player_fov()
+        self.tile.visible = True
+    
+    def on_move(self, dx, dy):
+        self.tile.board.show_player_fov()
+        self.tile.visible=True
     
     def process_turn(self):
         key = game_input.wait_for_keypress()
