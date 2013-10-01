@@ -1,9 +1,8 @@
-import libtcodpy as libtcod
-
+from io import colors
 from gameobjects.base import Obstacle
 
 class Wall(Obstacle):
-    color = libtcod.sepia
+    color = colors.sepia
     char = '#'
     blocks_movement=True
     blocks_vision=True

@@ -3,7 +3,7 @@ import random
 
 from util import dice
 from util import partition
-from board import base
+from board import board
 from board.generator import maparea
 from board.generator.painters import painter
 from board.generator.painters import shapedroom
@@ -127,12 +127,12 @@ class Generator(object):
         self.painter_strategy = RandomPainterStrategy()
         
     def generate(self, width=100, height=100):
-        board = base.Board(width, height)
-        areas = self.partition_strategy.partition(board, 20, 20)
+        b = board.Board(width, height)
+        areas = self.partition_strategy.partition(b, 20, 20)
         self.connection_strategy.connect(areas)
-        self.painter_strategy.paint(board, areas)
+        self.painter_strategy.paint(b, areas)
         
-        return board
+        return b
         
     
     

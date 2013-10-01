@@ -2,7 +2,7 @@ import random
 
 from util import dice
 from gameobjects import player
-from board import base
+from board import board
 
 class Painter(object):
     
@@ -31,7 +31,7 @@ class Painter(object):
         for point in area.get_all_points():
             try:
                 board.add_object(ob_type(), point)
-            except base.GameObjectPlacementException:
+            except board.GameObjectPlacementException:
                 continue
     
     def draw_corridor(self, board, start, end, start_dir = None, end_dir=None):

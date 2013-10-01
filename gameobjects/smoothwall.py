@@ -1,26 +1,27 @@
-import libtcodpy as libtcod
 import logging
 
+from io import colors
+from io import chars
 from gameobjects.wall import Wall
 
 class SmoothWall(Wall):
     """A wall that updates it's glyph based on surrounding tiles"""
-    color=libtcod.dark_grey
+    color=colors.dark_gray
     char = ' '
     
     char_occluded = ' '
-    char_pillar = libtcod.CHAR_VLINE
-    char_vwall = libtcod.CHAR_VLINE
-    char_hwall = libtcod.CHAR_HLINE
-    char_necorner = libtcod.CHAR_NE
-    char_nwcorner = libtcod.CHAR_NW
-    char_secorner = libtcod.CHAR_SE
-    char_swcorner = libtcod.CHAR_SW
-    char_t_north = libtcod.CHAR_TEEN
-    char_t_south = libtcod.CHAR_TEES
-    char_t_east = libtcod.CHAR_TEEE
-    char_t_west = libtcod.CHAR_TEEW
-    char_cross = libtcod.CHAR_CROSS
+    char_pillar = chars.vline
+    char_vwall = chars.vline
+    char_hwall = chars.hline
+    char_necorner = chars.ne
+    char_nwcorner = chars.nw
+    char_secorner = chars.se
+    char_swcorner = chars.sw
+    char_t_north = chars.tee_n
+    char_t_south = chars.tee_s
+    char_t_east = chars.tee_e
+    char_t_west = chars.tee_w
+    char_cross = chars.cross
     
     def on_spawn(self):
         self.update_char()

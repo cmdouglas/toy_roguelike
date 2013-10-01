@@ -1,7 +1,8 @@
-import libtcodpy as libtcod
+import logging
+
 from gameobjects.smoothwall import SmoothWall
 from gameobjects.player import Player
-import logging
+from io import colors
 
 class Tile(object):
     def __init__(self, board, pos):
@@ -99,8 +100,9 @@ class Tile(object):
         return char
         
     def draw(self):
-        color = libtcod.white
-        bgcolor = libtcod.black
+        
+        color = colors.light_gray
+        bgcolor = colors.black
 
         if self.visible:
             char = '.'
@@ -123,8 +125,8 @@ class Tile(object):
                 bgcolor = ob.bgcolor
         else:
             char = self.remembered
-            color = libtcod.dark_gray
-            bgcolor = libtcod.black
+            color = colors.dark_gray
+            bgcolor = colors.black
             
         return (char, color, bgcolor)
  
