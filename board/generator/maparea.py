@@ -33,6 +33,10 @@ class MapArea(object):
         for x in [x for x in xrange(x0, x0+self.width)]:
             for y in [y for y in xrange(y0, y0+self.height)]:
                 yield (x, y)
+                
+    def get_empty_points(self, board):
+        return [point for point in self.get_all_points() if (
+            not board[point].objects['obstacle'] and not board[point].objects['actor'])]
         
     def find_neighbor(self, other):
         for a in self.adjacent:

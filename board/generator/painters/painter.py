@@ -20,11 +20,23 @@ class Painter(object):
     def area_meets_requirements(self, area):
         return True
     
-    def get_empty_points(self, board, area):
-        return [point for point in area.get_all_points() if not board[point].objects['obstacle']]
+    def get_border(self, area):
+        points = []
+        ul_x, ul_y = area.ul_pos
+        
+        for x in range(ul_x, ul_x + area.width - 1):
+            for y in range(ul_y, ul_y + area.height - 1):
+                if (x == ul_x or 
+                    x == (ul_x + area.width -1) or 
+                    y == ul_y or
+                    y == (ul_y + area.height - 1)):
+                    
+                    points.append((x, y))
+                    
+        return points
         
     def place_player(self, board, area):
-        pos = random.choice(self.get_empty_points(board, area))
+        pos = random.choice(area.get_empty_points(board))
         board.add_object(player.Player(), pos)
         
     def fill(self, board, area, ob_type):

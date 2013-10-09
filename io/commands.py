@@ -28,7 +28,8 @@ def get_user_command(game):
         ord('Q'): GameEndCommand()
     }
     
-    return commands.get(k.c)
+    if k:
+        return commands.get(k.c)
     
     
 class Command(object):

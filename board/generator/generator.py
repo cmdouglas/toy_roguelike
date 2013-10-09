@@ -10,6 +10,7 @@ from board.generator.painters import shapedroom
 from board.generator.painters import tunnel
 from board.generator.painters import cave
 from gameobjects import wall
+from gameobjects.actors import goblin
 
     
 class PartitionStrategy(object):
@@ -62,8 +63,10 @@ class RandomPainterStrategy(PainterStrategy):
             cave.CavePainter()
         ]
         
-    def paint(self, board, areas):
+    def paint(self, board):
+        areas = board.areas
         player_start = random.choice(areas)
+        areas = board.areas
         for area in areas:
             painter = random.choice([
                 p for p in self.painters  if p.area_meets_requirements(area)
@@ -73,6 +76,7 @@ class RandomPainterStrategy(PainterStrategy):
             
             if area == player_start:
                 painter.place_player(board, area)
+
     
 class SimpleWebConnectionStrategy(ConnectionStrategy):
     def connect(self, areas):
@@ -126,11 +130,11 @@ class Generator(object):
         self.connection_strategy = SimpleWebConnectionStrategy()
         self.painter_strategy = RandomPainterStrategy()
         
-    def generate(self, width=100, height=100):
+    def generate(self, width=60, height=60):
         b = board.Board(width, height)
-        areas = self.partition_strategy.partition(b, 20, 20)
-        self.connection_strategy.connect(areas)
-        self.painter_strategy.paint(b, areas)
+        b.areas = self.partition_strategy.partition(b, 10, 10)
+        self.connection_strategy.connect(b.areas)
+        self.painter_strategy.paint(b)
         
         return b
         

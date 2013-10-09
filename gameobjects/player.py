@@ -5,9 +5,10 @@ from errors import GameEndException
 from gameobjects.base import Actor
 
 class Player(Actor):
-    color = colors.white
-    char = '@'
-    sight_radius = 10
+    def __init__(self):
+        self.color = colors.white
+        self.char = '@'
+        self.sight_radius = 10
     
     def on_spawn(self):
         self.tile.board.show_player_fov()

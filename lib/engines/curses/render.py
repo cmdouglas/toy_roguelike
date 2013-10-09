@@ -1,5 +1,7 @@
 import curses
 from lib.engines.curses.colors import CursesColorPair
+import locale
+locale.setlocale(locale.LC_ALL,"")
 
 import logging
 class Renderer(object):

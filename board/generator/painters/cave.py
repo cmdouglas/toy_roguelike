@@ -2,6 +2,7 @@ import random
 from util import dice
 from board.generator.painters import painter
 from gameobjects import wall
+from gameobjects.actors import goblin
 
 class CavePainter(painter.Painter):
     def area_meets_requirements(self, area):
@@ -37,8 +38,12 @@ class CavePainter(painter.Painter):
         points = [p for p in area.get_all_points()]
         
         # 1. randomly fill area with wall tiles
+        border = self.get_border(area)
+        
         for point in points:
-            if random.randrange(100) < 40:
+            if point in border:
+                board.add_object(wall.Wall(), point)
+            elif random.randrange(100) < 40:
                 board.add_object(wall.Wall(), point)
                                 
         # 2.  4 repitions of r(1) == 5 or r(2) == 2
@@ -69,9 +74,13 @@ class CavePainter(painter.Painter):
                     if board[point].objects['obstacle']:
                         board.remove_object(board[point].objects['obstacle'])
                         
+        # 4.  Add 0-3 goblins
+        for i in range((dice.d(1, 4) - 1)):
+            point = random.choice(area.get_empty_points(board))
+            board.add_object(goblin.Goblin(), point)
                         
         #4.  Connect to the area entrances
-        point = random.choice(self.get_empty_points(board, area))
+        point = random.choice(area.get_empty_points(board))
         
         for pos in [c['point'] for c in area.connections]:
             #print "connecting point %s to %s" % (rectangle_center, pos)

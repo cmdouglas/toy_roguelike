@@ -198,6 +198,7 @@ class Board(object):
         self.tiles = [[Tile(self, (x, y)) for y in xrange(self.height)] 
             for x in range(self.width)]
             
+        self.areas = []
         self.setup()
         
     def setup(self):
@@ -224,6 +225,13 @@ class Board(object):
     def position_is_valid(self, pos):
         x, y = pos
         return 0 <= x < self.width and 0 <= y < self.height
+        
+    def area_containing_point(self, pos):
+        for area in self.areas:
+            if area.contains_point(pos):
+                return area
+                
+        return None
 
     def get_visible_points(self, pos, radius):
         directions = [

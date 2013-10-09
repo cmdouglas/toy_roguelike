@@ -1,3 +1,4 @@
+import math
 from io import colors
 
 class GameObject(object):
@@ -36,6 +37,8 @@ class Actor(GameObject):
         
     def process_turn(self):
         return False
+        
+
     
 class Obstacle(GameObject):
     blocks_movement = True

@@ -1,20 +1,15 @@
-import libtcodpy as libtcod
-from board.base import Board
+import board
 from gameobjects.wall import Wall
 from gameobjects.smoothwall import SmoothWall
 from gameobjects.player import Player
+from gameobjects.actors.goblin import Goblin
 from util.shape import Rectangle, Circle, Ellipse
 
 import random
 import logging
 
-class CharTest(Wall):
-    char = libtcod.CHAR_TEEN
-    
-class CharTest2(Wall):
-    char = libtcod.CHAR_NE
 
-class TestBoard(Board):
+class TestBoard(board.Board):
     def fill(self):
         for row in self.tiles:
             for tile in row:
@@ -107,7 +102,19 @@ class TestCavern(TestBoard):
                 
             if l > 0:
                 self.carve_cavern(neighbor, level=l)
-        
+
+class TestSearch(TestBoard):
+    def setup(self):
+        self.add_object(Wall(), (5,0))
+        self.add_object(Wall(), (5,1))
+        self.add_object(Wall(), (5,2))
+        self.add_object(Wall(), (5,3))
+        self.add_object(Wall(), (5,4))
+        self.add_object(Wall(), (5,5))
+        self.add_object(Wall(), (5,6))
+    
+        self.add_object(Player(), (0, 0))
+        self.add_object(Goblin(), (0, 9))
 class TestCircle(TestBoard):
     def setup(self):
         self.fill()

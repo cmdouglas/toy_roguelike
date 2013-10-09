@@ -1,6 +1,7 @@
 import config
 
 from board.generator import generator
+from board.testboard import TestSearch
 
 class GameEndException(Exception):
     pass
@@ -27,6 +28,7 @@ class Game(object):
     def setup_board(self):
         g = generator.Generator()
         self.board = g.generate()
+        #self.board = TestSearch(10, 10)
         
     def setup_player(self):
         self.player = self.board.player
@@ -49,6 +51,8 @@ class Game(object):
                 try:
                     for o in self.board.objects:
                         if o.can_act:
+                            center = self.board.player.tile.pos    
+                            renderer.draw(self.board, center)
                             changed = o.process_turn(self)
                             if changed:
                                 center = self.board.player.tile.pos
