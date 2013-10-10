@@ -60,10 +60,11 @@ class AStarSearch(object):
     3.  heuristic(self, node, goal):  a function that takes a SearchNode and returns
     an integer, representing an estimated number of moves from state to goal.
     """
-    def __init__(self, start, goal, heuristic):
+    def __init__(self, start, goal, heuristic, max_depth=None):
         self.start = start
         self.goal = goal
         self.heuristic = heuristic
+        self.max_depth = max_depth
         
     def do_search(self):
         visited = []
@@ -87,8 +88,12 @@ class AStarSearch(object):
                         
                 if new in frontier:
                     continue
-            
-                frontier.append(new)
+                
+                if not self.max_depth: 
+                    frontier.append(new)
+                
+                elif new.get_path_length() < self.max_depth:
+                    frontier.append(new)
                 
             visited.append(current)
             frontier.sort(cmp=compare)
@@ -103,7 +108,7 @@ def find_area_path(board, start, end):
         for c in area.connections:
             pass
 
-def find_path(board, start, end, actors_block=False):
+def find_path(board, start, end, actors_block=False, max_depth=None):
     def possible_moves(node):
         point = node.data['point']
         board = node.data['board']
@@ -151,4 +156,4 @@ def find_path(board, start, end, actors_block=False):
         'board': board
     }, possible_moves, apply_move)
     
-    return AStarSearch(start_node, goal_node, heuristic).do_search()
+    return AStarSearch(start_node, goal_node, heuristic, max_depth=max_depth).do_search()

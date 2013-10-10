@@ -233,6 +233,23 @@ class Board(object):
                 
         return None
 
+    def nearby_reachable_points(self, pos, distance):
+        points = []
+        
+        def _add_empty_neighbors(p,d):
+            candidates = self[p].surrounding()
+            for candidate in candidates:
+                if (not candidate.blocks_movement() and
+                    not candidate.pos in points):
+                
+                    points.append(candidate.pos)
+                    if d > 0:
+                        _add_empty_neighbors(candidate.pos, d-1)
+        _add_empty_neighbors(pos, distance)
+        
+        return points
+                
+        
     def get_visible_points(self, pos, radius):
         directions = [
             (1,  0,  0,  1),
