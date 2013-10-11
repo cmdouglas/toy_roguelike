@@ -1,4 +1,5 @@
 from ai.utils import search
+import math
 
 def move_towards(actor1, actor2, board):
     self_pos = actor1.tile.pos

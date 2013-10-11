@@ -1,8 +1,8 @@
 """
 
 """
+from util.tools import flatten
 import random
-import collections
 
 
 class PartitionException(Exception):
@@ -58,14 +58,7 @@ class Partition(object):
             return([Partition(p.ul_pos, p.width, split_y-ul_y), 
                     Partition(split_pos, p.width, ul_y + p.height - split_y)])
                     
-        def flatten(l):
-            for el in l:
-                if (isinstance(el, collections.Iterable) and 
-                    not isinstance(el, basestring)):
-                    for sub in flatten(el):
-                        yield sub
-                else:
-                    yield el
+
         
         if self.width < min_width or self.height < min_height:
             print self

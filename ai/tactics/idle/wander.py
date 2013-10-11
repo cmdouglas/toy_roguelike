@@ -13,6 +13,10 @@ class WanderTactics(tactics.Tactics):
         
     def do_tactics(self, actor, game, events):
         board = game.board
+        
+        if dice.one_chance_in(6):
+            actor.idle_emote(game)
+        
         if not self.destination:
             self.choose_destination(actor, board)
             self.compute_path(actor, board)
