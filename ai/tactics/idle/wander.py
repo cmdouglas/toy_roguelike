@@ -12,56 +12,41 @@ class WanderTactics(tactics.Tactics):
         self.wait = random.randrange(self.max_wait) + 1
         
     def do_tactics(self, actor, game, events):
-        logging.debug('do_tactics start')
         board = game.board
         if not self.destination:
-            logging.debug('no destination, assigning one')
             self.choose_destination(actor, board)
             self.compute_path(actor, board)
             
-            logging.debug('new destination: %s' % (self.destination,))
-            logging.debug('path: %s' % (self.path,))
-            
         if actor.tile.pos == self.destination:
-            logging.debug('hit my destination!')
             if not self.should_stop():
-                logging.debug('wandering again :)')
                 # let's wander somewhere else
                 self.choose_destination(actor, board)
                 self.compute_path(actor, board)
-                logging.debug('new destination: %s' %(self.destination,))
-                logging.debug('path: %s' % (self.path,))
                 
             else:
                 # nah, let's ask the strategy what to do.
-                logging.debug('stop wandering')
                 return (tactics.COMPLETE, None)
                 
         #try to move:)'):
         if not self.path:
-            logging.debug('NO PATH :(, waiting')
             self.destination = None
             return (tactics.CONTINUE, None)
         
         move = self.path[0]
         if self.maybe_move(actor, board, move):
             self.path.pop(0)
-            logging.debug('successfully made move; %s' % (move,))
             # reset our wait timer:
             if self.wait == 0:
                 self.wait = dice.d(1, self.max_wait)
             return (tactics.CONTINUE, None)
             
         else:
-            logging.debug('path is blocked')
             # wait and see if the blocker clears
             if self.wait > 0:
-                logging.debug('waiting... %s' % self.wait)
                 self.wait -= 1
                 return (tactics.CONTINUE, None)
             
             else:
-                logging.debug('finding a new path')
                 #ok, let's recompute the path, or go somewhere else
                 path_found = self.recompute_path(actor, board, ab=True, md=10)
                 if not path_found:
@@ -70,9 +55,7 @@ class WanderTactics(tactics.Tactics):
                     if dest:
                         self.destination = dest
                         self.compute_path(actor, board)
-                    
-                logging.debug('new_path: %s' % (self.path,))
-                    
+                                        
         return (tactics.CONTINUE, None)
 
     def should_stop(self):

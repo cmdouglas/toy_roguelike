@@ -1,7 +1,7 @@
 import logging
 
 from gameobjects.smoothwall import SmoothWall
-from gameobjects.player import Player
+from gameobjects.actors.player import Player
 from io import colors
 
 class Tile(object):

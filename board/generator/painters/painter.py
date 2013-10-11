@@ -1,7 +1,7 @@
 import random
 
 from util import dice
-from gameobjects import player
+from gameobjects.actors import player
 from board import board
 
 class Painter(object):

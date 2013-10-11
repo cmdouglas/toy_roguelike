@@ -1,7 +1,6 @@
 from io import colors
 from io import commands
 
-from errors import GameEndException
 from gameobjects.base import Actor
 
 class Player(Actor):

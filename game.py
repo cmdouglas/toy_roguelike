@@ -1,5 +1,5 @@
 import config
-
+from io import render
 from board.generator import generator
 from board.testboard import TestSearch
 
@@ -10,7 +10,7 @@ class Game(object):
     def __init__(self, config):
         if config.engine == 'libtcod':
             from lib.engines import libtcod
-            from lib.engines.libtcod import keypress, render, libtcodpy
+            from lib.engines.libtcod import keypress, render
             
             self.engine = libtcod
             self.engine.keypress = keypress
