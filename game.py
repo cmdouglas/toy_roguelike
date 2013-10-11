@@ -10,25 +10,15 @@ class Game(object):
     def __init__(self, config):
         if config.engine == 'libtcod':
             from lib.engines import libtcod
-            from lib.engines.libtcod import keypress, render
-            
             self.engine = libtcod
-            self.engine.keypress = keypress
-            self.engine.render = render
-            
             
         elif config.engine == 'curses':
             from lib.engines import curses
-            from lib.engines.curses import keypress, render
-            
             self.engine = curses
-            self.engine.keypress = keypress
-            self.engine.render = render
         
     def setup_board(self):
         g = generator.Generator()
         self.board = g.generate()
-        #self.board = TestSearch(10, 10)
         
     def setup_player(self):
         self.player = self.board.player
@@ -43,7 +33,7 @@ class Game(object):
         
     def main_loop(self):
         center = self.player.tile.pos
-        with self.engine.render.Renderer() as renderer:
+        with render.render.Renderer() as renderer:
             self.renderer = renderer
             renderer.draw(self.board, center)
         

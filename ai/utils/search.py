@@ -1,14 +1,18 @@
-
+    
 class SearchNode(object):
     """Represents a state of a space used for a search.  Initialization 
-    requires a dictionary and 2 functions:
+    requires a dictionary and 3 functions:
     1.  data - a dictionary containing all necessary state information.
+    3.  id(node): a function that returns an identifier representing the state
     2.  possible_moves(self): returns a list of moves.  A move is an argument in 
     3.  apply_move(self, move):  returns a SearchNode that is the result of the
     passed in move.
     """
-    def __init__(self, data, possible_moves, apply_move):
+    
+    
+    def __init__(self, data, id, possible_moves, apply_move):
         self.data = data
+        self.id = id
         self.possible_moves = possible_moves
         self.apply_move = apply_move
         self.move_to_reach = None
@@ -16,7 +20,7 @@ class SearchNode(object):
         self.path_length = None
         
     def __eq__(self, other):
-        return self.data == other.data
+        return self.id(self) == other.id(other)
         
     def expand(self):
         nodes = []
@@ -33,7 +37,7 @@ class SearchNode(object):
         if not self.parent:
             return 0
         else:
-            return 1 + self.parent.get_path_length()
+            return self.data.get('path_cost', 1) + self.parent.get_path_length()
         
     def get_path_length(self):
         if not self.path_length:
@@ -51,6 +55,7 @@ class SearchNode(object):
             
         return [m for m in reversed(moves)]
         
+    
         
 
 class AStarSearch(object):
@@ -67,7 +72,7 @@ class AStarSearch(object):
         self.max_depth = max_depth
         
     def do_search(self):
-        visited = []
+        visited = {}
         frontier = [self.start]
         
         def compare(n1, n2):
@@ -83,7 +88,8 @@ class AStarSearch(object):
                 return current.get_path()
                 
             for new in current.expand():
-                if new in visited:
+                if (new.id(new) in visited and
+                    new.get_path_length() >= visited[new.id(new)].get_path_length()):
                     continue
                         
                 if new in frontier:
@@ -95,7 +101,7 @@ class AStarSearch(object):
                 elif new.get_path_length() < self.max_depth:
                     frontier.append(new)
                 
-            visited.append(current)
+            visited[new.id(new)] = new
             frontier.sort(cmp=compare)
             
         return None
@@ -109,6 +115,10 @@ def find_area_path(board, start, end):
             pass
 
 def find_path(board, start, end, actors_block=False, max_depth=None):
+    
+    def id(node):
+        return node.data['point']
+        
     def possible_moves(node):
         point = node.data['point']
         board = node.data['board']
@@ -135,25 +145,32 @@ def find_path(board, start, end, actors_block=False, max_depth=None):
         x, y = node.data['point']
         dx, dy = move
         
+        path_cost = 1000
+        if (dx != 0 and dy != 0):
+            # ~sqrt(2)*1000 for diagonal moves
+            path_cost = 1414
+            
+        
         return SearchNode({
             'point': (x + dx, y+dy),
-            'board': node.data['board']
-        }, possible_moves, apply_move)
+            'board': node.data['board'],
+            'path_cost': path_cost
+        }, id, possible_moves, apply_move)
         
     def heuristic(search, node, goal):
         x2, y2 = goal.data['point']
         x1, y1 = node.data['point']
         
-        return abs(x2-x1) + abs(y2-y1)
+        return (abs(x2-x1) + abs(y2-y1)) * 1000
         
     start_node = SearchNode({
         'point': start,
         'board': board
-    }, possible_moves, apply_move)
+    }, id, possible_moves, apply_move)
     
     goal_node = SearchNode({
         'point': end,
         'board': board
-    }, possible_moves, apply_move)
+    }, id, possible_moves, apply_move)
     
     return AStarSearch(start_node, goal_node, heuristic, max_depth=max_depth).do_search()
