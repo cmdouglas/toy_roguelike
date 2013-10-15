@@ -4,4 +4,5 @@ COMPLETE = 1
 INTERRUPTED = 2
 
 class Strategy(object):
-    pass
+    def describe():
+        return ""

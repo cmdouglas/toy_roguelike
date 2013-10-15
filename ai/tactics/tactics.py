@@ -18,3 +18,6 @@ class Tactics(object):
         else:
             actor.move((dx, dy))
             return True
+            
+    def describe(self):
+        return ""

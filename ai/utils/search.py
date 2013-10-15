@@ -9,6 +9,16 @@ class SearchNode(object):
     passed in move.
     """
     
+    __slots__ = [
+        'data',
+        'id',
+        'possible_moves',
+        'apply_move',
+        'move_to_reach',
+        'parent',
+        'path_length',
+        'h'
+    ]
     
     def __init__(self, data, id, possible_moves, apply_move):
         self.data = data
@@ -18,6 +28,7 @@ class SearchNode(object):
         self.move_to_reach = None
         self.parent = None
         self.path_length = None
+        self.h = None
         
     def __eq__(self, other):
         return self.id(self) == other.id(other)
@@ -76,8 +87,14 @@ class AStarSearch(object):
         frontier = [self.start]
         
         def compare(n1, n2):
-            c1 = n1.get_path_length() + self.heuristic(self, n1, self.goal)
-            c2 = n2.get_path_length() + self.heuristic(self, n2, self.goal)
+            if not n1.h:
+                n1.h = self.heuristic(self, n1, self.goal)
+                
+            if not n2.h:
+                n2.h = self.heuristic(self, n2, self.goal)
+            
+            c1 = n1.get_path_length() + n1.h
+            c2 = n2.get_path_length() + n2.h
             
             return cmp(c1, c2)
         
@@ -101,7 +118,7 @@ class AStarSearch(object):
                 elif new.get_path_length() < self.max_depth:
                     frontier.append(new)
                 
-            visited[new.id(new)] = new
+                visited[new.id(new)] = new
             frontier.sort(cmp=compare)
             
         return None

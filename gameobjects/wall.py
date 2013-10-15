@@ -1,5 +1,5 @@
-from io import colors
-from gameobjects.base import Obstacle
+from gameio import colors
+from gameobjects.gameobject import Obstacle
 
 class Wall(Obstacle):
     color = colors.sepia

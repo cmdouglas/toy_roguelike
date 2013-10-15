@@ -75,7 +75,7 @@ class CavePainter(painter.Painter):
                         board.remove_object(board[point].objects['obstacle'])
                         
         # 4.  Add 0-3 goblins
-        for i in range((dice.d(1, 4) - 1)):
+        for i in range((dice.d(2, 10) - 1)):
             point = random.choice(area.get_empty_points(board))
             board.add_object(goblin.Goblin(), point)
                         

@@ -1,4 +1,4 @@
-from io import colors
+from gameio import colors
 import textwrap
 
 class Console(object):

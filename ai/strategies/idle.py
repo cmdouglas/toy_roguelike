@@ -29,3 +29,6 @@ class IdleStrategy(strategy.Strategy):
             
         else:
             return (strategy.CONTINUE, None)
+            
+    def describe(self):
+        return self.tactics.describe()

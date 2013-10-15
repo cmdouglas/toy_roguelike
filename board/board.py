@@ -2,7 +2,7 @@ import logging
 
 from gameobjects.smoothwall import SmoothWall
 from gameobjects.actors.player import Player
-from io import colors
+from gameio import colors
 
 class Tile(object):
     def __init__(self, board, pos):
@@ -59,6 +59,32 @@ class Tile(object):
         if ob not in self.objects['decorations']:
             self.objects.append(ob)                
     
+    def most_interesting_object(self):
+        most_interesting = None
+        interest_level = 0
+        
+        ob = self.objects['actor']
+        if ob and ob.interest_level > interest_level:
+            most_interesting = ob
+            interest_level = ob.interest_level
+            
+        ob = self.objects['obstacle']
+        if ob and ob.interest_level > interest_level:
+            most_interesting = ob
+            interest_level = ob.interest_level
+            
+        for ob in self.objects['items']:
+            if ob and ob.interest_level > interest_level:
+                most_interesting = ob
+                interest_level = ob.interest_level
+                
+        for ob in self.objects['decorations']:
+            if ob and ob.interest_level > interest_level:
+                most_interesting = ob
+                interest_level = ob.interest_level
+                
+        return most_interesting
+        
     def add_object(self, ob):
         if ob.can_act:
             self.add_actor(ob)
@@ -210,6 +236,7 @@ class Board(object):
                 tile.visible = False
         
         visible_points = self.get_visible_points(self.player.tile.pos, self.player.sight_radius)
+        self.visible_to_player = set(visible_points)
         
         for point in visible_points:
             if self.position_is_valid(point):

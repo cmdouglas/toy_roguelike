@@ -1,17 +1,19 @@
 import random
-from io import colors
+from gameio import colors
 from gameobjects.actors.mob import Mob
 from ai.utils import search
 from ai.strategies import idle
 
 class Goblin(Mob):
+    name="goblin"
+    name_plural = "goblins"
+    interest_level = 10
+    color = colors.green
+    char = 'g'
+    sight_radius = 8 
+    
     def __init__(self):
-        self.color = colors.green
-        self.char = 'g'
-        self.has_seen_player = False
-        self.sight_radius = 10
         self.strategy = idle.IdleStrategy()
-        self.name="goblin"
         
     def process_turn(self, game):
         self.strategy.do_strategy(self, game, [])
@@ -27,6 +29,8 @@ class Goblin(Mob):
         
     def idle_emote(self, game):
         message = random.choice([
+            "snorts.",
+            "blinks dimly at you.",
             "scratches its ears.",
             "mutters something unintelligable.",
             "sticks its tongue out at you."

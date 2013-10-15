@@ -1,5 +1,5 @@
 import math
-from io import colors
+from gameio import colors
 
 class GameObject(object):
     color = colors.light_gray
@@ -9,6 +9,7 @@ class GameObject(object):
     blocks_vision = False
     can_act = False
     can_be_taken = False
+    interest_level = 0
             
     def move(self, dxdy):
         dx, dy = dxdy
@@ -27,6 +28,9 @@ class GameObject(object):
         
     def on_spawn(self):
         pass
+        
+    def is_in_fov(self):
+        return self.tile.visible
         
 class Actor(GameObject):
     blocks_movement = True

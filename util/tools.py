@@ -9,3 +9,12 @@ def flatten(l):
         else:
             yield el
             
+def clamp(v, maxval, minval=0):
+    if v < minval:
+        return minval
+        
+    if v > maxval:
+        return maxval
+        
+    return v
+    

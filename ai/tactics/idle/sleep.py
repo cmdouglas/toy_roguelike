@@ -19,4 +19,6 @@ class SleepTactics(tactics.Tactics):
         
         return (tactics.CONTINUE, None)
             
+    def describe(self):
+        return "sleeping"
         

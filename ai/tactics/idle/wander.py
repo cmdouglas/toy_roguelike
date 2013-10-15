@@ -14,7 +14,7 @@ class WanderTactics(tactics.Tactics):
     def do_tactics(self, actor, game, events):
         board = game.board
         
-        if dice.one_chance_in(6):
+        if dice.one_chance_in(10):
             actor.idle_emote(game)
         
         if not self.destination:
@@ -31,7 +31,7 @@ class WanderTactics(tactics.Tactics):
                 # nah, let's ask the strategy what to do.
                 return (tactics.COMPLETE, None)
                 
-        #try to move:)'):
+        #try to move:
         if not self.path:
             self.destination = None
             return (tactics.CONTINUE, None)
@@ -77,7 +77,7 @@ class WanderTactics(tactics.Tactics):
         self.destination = random.choice(area.get_empty_points(board))            
         
     def compute_path(self, actor, board):
-        path_found = self.path = search.find_path(board, actor.tile.pos, self.destination)
+        path_found = self.path = search.find_path(board, actor.tile.pos, self.destination, actors_block=False)
         if not path_found:
             dest = self.nearby_reachable_destination(actor, board)
             if dest:
@@ -87,6 +87,10 @@ class WanderTactics(tactics.Tactics):
     def recompute_path(self, actor, board, ab=False, md=None):
         self.path = search.find_path(board, actor.tile.pos, self.destination, actors_block=ab, max_depth=md)
         return self.path
+        
+        
+    def describe(self):
+        return "wandering"
                 
         
         

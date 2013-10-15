@@ -1,7 +1,7 @@
 import logging
 
-from io import colors
-from io import chars
+from gameio import colors
+from gameio import chars
 from gameobjects.wall import Wall
 
 class SmoothWall(Wall):
