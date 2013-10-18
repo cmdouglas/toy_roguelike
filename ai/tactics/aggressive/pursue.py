@@ -14,7 +14,6 @@ class PursueTactics(tactics.Tactics):
         return "chasing %s" % self.target.describe()
         
     def do_tactics(self, actor, game, events):
-        logging.debug('Pursue tactics START')
         board = game.board
         
         ax, ay = actor.tile.pos
@@ -36,7 +35,6 @@ class PursueTactics(tactics.Tactics):
             }
             
         else:
-            logging.debug("LOOKING FOR A PATH FROM %s to %s" % (actor.tile.pos, self.target.tile.pos))
             path = search.find_path(
                 board, 
                 actor.tile.pos, 
@@ -44,7 +42,6 @@ class PursueTactics(tactics.Tactics):
             #    max_depth=20
             )
             
-            logging.debug("Path: %s" % path)
             if path:
                 move = path[0]
                 return {

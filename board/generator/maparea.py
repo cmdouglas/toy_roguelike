@@ -14,6 +14,7 @@ class MapArea(object):
         self.height = partition.height
         self.adjacent = []
         self.connections = []
+        self.entrance = False
         
         self.connection_cost = 0
         self.keywords = []

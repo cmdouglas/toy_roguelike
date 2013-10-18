@@ -5,12 +5,9 @@ from util import dice
 from util import partition
 from board import board
 from board.generator import maparea
-from board.generator.painters import painter
 from board.generator.painters import shapedroom
 from board.generator.painters import tunnel
 from board.generator.painters import cave
-from gameobjects import wall
-from gameobjects.actors import goblin
 
     
 class PartitionStrategy(object):
@@ -74,8 +71,7 @@ class RandomPainterStrategy(PainterStrategy):
             
             painter.paint(board, area)
             
-            if area == player_start:
-                painter.place_player(board, area)
+        painter.place_player(board, player_start)
 
     
 class SimpleWebConnectionStrategy(ConnectionStrategy):
