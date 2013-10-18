@@ -381,7 +381,7 @@ class Board(object):
                 old_tile.remove_object(ob)
                 new_tile.add_object(ob)
                 ob.tile = new_tile
-                ob.on_move(x2-x1, y2-y1)
+                ob.on_move(old_pos, new_pos)
                 
                 return True
                 

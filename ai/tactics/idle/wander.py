@@ -1,5 +1,6 @@
-import logging
 import random
+from actions.wait import WaitAction
+from actions.movement import MovementAction
 from ai.tactics import tactics
 from ai.utils import search
 from util import dice
@@ -29,26 +30,42 @@ class WanderTactics(tactics.Tactics):
                 
             else:
                 # nah, let's ask the strategy what to do.
-                return (tactics.COMPLETE, None)
+                return {
+                    'result': tactics.COMPLETE, 
+                    'event': None,
+                    'action': None    
+                }
                 
         #try to move:
         if not self.path:
             self.destination = None
-            return (tactics.CONTINUE, None)
+            return {
+                'result': tactics.CONTINUE, 
+                'event': None,
+                'action': WaitAction(actor, game)
+            }
         
         move = self.path[0]
-        if self.maybe_move(actor, board, move):
+        if self.can_make_move(actor, board, move):
             self.path.pop(0)
             # reset our wait timer:
             if self.wait == 0:
                 self.wait = dice.d(1, self.max_wait)
-            return (tactics.CONTINUE, None)
+            return {
+                'result': tactics.CONTINUE, 
+                'event': None,
+                'action': MovementAction(actor, game, move)
+            }
             
         else:
             # wait and see if the blocker clears
             if self.wait > 0:
                 self.wait -= 1
-                return (tactics.CONTINUE, None)
+                return {
+                    'result': tactics.CONTINUE, 
+                    'event': None,
+                    'action': WaitAction(actor, game)
+                }
             
             else:
                 #ok, let's recompute the path, or go somewhere else
@@ -60,7 +77,11 @@ class WanderTactics(tactics.Tactics):
                         self.destination = dest
                         self.compute_path(actor, board)
                                         
-        return (tactics.CONTINUE, None)
+        return {
+            'result': tactics.CONTINUE, 
+            'event': None,
+            'action': WaitAction(actor, game)
+        }
 
     def should_stop(self):
         return dice.d(1, 3) == 3

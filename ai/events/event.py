@@ -5,7 +5,7 @@ class Event(object):
 class SeeHostileEvent(Event):
     pass
         
-class TargetOutOfRange(Event):
+class TargetOutOfRangeEvent(Event):
     pass
         
 class TargetLostEvent(Event):

@@ -1,4 +1,5 @@
-import config
+import logging
+
 from gameio import render
 from gameio import console
 from gameio import colors
@@ -42,6 +43,13 @@ class Game(object):
         
         self.end()
         
+    def force_refresh(self):
+        center = self.board.player.tile.pos 
+        self.renderer.draw(self.board, center, self.console, self.player)
+        
+    def exit(self):
+        raise GameEndException()
+        
     def main_loop(self):
         center = self.player.tile.pos
         with render.render.Renderer() as renderer:
@@ -50,17 +58,22 @@ class Game(object):
         
             while self.engine.is_running():
                 try:
-                    center = self.board.player.tile.pos
-                    renderer.draw(self.board, center, self.console, self.player)
-                    for o in self.board.objects:
-                        if o.can_act:
-                            was_in_fov = o.is_in_fov()
-                            changed = o.process_turn(self)
-                            is_in_fov = o.is_in_fov()
-                            if changed and (was_in_fov or is_in_fov or o == self.player):
-                                center = self.board.player.tile.pos
-                            
-                                renderer.draw(self.board, center, self.console, self.player)
+                    
+                    actors = [actor for actor in self.board.objects if actor.can_act]
+                    actors.sort(key=lambda actor: actor.timeout)
+                    
+                    actor = actors[0]
+                    
+                    for a in actors[1:]:
+                        a.timeout -= actor.timeout
+                        
+                    was_in_fov = actor.is_in_fov()
+                    changed = actor.process_turn(self)
+                    is_in_fov = actor.is_in_fov()
+                    if changed and (was_in_fov or is_in_fov or actor == self.player):
+                        center = self.board.player.tile.pos 
+                        renderer.draw(self.board, center, self.console, self.player)
+                        
                 except(GameEndException):
                     break
 

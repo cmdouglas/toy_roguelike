@@ -59,7 +59,7 @@ class Renderer(object):
         
         #objects of interest
         self.ooi_width = 44
-        self.ooi_height = self.height - self.name_height - self.stats_height - self.status_height
+        self.ooi_height = self.height - (self.name_height + self.stats_height + self.status_height + self.console_height)
         self.ooi_pos = (hud_left, hud_top + self.name_height + self.stats_height + self.status_height)
         
         return self
@@ -108,14 +108,14 @@ class Renderer(object):
         ul_y = 0
     
         if c_x > board.width - self.viewport_width / 2:
-            ul_x = board.width - self.viewport_width
+            ul_x = max(board.width - self.viewport_width, 0)
         elif c_x <= self.viewport_width / 2:
             ul_x = 0
         else:
             ul_x = c_x - self.viewport_width / 2
         
         if c_y >= board.height - self.viewport_height / 2:
-            ul_y = board.height - self.viewport_height
+            ul_y = max(board.height - self.viewport_height, 0)
         elif c_y < self.viewport_height / 2:
             ul_y = 0;
         else:
@@ -152,13 +152,13 @@ class Renderer(object):
         
         #health
         stats_pad.addstr(0, 1, "Health: ", self.hud_color_dark)
-        stats_pad.addstr("{health:4d}".format(health=player.health), self.hud_color_light)
+        stats_pad.addstr("{health:3d}".format(health=player.health), self.hud_color_light)
         stats_pad.addstr("/", self.hud_color_dark)
         stats_pad.addstr("{max_health}".format(max_health=player.max_health), self.hud_color_light)
         
         #energy
         stats_pad.addstr(1, 1, "Energy: ", self.hud_color_dark)
-        stats_pad.addstr("{energy:4d}".format(energy=player.energy), self.hud_color_light)
+        stats_pad.addstr("{energy:3d}".format(energy=player.energy), self.hud_color_light)
         stats_pad.addstr("/", self.hud_color_dark)
         stats_pad.addstr("{max_energy}".format(max_energy=player.max_energy), self.hud_color_light)
         
@@ -181,7 +181,7 @@ class Renderer(object):
         stats_pad.refresh(
             0, 0,                       #pad ul_corner coords 
             y, x,                       #screen ul_corner coords
-            self.name_height + self.stats_height-1,self.viewport_width + self.stats_width-1  #screen lr_corner coords
+            y + self.stats_height-1, x + self.stats_width-1  #screen lr_corner coords
         )
         
     def draw_bars(self, player):
@@ -206,7 +206,7 @@ class Renderer(object):
         bars_pad.refresh(
             0, 0,                       #pad ul_corner coords 
             y, x,                       #screen ul_corner coords
-            self.name_height + self.bars_height-1,self.viewport_width + self.stats_width + self.bars_width-1  #screen lr_corner coords
+            y + self.bars_height-1, x + self.bars_width-1  #screen lr_corner coords
         )
         
     def draw_status(self, player):
@@ -229,8 +229,7 @@ class Renderer(object):
         ooi_pad.refresh(
             0, 0,                       #pad ul_corner coords 
             y, x,                       #screen ul_corner coords
-            self.name_height + self.stats_height + self.status_height + self.ooi_height-1,
-            self.viewport_width + self.ooi_width -1  #screen lr_corner coords
+            y + self.ooi_height-1, x + self.ooi_width -1  #screen lr_corner coords
         )
         
         

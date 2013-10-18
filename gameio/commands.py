@@ -2,6 +2,10 @@ import config
 import logging
 import game
 
+from actions import attack
+from actions import movement
+from actions import wait
+
 def get_user_command(game):
     keypress = None
     win = None
@@ -43,8 +47,24 @@ class MoveOrAttackCommand(GameModeCommand):
     def __init__(self, d):
         self.d = d
         
-    def process(self, actor):
-        return actor.move(self.d)
+    def process(self, actor, game):
+        
+        board = game.board
+        x, y = actor.tile.pos
+        dx, dy = self.d
+        new_pos = (x+dx, y+dy)
+        
+        if board[new_pos].blocks_movement():
+            if board[new_pos].objects['obstacle']:
+                game.console.add_message('You bump into the wall.');
+                return wait.WaitAction(actor, game)
+            
+            elif board[new_pos].objects['actor']:
+                other = board[new_pos].objects['actor']
+                return attack.AttackAction(actor, game, other)
+                
+        else:
+            return movement.MovementAction(actor, game, self.d)
     
 class GameEndCommand(GameModeCommand):
     def process(self):

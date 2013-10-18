@@ -1,9 +1,9 @@
 from gameio import colors
 from gameio import commands
 
-from gameobjects.gameobject import Actor
+from gameobjects.actors.mob import Mob
 
-class Player(Actor):
+class Player(Mob):
     def __init__(self):
         self.color = colors.white
         self.char = '@'
@@ -31,7 +31,30 @@ class Player(Actor):
         command = commands.get_user_command(game)
         if command:
             if type(command) in [commands.MoveOrAttackCommand]:
-                return command.process(self)
+                action = command.process(self, game)
+                if action:
+                    action.do_action()
+                    return True
             else:
                 return command.process()
+                
+    def emote(self, message, game, color=None):
+        if not color:
+            color = self.color
+        
+        name="You"
+        m = "%s %s" % (name, message)
+        game.console.add_message(m, color=color)
+        
+    def describe(self):
+        return "you"
+        
+    def die(self, game):
+        self.emote("die.", game, color=colors.dark_red)
+        game.console.add_message("Thanks for playing!")
+        game.force_refresh()
+        command = commands.get_user_command(game)
+        game.exit()
+                
+
     

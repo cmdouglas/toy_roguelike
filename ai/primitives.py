@@ -45,6 +45,12 @@ def can_see(actor1, actor2, board):
     
     p = self_pos
     
+    x1, y1 = self_pos
+    x2, y2 = other_pos
+    
+    if (abs(x2-x1) > actor1.sight_radius or abs(y2-y1 > actor2.sight_radius)):
+        return False
+    
     while p != other_pos:
         direction = get_direction(p, other_pos)
         x, y = p

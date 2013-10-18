@@ -13,22 +13,36 @@ class IdleStrategy(strategy.Strategy):
         ])
     
     def do_strategy(self, actor, game, events):
-        result, event = self.tactics.do_tactics(actor, game, events)
+        result = self.tactics.do_tactics(actor, game, events)
         
-        if result == tactics.COMPLETE:
+        if result['result'] == tactics.COMPLETE:
             self.tactics = random.choice([
                 mill.MillTactics(), 
                 sleep.SleepTactics(), 
                 wander.WanderTactics()
             ])
             
-            return (strategy.CONTINUE, None)
+            result = self.tactics.do_tactics(actor, game, events)
             
-        elif result == tactics.INTERRUPTED:
-            return (strategy.INTERRUPTED, event)
+            return {
+                'result': strategy.CONTINUE,
+                'event': None,
+                'action': result['action']
+            }
+            
+        elif result['result'] == tactics.INTERRUPTED:
+            return {
+                'result': strategy.INTERRUPTED,
+                'event': result['event'],
+                'action': result['action']
+            }
             
         else:
-            return (strategy.CONTINUE, None)
+            return {
+                'result': strategy.CONTINUE,
+                'event': None,
+                'action': result['action']
+            }
             
     def describe(self):
         return self.tactics.describe()

@@ -4,7 +4,7 @@ INTERRUPTED = 2
 
 class Tactics(object):
     
-    def maybe_move(self, actor, board, move):
+    def can_make_move(self, actor, board, move):
         """moves the actor to d, if it's a legal move, and returns true, 
         otherwise returns false
         """
@@ -16,7 +16,6 @@ class Tactics(object):
             return False
             
         else:
-            actor.move((dx, dy))
             return True
             
     def describe(self):
