@@ -5,10 +5,12 @@ from gameobjects import wall
 from gameobjects.actors import goblin
 
 class CavePainter(painter.Painter):
-    def area_meets_requirements(self, area):
-        return area.width > 10 and area.height > 10
+    tags = ['natural', 'underground']
     
-    def paint(self, board, area):
+    def area_meets_requirements(self):
+        return self.area.width >= 10 and self.area.height >= 10
+    
+    def paint(self):
         def r(point, distance):
             x, y = point
             points = []
@@ -17,12 +19,12 @@ class CavePainter(painter.Painter):
             for x_offset in offsets:
                 for y_offset in offsets:
                     p = (x + x_offset, y+y_offset)
-                    if (area.contains_point(p)):
+                    if (self.area.contains_point(p)):
                             points.append(p)
         
             return points
             
-        def walls_in_r(board, r, distance):
+        def walls_in_r(r, distance):
             num_walls = 0
             
             # count "edge" tiles as walls
@@ -30,60 +32,68 @@ class CavePainter(painter.Painter):
             num_walls += num_tiles - len(r)
             
             for p in r:
-                if board[p].objects['obstacle']:
+                if self.board[p].objects['obstacle']:
                     num_walls += 1
                     
             return num_walls
                 
-        points = [p for p in area.get_all_points()]
+        points = [p for p in self.area.get_all_points()]
         
         # 1. randomly fill area with wall tiles
-        border = self.get_border(area)
+        border = self.get_border()
         
         for point in points:
             if point in border:
-                board.add_object(wall.Wall(), point)
+                self.board.add_object(wall.Wall(), point)
             elif random.randrange(100) < 40:
-                board.add_object(wall.Wall(), point)
+                self.board.add_object(wall.Wall(), point)
                                 
         # 2.  4 repitions of r(1) == 5 or r(2) == 2
         for i in xrange(4):
             for point in points:
-                num_walls = walls_in_r(board, r(point, 1), 1)
-                if walls_in_r(board, r(point, 1), 1) >= 5:
-                    if not board[point].objects['obstacle']:
-                        board.add_object(wall.Wall(), point)
+                if walls_in_r(r(point, 1), 1) >= 5:
+                    if not self.board[point].objects['obstacle']:
+                        self.board.add_object(wall.Wall(), point)
                     
-                elif walls_in_r(board, r(point, 2), 2) <= 2:
-                    if not board[point].objects['obstacle']:
-                        board.add_object(wall.Wall(), point)
+                elif walls_in_r(r(point, 2), 2) <= 2:
+                    if not self.board[point].objects['obstacle']:
+                        self.board.add_object(wall.Wall(), point)
                 else:
-                    if board[point].objects['obstacle']:
+                    if self.board[point].objects['obstacle']:
                         
-                        board.remove_object(board[point].objects['obstacle'])
+                        self.board.remove_object(self.board[point].objects['obstacle'])
                         
                         
         # 3.  3 repitions of r(1) == 4 
         for i in range(3):            
             for point in points:
-                num_walls = walls_in_r(board, r(point, 1), 1)
-                if walls_in_r(board, r(point, 1), 1) >= 5:
-                    if not board[point].objects['obstacle']:
-                        board.add_object(wall.Wall(), point)
+                if walls_in_r(r(point, 1), 1) >= 5:
+                    if not self.board[point].objects['obstacle']:
+                        self.board.add_object(wall.Wall(), point)
                 else:
-                    if board[point].objects['obstacle']:
-                        board.remove_object(board[point].objects['obstacle'])
-                        
-        # 4.  Add 0-3 goblins
-        for i in range((dice.d(2, 10) - 1)):
-            point = random.choice(area.get_empty_points(board))
-            board.add_object(goblin.Goblin(), point)
-                        
-        #4.  Connect to the area entrances
-        point = random.choice(area.get_empty_points(board))
+                    if self.board[point].objects['obstacle']:
+                        self.board.remove_object(self.board[point].objects['obstacle'])
+                    
+                    
+        # sanity check!  make sure that there's room for the goblins!
+        if len(self.area.get_empty_points(self.board)) < 10:
+            self.clear()
+            return self.paint()
         
-        for pos in [c['point'] for c in area.connections]:
+        # 4.  Add 1-9 goblins
+        for i in range((dice.d(2, 5) - 1)):
+            point = random.choice(self.area.get_empty_points(self.board))
+            self.board.add_object(goblin.Goblin(), point)
+            
+        for point in points:
+            if point in border and not self.board[point].objects['obstacle']:
+                self.board.add_object(wall.Wall(), point)
+                        
+        #5.  Connect to the area entrances
+        point = random.choice(self.area.get_empty_points(self.board))
+        
+        for pos in [c['point'] for c in self.area.connections]:
             #print "connecting point %s to %s" % (rectangle_center, pos)
-            self.draw_corridor(board, point, pos)
+            self.draw_corridor(point, pos)
         
         

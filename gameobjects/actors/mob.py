@@ -1,6 +1,6 @@
 from gameobjects.gameobject import Actor
 from gameio import colors
-from util import dice
+from util import dice, tools
 
 class Mob(Actor):
     str = 10
@@ -66,6 +66,10 @@ class Mob(Actor):
         )
         
         other.take_damage(damage, game)
+        
+    def heal(self, amount):
+        self.health += amount
+        self.health = tools.clamp(self.health, self.max_health)
         
     def take_damage(self, damage, game):
         self.health -= damage

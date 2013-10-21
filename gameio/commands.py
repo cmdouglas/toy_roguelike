@@ -54,7 +54,7 @@ class MoveOrAttackCommand(GameModeCommand):
         dx, dy = self.d
         new_pos = (x+dx, y+dy)
         
-        if board[new_pos].blocks_movement():
+        if board.position_is_valid(new_pos) and board[new_pos].blocks_movement():
             if board[new_pos].objects['obstacle']:
                 game.console.add_message('You bump into the wall.');
                 return wait.WaitAction(actor, game)

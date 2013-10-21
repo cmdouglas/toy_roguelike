@@ -144,7 +144,8 @@ def find_path(board, start, end, actors_block=False, max_depth=None):
         
         for t in board[point].surrounding():
             
-            if actors_block:
+            # not counting an actor on the goal point as blocking.
+            if actors_block and t.pos != end:
                 if not t.objects['obstacle'] and not t.objects['actor']:
                     x1, y1 = t.pos
                     x2, y2 = point

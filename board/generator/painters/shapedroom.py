@@ -6,14 +6,14 @@ from gameobjects import wall
 from gameobjects import smoothwall
 
 class ShapedRoomPainter(painter.Painter):
-    def get_bounding_box(self, board, area):
-        area_left, area_top = area.ul_pos
+    def get_bounding_box(self):
+        area_left, area_top = self.area.ul_pos
 
         area_left += 2
         area_top += 2
                 
-        width = area.width - 4
-        height = area.height - 4
+        width = self.area.width - 4
+        height = self.area.height - 4
         
         rectangle_width = random.randrange(width / 2, width)
         rectangle_height = random.randrange(height / 2, height)
@@ -33,68 +33,68 @@ class ShapedRoomPainter(painter.Painter):
             
         return (rectangle_center, rectangle_width, rectangle_height)
         
-    def area_meets_requirements(self, area):
-        return area.width > 8 and area.height > 8
+    def area_meets_requirements(self):
+        return self.area.width > 8 and self.area.height > 8
 
 class RectangularRoomPainter(ShapedRoomPainter):
-    def paint(self, board, area):
-        self.fill(board, area, wall.Wall)
-        center, width, height = self.get_bounding_box(board, area)
+    def paint(self):
+        self.fill(wall.Wall)
+        center, width, height = self.get_bounding_box()
         
         rectangle = shape.Rectangle(center, width, height)
         
         for pos in rectangle.points:
-            tile = board[pos]
-            board.remove_object(tile.objects['obstacle'])
+            tile = self.board[pos]
+            self.board.remove_object(tile.objects['obstacle'])
             
         for pos in rectangle.border:
-            tile = board[pos]
-            board.remove_object(tile.objects['obstacle'])
-            board.add_object(smoothwall.SmoothWall(), pos)
+            tile = self.board[pos]
+            self.board.remove_object(tile.objects['obstacle'])
+            self.board.add_object(smoothwall.SmoothWall(), pos)
     
-        for pos in [c['point'] for c in area.connections]:
+        for pos in [c['point'] for c in self.area.connections]:
             #print "connecting point %s to %s" % (rectangle_center, pos)
-            self.draw_corridor(board, center, pos)
+            self.draw_corridor(center, pos)
             
 class CircularRoomPainter(ShapedRoomPainter):
-    def paint(self, board, area):
-        self.fill(board, area, wall.Wall)
-        center, width, height = self.get_bounding_box(board, area)
+    def paint(self):
+        self.fill(wall.Wall)
+        center, width, height = self.get_bounding_box()
         
         circle = shape.Circle(center, min(width, height)/2)
         
         for pos in circle.points:
-            tile = board[pos]
-            board.remove_object(tile.objects['obstacle'])
+            tile = self.board[pos]
+            self.board.remove_object(tile.objects['obstacle'])
             
         for pos in circle.border:
-            tile = board[pos]
-            board.remove_object(tile.objects['obstacle'])
-            board.add_object(smoothwall.SmoothWall(), pos)
+            tile = self.board[pos]
+            self.board.remove_object(tile.objects['obstacle'])
+            self.board.add_object(smoothwall.SmoothWall(), pos)
     
-        for pos in [c['point'] for c in area.connections]:
+        for pos in [c['point'] for c in self.area.connections]:
             #print "connecting point %s to %s" % (rectangle_center, pos)
-            self.draw_corridor(board, center, pos)
+            self.draw_corridor(center, pos)
             
 class EllipticalRoomPainter(ShapedRoomPainter):
-    def paint(self, board, area):
-        self.fill(board, area, wall.Wall)
+    def paint(self):
+        self.fill(wall.Wall)
         
-        center, width, height = self.get_bounding_box(board, area)
+        center, width, height = self.get_bounding_box()
         
         ellipse = shape.Ellipse(center, width/2, height/2)
         
         for pos in ellipse.points:
-            tile = board[pos]
-            board.remove_object(tile.objects['obstacle'])
+            tile = self.board[pos]
+            self.board.remove_object(tile.objects['obstacle'])
             
         for pos in ellipse.border:
-            tile = board[pos]
-            board.remove_object(tile.objects['obstacle'])
-            board.add_object(smoothwall.SmoothWall(), pos)
+            tile = self.board[pos]
+            self.board.remove_object(tile.objects['obstacle'])
+            self.board.add_object(smoothwall.SmoothWall(), pos)
     
-        for pos in [c['point'] for c in area.connections]:
+        for pos in [c['point'] for c in self.area.connections]:
             #print "connecting point %s to %s" % (rectangle_center, pos)
-            self.draw_corridor(board, center, pos)
+            self.draw_corridor(center, pos)
 
 

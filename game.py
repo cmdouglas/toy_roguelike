@@ -43,7 +43,7 @@ class Game(object):
         
         self.end()
         
-    def force_refresh(self):
+    def refresh_screen(self):
         center = self.board.player.tile.pos 
         self.renderer.draw(self.board, center, self.console, self.player)
         
@@ -51,10 +51,9 @@ class Game(object):
         raise GameEndException()
         
     def main_loop(self):
-        center = self.player.tile.pos
         with render.render.Renderer() as renderer:
             self.renderer = renderer
-            renderer.draw(self.board, center, self.console, self.player)
+            self.refresh_screen()
         
             while self.engine.is_running():
                 try:
@@ -71,8 +70,7 @@ class Game(object):
                     changed = actor.process_turn(self)
                     is_in_fov = actor.is_in_fov()
                     if changed and (was_in_fov or is_in_fov or actor == self.player):
-                        center = self.board.player.tile.pos 
-                        renderer.draw(self.board, center, self.console, self.player)
+                        self.refresh_screen()
                         
                 except(GameEndException):
                     break

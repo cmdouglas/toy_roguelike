@@ -39,6 +39,7 @@ class PursueTactics(tactics.Tactics):
                 board, 
                 actor.tile.pos, 
                 self.target.tile.pos, 
+                actors_block=True
             #    max_depth=20
             )
             

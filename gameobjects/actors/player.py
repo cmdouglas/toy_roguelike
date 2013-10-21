@@ -1,5 +1,6 @@
 from gameio import colors
 from gameio import commands
+from util import dice
 
 from gameobjects.actors.mob import Mob
 
@@ -10,11 +11,11 @@ class Player(Mob):
         self.sight_radius = 10
         self.name = "Charlie"
         self.level = 1
-        self.health = 75
+        self.health = 100
         self.max_health = 100
-        self.energy = 42
+        self.energy = 50
         self.max_energy = 50
-        self.str = 9
+        self.str = 20
         self.mag = 15
         self.dex = 10
         self.gold = 300
@@ -28,6 +29,8 @@ class Player(Mob):
         self.tile.visible=True
     
     def process_turn(self, game):
+        if dice.one_chance_in(6):
+            self.heal(1)
         command = commands.get_user_command(game)
         if command:
             if type(command) in [commands.MoveOrAttackCommand]:
@@ -52,7 +55,7 @@ class Player(Mob):
     def die(self, game):
         self.emote("die.", game, color=colors.dark_red)
         game.console.add_message("Thanks for playing!")
-        game.force_refresh()
+        game.refresh_screen()
         command = commands.get_user_command(game)
         game.exit()
                 

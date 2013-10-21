@@ -8,7 +8,6 @@ from board.generator import maparea
 from board.generator.painters import shapedroom
 from board.generator.painters import tunnel
 from board.generator.painters import cave
-
     
 class PartitionStrategy(object):
     pass
@@ -52,26 +51,31 @@ class PainterStrategy(object):
 class RandomPainterStrategy(PainterStrategy):
     def __init__(self):
         self.painters = [
-            shapedroom.RectangularRoomPainter(),
-            shapedroom.CircularRoomPainter(),
-            shapedroom.EllipticalRoomPainter(),
+            shapedroom.RectangularRoomPainter,
+            shapedroom.CircularRoomPainter,
+            shapedroom.EllipticalRoomPainter,
             #tunnel.SimpleTunnelPainter(),
-            tunnel.SnakeyTunnelPainter(),
-            cave.CavePainter()
+            tunnel.SnakeyTunnelPainter,
+            cave.CavePainter
         ]
         
     def paint(self, board):
         areas = board.areas
         player_start = random.choice(areas)
         areas = board.areas
+        start_painter = None
+        
         for area in areas:
-            painter = random.choice([
-                p for p in self.painters  if p.area_meets_requirements(area)
-            ])
+            painters = [p(board, area) for p in self.painters]
+            painters = [p for p in painters if p.area_meets_requirements()]
             
-            painter.paint(board, area)
+            painter = random.choice(painters)
+            if area == player_start:
+                start_painter = painter
             
-        painter.place_player(board, player_start)
+            painter.paint()
+            
+        start_painter.place_player()
 
     
 class SimpleWebConnectionStrategy(ConnectionStrategy):

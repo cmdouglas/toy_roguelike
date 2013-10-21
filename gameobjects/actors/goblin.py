@@ -15,7 +15,7 @@ class Goblin(Mob):
     def __init__(self):
         self.health = self.max_health
         self.ai = BasicAI(self)
-        
+        self.str = 8
     def process_turn(self, game):
         
         action = self.ai.do_ai(game)
