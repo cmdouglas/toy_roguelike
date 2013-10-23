@@ -25,19 +25,19 @@ class SmoothWall(Wall):
     
     def on_spawn(self):
         self.update_char()
-        for tile in self.adjoining_smoothwalls().values():
+        for tile in list(self.adjoining_smoothwalls().values()):
             tile.objects['obstacle'].update_char()
             
     def on_despawn(self):
-        for tile in self.adjoining_smoothwalls().values():
+        for tile in list(self.adjoining_smoothwalls().values()):
             tile.objects['obstacle'].update_char()
     
     def update_char(self):
         # logging.debug('Updating Wall at %s', self.tile.pos)
         
         dirs = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
-        neighbors = self.tile.surrounding(as_dict=True).keys()
-        filled = self.adjoining_smoothwalls().keys()     
+        neighbors = list(self.tile.surrounding(as_dict=True).keys())
+        filled = list(self.adjoining_smoothwalls().keys())     
         
         # if we're up against the edge of the map, assume
         # all non-present tiles are filled
@@ -88,7 +88,7 @@ class SmoothWall(Wall):
     def adjoining_smoothwalls(self):
         neighbors = self.tile.surrounding(as_dict=True)
         r = {}
-        for k, v in neighbors.iteritems():
+        for k, v in neighbors.items():
             if isinstance(v.objects['obstacle'], SmoothWall):
                 r[k] = v
         

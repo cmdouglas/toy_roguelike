@@ -15,8 +15,8 @@ class ShapedRoomPainter(painter.Painter):
         width = self.area.width - 4
         height = self.area.height - 4
         
-        rectangle_width = random.randrange(width / 2, width)
-        rectangle_height = random.randrange(height / 2, height)
+        rectangle_width = random.randrange(int(width / 2), width)
+        rectangle_height = random.randrange(int(height / 2), height)
         
         horizontal_offset = 0
         vertical_offset = 0

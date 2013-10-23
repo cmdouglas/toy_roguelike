@@ -86,17 +86,11 @@ class AStarSearch(object):
         visited = {}
         frontier = [self.start]
         
-        def compare(n1, n2):
-            if not n1.h:
-                n1.h = self.heuristic(self, n1, self.goal)
-                
-            if not n2.h:
-                n2.h = self.heuristic(self, n2, self.goal)
+        def sortkey(node):
+            if not node.h:
+                node.h = self.heuristic(self, node, self.goal)
             
-            c1 = n1.get_path_length() + n1.h
-            c2 = n2.get_path_length() + n2.h
-            
-            return cmp(c1, c2)
+            return node.get_path_length() + node.h
         
         while frontier:
             current = frontier.pop(0)
@@ -119,7 +113,7 @@ class AStarSearch(object):
                     frontier.append(new)
                 
                 visited[new.id(new)] = new
-            frontier.sort(cmp=compare)
+            frontier.sort(key=sortkey)
             
         return None
         

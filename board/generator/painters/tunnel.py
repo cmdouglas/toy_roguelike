@@ -32,8 +32,8 @@ class SnakeyTunnelPainter(TunnelPainter):
         area_left += 2
         area_top += 2
         
-        area_right = area_left + (self.area.width-2) / 2
-        area_bottom = area_top + (self.area.height-2) / 2
+        area_right = int(area_left + (self.area.width-2) / 2)
+        area_bottom = int(area_top + (self.area.height-2) / 2)
         
         points = []
         
@@ -42,7 +42,7 @@ class SnakeyTunnelPainter(TunnelPainter):
             points.append(pos)
             points.extend([
                 (random.randrange(area_left, area_right), random.randrange(area_top, area_bottom))
-                for i in xrange(dice.d(1, 4))
+                for i in range(dice.d(1, 4))
             ])
         
         points.append(self.area.connections[-1]['point'])

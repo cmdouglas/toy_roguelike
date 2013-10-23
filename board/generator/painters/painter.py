@@ -90,6 +90,11 @@ class Painter(object):
     def draw_horizontal_corridor(self, start, end):
         x0, y0 = start
         x1, y1 = end
+        x0 = int(x0)
+        y0 = int(y0)
+        x1 = int(x1)
+        y1 = int(y1)
+        
         length = x1 - x0
         if length > 0:
             for pos in [(x, y0) for x in range(x0, x0 + length + 1)]:
@@ -104,6 +109,11 @@ class Painter(object):
     def draw_vertical_corridor(self, start, end):
         x0, y0 = start
         x1, y1 = end
+        x0 = int(x0)
+        y0 = int(y0)
+        x1 = int(x1)
+        y1 = int(y1)
+        
         length = y1 - y0
         
         if length > 0:

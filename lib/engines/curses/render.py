@@ -109,17 +109,17 @@ class Renderer(object):
     
         if c_x > board.width - self.viewport_width / 2:
             ul_x = max(board.width - self.viewport_width, 0)
-        elif c_x <= self.viewport_width / 2:
+        elif c_x <= int(self.viewport_width / 2):
             ul_x = 0
         else:
-            ul_x = c_x - self.viewport_width / 2
+            ul_x = c_x - int(self.viewport_width / 2)
         
         if c_y >= board.height - self.viewport_height / 2:
             ul_y = max(board.height - self.viewport_height, 0)
         elif c_y < self.viewport_height / 2:
             ul_y = 0;
         else:
-            ul_y = c_y - self.viewport_height / 2
+            ul_y = c_y - int(self.viewport_height / 2)
                         
         for x, row in enumerate(board.tiles[ul_x:(ul_x + self.viewport_width)]):
             for y, tile in enumerate(row[ul_y:(ul_y + self.viewport_height)]):
@@ -221,7 +221,7 @@ class Renderer(object):
         ooi_pad = curses.newpad(self.ooi_height, self.ooi_width)
         
         oois = hud.objects_of_interest(board)
-        for i, ooi in enumerate(oois):
+        for i, ooi in enumerate(oois[:self.ooi_height]):
             color = CursesColorPair(ooi['color'], colors.black).attr()
             ooi_pad.addstr(i,1, ooi['chars'], color)
             ooi_pad.addstr(': %s' % ooi['description'], self.hud_color_light)

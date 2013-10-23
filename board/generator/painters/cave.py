@@ -14,7 +14,7 @@ class CavePainter(painter.Painter):
         def r(point, distance):
             x, y = point
             points = []
-            offsets = range(-1*distance, distance+1)
+            offsets = list(range(-1*distance, distance+1))
         
             for x_offset in offsets:
                 for y_offset in offsets:
@@ -49,7 +49,7 @@ class CavePainter(painter.Painter):
                 self.board.add_object(wall.Wall(), point)
                                 
         # 2.  4 repitions of r(1) == 5 or r(2) == 2
-        for i in xrange(4):
+        for i in range(4):
             for point in points:
                 if walls_in_r(r(point, 1), 1) >= 5:
                     if not self.board[point].objects['obstacle']:

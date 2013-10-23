@@ -18,11 +18,11 @@ class Rectangle(Shape):
         self.height = height
         
         midx, midy = self.midpoint
-        startx = -1 * self.width / 2
-        starty = -1 * self.height / 2
+        startx = -1 * int(self.width / 2)
+        starty = -1 * int(self.height / 2)
         
-        for x in xrange(startx, startx+self.width+1):
-            for y in xrange(starty, starty+self.height+1):
+        for x in range(startx, startx+self.width+1):
+            for y in range(starty, starty+self.height+1):
                 if (x == startx or x == startx + self.width or 
                     y == starty or y == starty + self.height):
                     self.border.append((x+midx, y+midy))
@@ -37,12 +37,13 @@ class Circle(Shape):
         super(Circle, self).__init__()
         
         self.midpoint = midpoint
-        self.radius = radius
+        self.radius = int(radius)
         
         midx, midy = self.midpoint
         
-        for x in xrange(-1*radius, radius+1):
-            for y in xrange(-1*radius, radius+1):
+        
+        for x in range(-1*self.radius, self.radius+1):
+            for y in range(-1*self.radius, self.radius+1):
                 if self.contains_point((x, y)):
                     if self.on_border((x, y)):
                         self.border.append((x+midx, y+midy))
@@ -74,13 +75,13 @@ class Ellipse(Shape):
         super(Ellipse, self).__init__()
         
         self.midpoint = midpoint
-        self.rx = rx
-        self.ry = ry
+        self.rx = int(rx)
+        self.ry = int(ry)
         
         midx, midy = self.midpoint
         
-        for x in xrange(-1*self.rx, self.rx+1):
-            for y in xrange(-1*self.ry, self.ry+1):
+        for x in range(-1*self.rx, self.rx+1):
+            for y in range(-1*self.ry, self.ry+1):
                 if self.contains_point((x+midx, y+midy)):
                     if self.on_border((x+midx, y+midy)):
                         self.border.append((x+midx, y+midy))

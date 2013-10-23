@@ -12,7 +12,7 @@ class HUD(object):
                 if ob:
                     interesting_objects.append(ob)
                 
-        interesting_objects.sort(cmp=lambda o1, o2: cmp(o1.interest_level, o2.interest_level))
+        interesting_objects.sort(key=lambda o: o.interest_level)
         
         interesting_objects_condensed = []
         c = Counter()
@@ -24,7 +24,7 @@ class HUD(object):
             c.update([ob.__class__])
             
         r = []
-        for ob in interesting_objects_condensed[:5]:
+        for ob in interesting_objects_condensed:
             count = c[ob.__class__]
             description = "A " + ob.describe()
             if count > 1:

@@ -29,7 +29,7 @@ class Tile(object):
         return False
         
     def blocks_vision(self):
-        for k, ob in self.objects.iteritems():
+        for k, ob in self.objects.items():
             if type(ob) == list:
                 for o in ob:
                     if o and o.blocks_vision:
@@ -221,7 +221,7 @@ class Board(object):
         self.player = None
         self.visible_to_player = set()
         
-        self.tiles = [[Tile(self, (x, y)) for y in xrange(self.height)] 
+        self.tiles = [[Tile(self, (x, y)) for y in range(self.height)] 
             for x in range(self.width)]
             
         self.areas = []
@@ -247,7 +247,7 @@ class Board(object):
     
     def __getitem__(self, pos):
         x, y = pos
-        return self.tiles[x][y]
+        return self.tiles[int(x)][int(y)]
     
     def position_is_valid(self, pos):
         x, y = pos

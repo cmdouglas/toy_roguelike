@@ -40,7 +40,7 @@ class Partition(object):
             ul_x, ul_y = p.ul_pos
             
             split_pos = (random.choice(
-                range(ul_x + min_width, ul_x + p.width - min_width + 1)), ul_y)
+                list(range(ul_x + min_width, ul_x + p.width - min_width + 1))), ul_y)
                 
             split_x, split_y = split_pos
                 
@@ -51,7 +51,7 @@ class Partition(object):
             ul_x, ul_y = p.ul_pos
             
             split_pos = (ul_x, random.choice(
-                range(ul_y + min_height, ul_y + p.height - min_height + 1)))
+                list(range(ul_y + min_height, ul_y + p.height - min_height + 1))))
                 
             split_x, split_y = split_pos
                 
@@ -61,7 +61,7 @@ class Partition(object):
 
         
         if self.width < min_width or self.height < min_height:
-            print self
+            print(self)
             raise PartitionException("Partition too small!")
         
         splith = (self.width > 2*min_width)

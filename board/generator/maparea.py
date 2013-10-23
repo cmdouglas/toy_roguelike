@@ -31,8 +31,8 @@ class MapArea(object):
     def get_all_points(self):
         x0, y0 = self.ul_pos
         
-        for x in [x for x in xrange(x0, x0+self.width)]:
-            for y in [y for y in xrange(y0, y0+self.height)]:
+        for x in [x for x in range(x0, x0+self.width)]:
+            for y in [y for y in range(y0, y0+self.height)]:
                 yield (x, y)
                 
     def get_empty_points(self, board):
