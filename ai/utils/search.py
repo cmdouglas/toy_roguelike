@@ -17,6 +17,7 @@ class SearchNode(object):
         'move_to_reach',
         'parent',
         'path_length',
+        'path_depth',
         'h'
     ]
     
@@ -28,6 +29,7 @@ class SearchNode(object):
         self.move_to_reach = None
         self.parent = None
         self.path_length = None
+        self.path_depth = None
         self.h = None
         
     def __eq__(self, other):
@@ -49,12 +51,24 @@ class SearchNode(object):
             return 0
         else:
             return self.data.get('path_cost', 1) + self.parent.get_path_length()
+            
+    def compute_path_depth(self):
+        if not self.parent:
+            return 0
+        else:
+            return 1 + self.parent.get_path_depth()
         
     def get_path_length(self):
         if not self.path_length:
             self.path_length = self.compute_path_length()
             
         return self.path_length;
+            
+    def get_path_depth(self):
+        if not self.path_depth:
+            self.path_depth = self.compute_path_depth()
+            
+        return self.path_depth;
             
     def get_path(self):
         moves = []
@@ -109,7 +123,7 @@ class AStarSearch(object):
                 if not self.max_depth: 
                     frontier.append(new)
                 
-                elif new.get_path_length() < self.max_depth:
+                elif new.get_path_depth() < self.max_depth:
                     frontier.append(new)
                 
                 visited[new.id(new)] = new

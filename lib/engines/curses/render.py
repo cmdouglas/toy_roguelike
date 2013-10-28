@@ -3,8 +3,7 @@ from gameio import colors
 from gameio.hud import HUD
 from lib.engines.curses.colors import CursesColorPair
 import logging
-import locale
-locale.setlocale(locale.LC_ALL,"")
+
 
 import logging
 class Renderer(object):

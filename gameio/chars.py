@@ -1,5 +1,12 @@
 import config
 
+# blocks
+light_block = u'\u2591'.encode('utf-8')
+medium_block = u'\u2592'.encode('utf-8')
+dark_block = u'\u2593'.encode('utf-8')
+full_block = u'\u2588'.encode('utf-8')
+
+#lines 
 hline = u'\u2500'.encode('utf-8')
 vline = u'\u2502'.encode('utf-8')
 ne = u'\u2510'.encode('utf-8')
@@ -23,6 +30,7 @@ dtee_s = u'\u2566'.encode('utf-8')
 dtee_e = u'\u2560'.encode('utf-8')
 dtee_w = u'\u2563'.encode('utf-8')
 dcross = u'\u256c'.encode('utf-8')
+
 
 if config.engine == "libtcod":
     from lib.engines.libtcod import libtcodpy as libtcod
