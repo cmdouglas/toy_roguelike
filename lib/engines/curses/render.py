@@ -2,10 +2,9 @@ import curses
 from gameio import colors
 from gameio.hud import HUD
 from lib.engines.curses.colors import CursesColorPair
-import logging
-
 
 import logging
+
 class Renderer(object):
     def __enter__(self):
         self.scr = curses.initscr()
@@ -72,11 +71,24 @@ class Renderer(object):
     def clear(self):
         pass
         
-    def draw(self, board, center, console, player):
-        self.draw_viewport(board, center)
-        self.draw_console(console)
-        self.draw_hud(board, player)
+    def draw_menu(self, menu):
+        for i, line in enumerate(selections):
+            colorpair = CursesColorPair(line['color'], colors.black)
+            attr = colorpair.attr()
+            if line['selected']:
+                attr = attr | curses.A_REVERSE
+            self.scr.addstr(i, 0, line['message'], attr)            
         
+        
+    def draw(self, board, center, console, player, mode="game"):
+        if mode == "game":
+            self.draw_viewport(board, center)
+            self.draw_console(console)
+            self.draw_hud(board, player)
+            
+        elif mode=="menu":
+            pass
+            
         self.scr.refresh()
         
     def draw_hud(self, board, player):

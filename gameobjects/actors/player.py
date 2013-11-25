@@ -33,7 +33,10 @@ class Player(Mob):
             self.heal(1)
         command = commands.get_user_command(game)
         if command:
-            if type(command) in [commands.MoveOrAttackCommand]:
+            if type(command) in [
+                commands.MoveOrAttackCommand,
+                commands.WaitCommand
+            ]:
                 action = command.process(self, game)
                 if action:
                     action.do_action()

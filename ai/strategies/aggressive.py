@@ -1,7 +1,7 @@
 import logging
 from ai.strategies import strategy
 from ai.tactics import tactics
-from ai.tactics.aggressive import melee, pursue
+from ai.tactics.aggressive import melee, pursue, hunt
 from ai.events import event
 from actions import wait
 
@@ -26,8 +26,8 @@ class AggressiveStrategy(strategy.Strategy):
                    type(result['event']) == event.TargetOutOfRangeEvent):
                    
                 # nothing to hit nearby, better chase something.
-                self.target = self.nearest_target()
-                if self.nearest_target():
+                self.target = self.nearest_target(game.board)
+                if self.nearest_target(game.board):
                     self.tactics = pursue.PursueTactics(self.target)
                     return self.do_strategy(actor, game, events)
                     
@@ -48,6 +48,15 @@ class AggressiveStrategy(strategy.Strategy):
                 }
                 
             else:
+                if type(result['event']) == event.TargetLostEvent:
+                    self.tactics = hunt.HuntTactics(self.target)
+                    
+                    return {
+                        'result': strategy.CONTINUE,
+                        'event': None,
+                        'action': None
+                    }
+                
                 return {
                     'result': strategy.INTERRUPTED,
                     'event': result['event'],
@@ -69,10 +78,27 @@ class AggressiveStrategy(strategy.Strategy):
                 return self.do_strategy(actor, game, events)
                 
             else:
+                if type(result['event']) == event.TargetLostEvent:
+                    self.tactics = hunt.HuntTactics(self.target)
+                    
+                    return {
+                        'result': strategy.CONTINUE,
+                        'event': None,
+                        'action': wait.WaitAction(actor, game)
+                    }
+                    
+                elif type(result['event']) == event.SeeHostileEvent:
+                    self.tactics = pursue.PursueTactics(self.target)
+                    return {
+                        'result': strategy.CONTINUE,
+                        'event': None,
+                        'action': wait.WaitAction(actor, game)
+                    }
+                    
                 return {
                     'result': strategy.INTERRUPTED,
                     'event': result['event'],
-                    'action': None
+                    'action': wait.WaitAction(actor, game)
                 }
         
     def nearest_target(self, board):
@@ -80,4 +106,7 @@ class AggressiveStrategy(strategy.Strategy):
         return board.player
     
     def describe(self):
+        if not self.tactics:
+            return 'aggressive'
+            
         return self.tactics.describe()

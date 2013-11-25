@@ -26,7 +26,7 @@ class MeleeTactics(tactics.Tactics):
         if (abs(tx - x) > 1 or abs(ty - y) > 1):
             return {
                 'result': tactics.INTERRUPTED, 
-                'event': event.TargetOutOfRange(),
+                'event': event.TargetOutOfRangeEvent(),
                 'action': None
             }   
             

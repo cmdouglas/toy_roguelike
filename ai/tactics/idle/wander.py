@@ -1,6 +1,8 @@
 import random
 from actions.wait import WaitAction
 from actions.movement import MovementAction
+from ai import primitives
+from ai.events import event
 from ai.tactics import tactics
 from ai.utils import search
 from util import dice
@@ -14,6 +16,14 @@ class WanderTactics(tactics.Tactics):
         
     def do_tactics(self, actor, game, events):
         board = game.board
+        
+        if (primitives.can_see(actor, game.board.player, game.board) and dice.one_chance_in(2)):
+            actor.emote('points at you and shouts!', game)
+            return {
+                'result': tactics.INTERRUPTED,
+                'event': event.SeeHostileEvent(),
+                'action': WaitAction(actor, game)
+            }
         
         if dice.one_chance_in(10):
             actor.idle_emote(game)

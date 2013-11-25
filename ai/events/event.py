@@ -11,6 +11,9 @@ class TargetOutOfRangeEvent(Event):
 class TargetLostEvent(Event):
     pass
     
+class InterestLostEvent(Event):
+    pass
+    
 class HearNoiseEvent(Event):
     pass
     

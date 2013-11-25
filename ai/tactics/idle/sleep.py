@@ -1,5 +1,7 @@
 import logging
 from ai.tactics import tactics
+from ai import primitives
+from ai.events import event
 from actions.wait import WaitAction
 from util import dice
 
@@ -8,9 +10,17 @@ class SleepTactics(tactics.Tactics):
         self.turns_to_sleep = dice.d(2, 50)
         
     def on_start(self, actor, game):
-        actor.emote("falls asleep.")
+        actor.emote("falls asleep.", game)
         
     def do_tactics(self, actor, game, events):
+        if (primitives.can_see(actor, game.board.player, game.board) and dice.one_chance_in(6)):
+            actor.emote('wakes with a start!', game)
+            return {
+                'result': tactics.INTERRUPTED,
+                'event': event.SeeHostileEvent(),
+                'action': WaitAction(actor, game)
+            }
+        
         self.turns_to_sleep -= 1
         if self.turns_to_sleep == 0:
             return {'result': tactics.COMPLETE, 

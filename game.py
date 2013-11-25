@@ -21,6 +21,7 @@ class Game(object):
             from lib.engines import curses
             self.engine = curses
         
+        self.io_mode = 'game'
         self.console = console.Console()
         self.stats = None
         
@@ -45,7 +46,7 @@ class Game(object):
         
     def refresh_screen(self):
         center = self.board.player.tile.pos 
-        self.renderer.draw(self.board, center, self.console, self.player)
+        self.renderer.draw(self.board, center, self.console, self.player, self.io_mode)
         
     def exit(self):
         raise GameEndException()
@@ -57,20 +58,23 @@ class Game(object):
         
             while self.engine.is_running():
                 try:
+                    if self.io_mode == 'game':
+                        actors = [actor for actor in self.board.objects if actor.can_act]
+                        actors.sort(key=lambda actor: actor.timeout)
                     
-                    actors = [actor for actor in self.board.objects if actor.can_act]
-                    actors.sort(key=lambda actor: actor.timeout)
+                        actor = actors[0]
                     
-                    actor = actors[0]
-                    
-                    for a in actors[1:]:
-                        a.timeout -= actor.timeout
+                        for a in actors[1:]:
+                            a.timeout -= actor.timeout
                         
-                    was_in_fov = actor.is_in_fov()
-                    changed = actor.process_turn(self)
-                    is_in_fov = actor.is_in_fov()
-                    if changed and (was_in_fov or is_in_fov or actor == self.player):
-                        self.refresh_screen()
+                        was_in_fov = actor.is_in_fov()
+                        changed = actor.process_turn(self)
+                        is_in_fov = actor.is_in_fov()
+                        if changed and (was_in_fov or is_in_fov or actor == self.player):
+                            self.refresh_screen()
+                            
+                    elif self.io_mode == 'menu':
+                        pass
                         
                 except(GameEndException):
                     break

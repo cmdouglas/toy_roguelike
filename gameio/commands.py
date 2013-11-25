@@ -28,6 +28,9 @@ def get_user_command(game):
         ord('b'): MoveOrAttackCommand((-1, 1)),
         ord('n'): MoveOrAttackCommand((1, 1)),
         
+        # wait
+        ord('s'): WaitCommand(),
+        
         # quit
         ord('Q'): GameEndCommand()
     }
@@ -42,6 +45,10 @@ class Command(object):
     
 class GameModeCommand(Command):
     pass
+    
+class WaitCommand(GameModeCommand):
+    def process(self, actor, game):
+        return wait.WaitAction(actor, game)
     
 class MoveOrAttackCommand(GameModeCommand):
     def __init__(self, d):

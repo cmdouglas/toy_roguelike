@@ -3,44 +3,44 @@ from actions.wait import WaitAction
 from actions.movement import MovementAction
 from ai.tactics import tactics
 from ai.utils import search
-from ai.events.event import TargetLostEvent
+from ai.events import event
 from ai import primitives
 
-class PursueTactics(tactics.Tactics):
+class HuntTactics(tactics.Tactics):
     def __init__(self, target):
         self.target = target
-        self.target_pos = target.tile.pos
+        self.pos = target.tile.pos
         
     def describe(self):
-        return "chasing %s" % self.target.describe()
+        return "hunting %s" % self.target.describe()
         
     def do_tactics(self, actor, game, events):
         board = game.board
-        self.target_pos = self.target.tile.pos
         
         ax, ay = actor.tile.pos
         tx, ty = self.target.tile.pos
-        
-        if abs(ax-tx) <= 1 and abs(ay-ty) <= 1:
-            #we're close enough to attack!
-            return {
-                'result': tactics.COMPLETE,
-                'event': None,
-                'action': None
-            }
             
-        elif not primitives.can_see(actor, self.target, board):
+        if primitives.can_see(actor, self.target, board):
             return {
                 'result': tactics.INTERRUPTED,
-                'event': TargetLostEvent(self.target_pos),
+                'event': event.SeeHostileEvent(self.target),
                 'action': None
+            }
+        
+        elif actor.tile.pos == self.pos:
+            # we've hit where the target was and haven't found him, oh well
+            
+            return {
+                'result': tactics.INTERRUPTED,
+                'event': event.InterestLostEvent(),
+                'action': WaitAction(actor, game)
             }
             
         else:
             path = search.find_path(
                 board, 
                 actor.tile.pos, 
-                self.target.tile.pos, 
+                self.pos, 
                 actors_block=False,
                 max_depth=20
             )
@@ -62,9 +62,11 @@ class PursueTactics(tactics.Tactics):
                 
             else:
                 logging.debug("NO PATH FOUND :(")
+                
+                #there's no way to get to the place the actor was, oh well.
                 return {
-                    'result': tactics.CONTINUE, 
-                    'event': None,
+                    'result': tactics.INTERRUPTED,
+                    'event': event.InterestLostEvent(),
                     'action': WaitAction(actor, game)
                 }
 
