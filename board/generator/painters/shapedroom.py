@@ -3,6 +3,7 @@ import random
 from util import shape
 from util import dice
 from board.generator.painters import painter
+from board.generator import maparea
 from gameobjects import wall
 from gameobjects import smoothwall
 from gameobjects.items import potion
@@ -54,9 +55,16 @@ class RectangularRoomPainter(ShapedRoomPainter):
             self.board.remove_object(tile.objects['obstacle'])
             self.board.add_object(smoothwall.SmoothWall(), pos)
     
-        for pos in [c['point'] for c in self.area.connections]:
+        for c in self.area.connections:
             #print "connecting point %s to %s" % (rectangle_center, pos)
-            self.draw_corridor(center, pos)
+            border_point = c['point']
+            
+            if c['side'] in [maparea.TOP, maparea.BOTTOM]:
+                end_dir = "vertical"
+            else:
+                end_dir = 'horizontal'
+            
+            self.draw_corridor(center, border_point, end_dir=end_dir)
             
         self.board[center].add_item(potion.HealingPotion())
             
@@ -76,9 +84,16 @@ class CircularRoomPainter(ShapedRoomPainter):
             self.board.remove_object(tile.objects['obstacle'])
             self.board.add_object(smoothwall.SmoothWall(), pos)
     
-        for pos in [c['point'] for c in self.area.connections]:
+        for c in self.area.connections:
             #print "connecting point %s to %s" % (rectangle_center, pos)
-            self.draw_corridor(center, pos)
+            border_point = c['point']
+            
+            if c['side'] in [maparea.TOP, maparea.BOTTOM]:
+                end_dir = "vertical"
+            else:
+                end_dir = 'horizontal'
+            
+            self.draw_corridor(center, border_point, end_dir=end_dir)
             
         self.board[center].add_item(potion.HealingPotion())
             
@@ -100,9 +115,16 @@ class EllipticalRoomPainter(ShapedRoomPainter):
             self.board.remove_object(tile.objects['obstacle'])
             self.board.add_object(smoothwall.SmoothWall(), pos)
     
-        for pos in [c['point'] for c in self.area.connections]:
+        for c in self.area.connections:
             #print "connecting point %s to %s" % (rectangle_center, pos)
-            self.draw_corridor(center, pos)
+            border_point = c['point']
+            
+            if c['side'] in [maparea.TOP, maparea.BOTTOM]:
+                end_dir = "vertical"
+            else:
+                end_dir = 'horizontal'
+            
+            self.draw_corridor(center, border_point, end_dir=end_dir)
 
         self.board[center].add_item(potion.HealingPotion())
         

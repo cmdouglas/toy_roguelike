@@ -1,6 +1,8 @@
+import logging
 import random
 from util import dice
 from board.generator.painters import painter
+from board.generator import maparea
 from gameobjects import wall
 from gameobjects.actors import goblin
 
@@ -92,8 +94,15 @@ class CavePainter(painter.Painter):
         #5.  Connect to the area entrances
         point = random.choice(self.area.get_empty_points(self.board))
         
-        for pos in [c['point'] for c in self.area.connections]:
+        for c in self.area.connections:
             #print "connecting point %s to %s" % (rectangle_center, pos)
-            self.draw_corridor(point, pos)
+            border_point = c['point']
+            
+            if c['side'] in [maparea.TOP, maparea.BOTTOM]:
+                end_dir = "vertical"
+            else:
+                end_dir = 'horizontal'
+            
+            self.draw_corridor(point, border_point, end_dir=end_dir)
         
         

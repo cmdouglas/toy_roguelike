@@ -64,20 +64,33 @@ class MapArea(object):
                 "Trying to connect %s to a non-adjacent area %s" % (self, other))
                 
         if not point:
-            #pick connection point
-            point = random.choice(adjacency['points'])
+            #pick connection point, avoiding the corners if possible
+            if len(adjacency['points']) >= 3:
+                point = random.choice(adjacency['points'][1:-1])
+            else:
+                point = random.choice(adjacency['points'])
             other_adjacency = other.find_neighbor(self)
             neighbor_point = self.find_neighboring_point(other_adjacency, point)
             
         self.connections.append({
             'area': other,
-            'point': point
+            'point': point,
+            'side': adjacency['side']
         })
         
         other.connections.append({
             'area': self,
-            'point': neighbor_point
+            'point': neighbor_point,
+            'side': self.corresponding_side(adjacency['side'])
         })
+
+    def corresponding_side(self, side):
+        return {
+            LEFT: RIGHT,
+            TOP: BOTTOM,
+            RIGHT: LEFT,
+            BOTTOM: TOP
+        }.get(side)
         
     def find_adjacent_points(self, other, side):
         
@@ -140,7 +153,8 @@ class MapArea(object):
                 
                 self.adjacent.append({
                     'neighbor': other, 
-                    'points': self.find_adjacent_points(other, TOP)
+                    'points': self.find_adjacent_points(other, TOP),
+                    'side': TOP
                 })
                
             # adjacent on bottom 
@@ -150,7 +164,8 @@ class MapArea(object):
                 
                 self.adjacent.append({
                     'neighbor': other, 
-                    'points': self.find_adjacent_points(other, BOTTOM)
+                    'points': self.find_adjacent_points(other, BOTTOM),
+                    'side': BOTTOM
                 })
             
             # adjacent on left
@@ -160,7 +175,8 @@ class MapArea(object):
                 
                 self.adjacent.append({
                     'neighbor': other, 
-                    'points': self.find_adjacent_points(other, LEFT)
+                    'points': self.find_adjacent_points(other, LEFT),
+                    'side': LEFT
                 })
             
             # adjacent on right
@@ -170,7 +186,8 @@ class MapArea(object):
                 
                 self.adjacent.append({
                     'neighbor': other, 
-                    'points': self.find_adjacent_points(other, RIGHT)
+                    'points': self.find_adjacent_points(other, RIGHT),
+                    'side': RIGHT
                 })
                     
         return self.adjacent

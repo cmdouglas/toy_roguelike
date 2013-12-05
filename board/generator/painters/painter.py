@@ -1,6 +1,8 @@
 import random
 
+
 from gameobjects.actors import player
+from board.generator import maparea
 
 class Painter(object):
     
@@ -26,10 +28,10 @@ class Painter(object):
         points = []
         ul_x, ul_y = self.area.ul_pos
         
-        for x in range(ul_x, ul_x + self.area.width - 1):
-            for y in range(ul_y, ul_y + self.area.height - 1):
+        for x in range(ul_x, ul_x + self.area.width):
+            for y in range(ul_y, ul_y + self.area.height):
                 if (x == ul_x or 
-                    x == (ul_x + self.area.width -1) or 
+                    x == (ul_x + self.area.width - 1) or 
                     y == ul_y or
                     y == (ul_y + self.area.height - 1)):
                     
@@ -69,6 +71,7 @@ class Painter(object):
                      self.draw_vertical_corridor]
             
         elif start_dir == "vertical" or end_dir == 'horizontal':
+            bend = (x_start, y_start + height-1)
             
             order = [self.draw_vertical_corridor,
                      self.draw_horizontal_corridor]
