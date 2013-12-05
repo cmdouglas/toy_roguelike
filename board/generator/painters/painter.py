@@ -1,6 +1,6 @@
 import random
 
-
+from board import board as board_mod
 from gameobjects.actors import player
 from board.generator import maparea
 
@@ -10,7 +10,8 @@ class Painter(object):
         self.board = board
         self.area = area
     
-    def dumps(self, board):
+    def dumps(self):
+        board = self.board
         left, top = self.area.ul_pos
         rows = []
         for y in range(top, top + self.area.height):
@@ -47,7 +48,7 @@ class Painter(object):
         for point in self.area.get_all_points():
             try:
                 self.board.add_object(ob_type(), point)
-            except self.board.GameObjectPlacementException:
+            except board_mod.GameObjectPlacementException:
                 continue
     
     def clear(self):

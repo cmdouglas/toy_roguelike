@@ -8,6 +8,8 @@ from board.generator import maparea
 from board.generator.painters import shapedroom
 from board.generator.painters import tunnel
 from board.generator.painters import cave
+from board.generator.painters import greathall
+
     
 class PartitionStrategy(object):
     pass
@@ -56,6 +58,8 @@ class RandomPainterStrategy(PainterStrategy):
             shapedroom.EllipticalRoomPainter,
             #tunnel.SimpleTunnelPainter(),
             tunnel.SnakeyTunnelPainter,
+            greathall.GreatHallPainter,
+            
             cave.CavePainter
         ]
         
