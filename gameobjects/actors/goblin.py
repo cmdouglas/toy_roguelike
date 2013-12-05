@@ -15,7 +15,8 @@ class Goblin(Mob):
     def __init__(self):
         self.health = self.max_health
         self.ai = BasicAI(self)
-        self.str = 8
+        self.str = 4
+        
     def process_turn(self, game):
         
         action = self.ai.do_ai(game)
@@ -32,11 +33,11 @@ class Goblin(Mob):
         
     def idle_emote(self, game):
         message = random.choice([
-            "snorts.",
-            "blinks dimly at you.",
+            "growls.",
+            "blinks dimly.",
             "scratches its ears.",
             "mutters something unintelligable.",
-            "sticks its tongue out at you."
+            "sticks its tongue out."
         ])
     
         self.emote(message, game)

@@ -8,6 +8,7 @@ class Mob(Actor):
     mag = 10
     timeout = 0
     events_to_process = None
+    inventory = []
     
     def on_move(self, old_pos, new_pos):
         old_x, old_y = old_pos
@@ -80,5 +81,40 @@ class Mob(Actor):
         self.emote("dies.", game, color=colors.dark_red)
         game.board.remove_object(self)
         
+    def add_to_inventory(self, item):
+        # first check and see if it's already there
+        inventory_keys = list("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        for key, item_ in self.inventory.items():
+            if type(item) == type(item_):
+                self.inventory[key].stack_size += 1
+                return
+        
+        new_key = None
+        for k in inventory_keys:
+            if self.inventory.has_key(k):
+                continue
+            
+            new_key = k
+            break
+        
+        if not new_key:
+            raise InventoryFullException("inventory full")
+        
+        self.inventory[new_key] = item
+        
+    def remove_from_inventory(self, item):
+        for key, item_ in self.inventory.items():
+            if type(item) == type(item_):
+                self.inventory[key].stack_size -= 1
+                
+                if self.inventory[key].stack_size < 1:
+                    self.inventory.pop(key)
+                
+                return
+        
+        
     def __str__(self):
         return "%s: (%s)" % (self.__class__, self.timeout)
+        
+class InventoryFullException(Exception):
+    pass

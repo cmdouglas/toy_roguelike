@@ -1,9 +1,11 @@
 import random
 
 from util import shape
+from util import dice
 from board.generator.painters import painter
 from gameobjects import wall
 from gameobjects import smoothwall
+from gameobjects.items import potion
 
 class ShapedRoomPainter(painter.Painter):
     def get_bounding_box(self):
@@ -56,6 +58,8 @@ class RectangularRoomPainter(ShapedRoomPainter):
             #print "connecting point %s to %s" % (rectangle_center, pos)
             self.draw_corridor(center, pos)
             
+        self.board[center].add_item(potion.HealingPotion())
+            
 class CircularRoomPainter(ShapedRoomPainter):
     def paint(self):
         self.fill(wall.Wall)
@@ -75,6 +79,9 @@ class CircularRoomPainter(ShapedRoomPainter):
         for pos in [c['point'] for c in self.area.connections]:
             #print "connecting point %s to %s" % (rectangle_center, pos)
             self.draw_corridor(center, pos)
+            
+        self.board[center].add_item(potion.HealingPotion())
+            
             
 class EllipticalRoomPainter(ShapedRoomPainter):
     def paint(self):
@@ -97,4 +104,6 @@ class EllipticalRoomPainter(ShapedRoomPainter):
             #print "connecting point %s to %s" % (rectangle_center, pos)
             self.draw_corridor(center, pos)
 
+        self.board[center].add_item(potion.HealingPotion())
+        
 

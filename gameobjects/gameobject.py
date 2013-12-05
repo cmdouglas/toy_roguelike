@@ -41,15 +41,26 @@ class Actor(GameObject):
         
     def process_turn(self):
         return False
-        
-
     
 class Obstacle(GameObject):
     blocks_movement = True
     blocks_vision = True
     
 class Item(GameObject):
-    can_be_taken = True
+    usable = False
+    equippable = False
+    stack_size = 1
+    name = ""
+    name_plural = ""
+    
+    def describe(self):
+        if self.stack_size == 1:
+            return "a %s" % self.name
+        else:
+            return "%d %s" % (self.stack_size, self.name_plural)
+    
+    def __str__(self):
+        return self.describe()
     
 class Decoration(GameObject):
     pass

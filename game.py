@@ -3,10 +3,10 @@ import logging
 from gameio import render
 from gameio import console
 from gameio import colors
+from gameio import commands
+
 from board.generator import generator
 
-from gameobjects.actors import goblin
-#from board.testboard import TestSearch
 
 class GameEndException(Exception):
     pass
@@ -21,7 +21,8 @@ class Game(object):
             from lib.engines import curses
             self.engine = curses
         
-        self.io_mode = 'game'
+        self.io_mode = commands.IO_MODE_GAME
+        self.menu = None
         self.console = console.Console()
         self.stats = None
         
@@ -37,8 +38,6 @@ class Game(object):
         self.setup_board()
         self.setup_player()
         self.console.add_message('Welcome!', colors.yellow)
-        num_goblins = len([o for o in self.board.objects if o.__class__ == goblin.Goblin])
-        self.console.add_message('There are %s goblins in this dungeon.' % num_goblins)
         
         self.main_loop()
         
@@ -46,7 +45,7 @@ class Game(object):
         
     def refresh_screen(self):
         center = self.board.player.tile.pos 
-        self.renderer.draw(self.board, center, self.console, self.player, self.io_mode)
+        self.renderer.draw(self.board, center, self.console, self.player)
         
     def exit(self):
         raise GameEndException()
@@ -58,7 +57,7 @@ class Game(object):
         
             while self.engine.is_running():
                 try:
-                    if self.io_mode == 'game':
+                    if self.io_mode == commands.IO_MODE_GAME:
                         actors = [actor for actor in self.board.objects if actor.can_act]
                         actors.sort(key=lambda actor: actor.timeout)
                     
@@ -73,8 +72,16 @@ class Game(object):
                         if changed and (was_in_fov or is_in_fov or actor == self.player):
                             self.refresh_screen()
                             
-                    elif self.io_mode == 'menu':
-                        pass
+                    elif self.io_mode == commands.IO_MODE_MENU:
+                        self.renderer.clear()
+                        self.renderer.draw_menu(self.menu)
+                        
+                        command = commands.get_user_command(self)
+                        
+                        logging.debug(command)
+                        if command:
+                            command.process(self.menu, self)
+                                                    
                         
                 except(GameEndException):
                     break

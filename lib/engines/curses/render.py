@@ -1,4 +1,5 @@
 import curses
+import os
 from gameio import colors
 from gameio.hud import HUD
 from lib.engines.curses.colors import CursesColorPair
@@ -7,13 +8,13 @@ import logging
 
 class Renderer(object):
     def __enter__(self):
+        os.putenv('ESCDELAY', '10')
         self.scr = curses.initscr()
         curses.start_color()
         curses.noecho()
         curses.cbreak()
         curses.curs_set(0)
         self.scr.keypad(1)
-        
         self.height, self.width = self.scr.getmaxyx()
         
         assert self.height >= 24
@@ -69,25 +70,37 @@ class Renderer(object):
         curses.endwin()
         
     def clear(self):
-        pass
+        for x in range(self.width):
+            for y in range(self.height):
+                try:
+                    self.scr.addstr(y, x, ' ')
+                except curses.error:
+                    pass
         
     def draw_menu(self, menu):
-        for i, line in enumerate(selections):
-            colorpair = CursesColorPair(line['color'], colors.black)
+        
+        if menu.items:
+            for i, line in enumerate(menu.get_lines()):
+                colorpair = CursesColorPair(line['color'], colors.black)
+                attr = colorpair.attr()
+                if line['selected']:
+                    attr = attr | curses.A_REVERSE
+                self.scr.addstr(i, 0, line['line'], attr)
+                
+        else:
+            colorpair = CursesColorPair(colors.white, colors.black)
             attr = colorpair.attr()
-            if line['selected']:
-                attr = attr | curses.A_REVERSE
-            self.scr.addstr(i, 0, line['message'], attr)            
+            self.scr.addstr(0, 0, menu.empty, attr)
+                        
+        self.scr.refresh()
         
+    def draw(self, board, center, console, player):
         
-    def draw(self, board, center, console, player, mode="game"):
-        if mode == "game":
-            self.draw_viewport(board, center)
-            self.draw_console(console)
-            self.draw_hud(board, player)
-            
-        elif mode=="menu":
-            pass
+        self.draw_viewport(board, center)
+        self.scr.refresh()
+        self.draw_hud(board, player)
+        self.scr.refresh()
+        self.draw_console(console)
             
         self.scr.refresh()
         
@@ -98,6 +111,8 @@ class Renderer(object):
         self.draw_status(player)
         self.draw_equipment(player)
         self.draw_objects_of_interest(board)
+        
+        self.scr.refresh()
         
     def draw_console(self, console):
         console_pad = curses.newpad(self.console_height, self.console_width)
@@ -112,6 +127,9 @@ class Renderer(object):
             self.viewport_height, 0,    #screen ul_corner coords
             self.height-1,self.width-1  #screen lr_corner coords
         )
+        
+        self.scr.refresh()
+        
         
     def draw_viewport(self, board, center):
         c_x, c_y = center

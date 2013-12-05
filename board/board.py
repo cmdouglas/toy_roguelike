@@ -52,12 +52,31 @@ class Tile(object):
         self.objects['obstacle'] = ob
         
     def add_item(self, ob):
-        if ob not in self.objects['items']:
-            self.objects.append(ob)
+        for item in self.objects['items']:
+            if type(ob) == type(item):
+                item.stack_size += 1
+                return
+        
+        self.objects['items'].append(ob)
+        
+    def remove_item(self, item, quantity=None):
+        for i, item_ in enumerate(self.objects['items']):
+            if type(item_) == type(item):
+                if quantity and quantity <= item_.stack_size:
+                    item_.stack_size -= quantity
+                    if item_.stack_size == 0:
+                        self.objects['items'].remove(item_)
+                        
+                    return item_
+                    
+                else:
+                    self.objects['items'].remove(item_)
+                    return item_
+        
 
     def add_decoration(self, ob):
         if ob not in self.objects['decorations']:
-            self.objects.append(ob)                
+            self.objects['decorations'].append(ob)                
     
     def most_interesting_object(self):
         most_interesting = None
@@ -101,7 +120,7 @@ class Tile(object):
         elif ob.blocks_movement and self.objects['obstacle'] == ob:
             self.objects['obstacle'] = None
         elif ob.can_be_taken and ob in self.objects['items']:
-            self.objects['items'].remove(ob)
+            self.remove_item(ob)
         elif ob in self.objects['decorations']:
             self.objects['decorations'].remove(ob)
 
