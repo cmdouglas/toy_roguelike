@@ -1,4 +1,3 @@
-import effects
 from gameobjects import gameobject
 from gameio import colors
 from util import dice

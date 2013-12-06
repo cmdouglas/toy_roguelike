@@ -1,4 +1,5 @@
-import logging
+#import logging
+
 from board import board
 from board.generator import maparea
 from board.generator.painters import painter
@@ -21,15 +22,10 @@ class GreatHallPainter(painter.Painter):
         h_offset = int(width / 6)
         v_offset = int(height / 6)
         
-        logging.debug(self.area)
-        logging.debug( self.get_border())
-        
-        logging.debug("filling border")
         # 1. fill in the border.
         for point in self.get_border():
             self.board.add_object(wall.Wall(), point)
             
-        logging.debug("adding doors")
         # 2. connect to the edges.
         for c in self.area.connections:
             #print "connecting point %s to %s" % (rectangle_center, pos)
@@ -42,39 +38,51 @@ class GreatHallPainter(painter.Painter):
             
             self.draw_corridor(center, border_point, end_dir=end_dir)
             
-        logging.debug("adding pillars")
         # 3. add pillars
         if width > height:
-            for x in range(left, right+1):
-                if x % 3 == 0:
-                    try:
-                        top_point = (x, top + v_offset)
-                        bottom_point = (x, bottom - v_offset)
-                        
-                        logging.debug("adding a point at %s" % (top_point,))
-                        logging.debug("adding a point at %s" % (bottom_point,))
-                        self.board.add_object(wall.Wall(), top_point)
-                        self.board.add_object(wall.Wall(), bottom_point)
-                        
-                    except board.GameObjectPlacementException:
-                        pass
+            l, r = left + 1, right -2
+            while l <= r:
+                try:
+                    
+                    top_point = (l, top + v_offset)
+                    bottom_point = (l, bottom - (v_offset + 1))
+                    
+                    self.board.add_object(wall.Wall(), top_point)
+                    self.board.add_object(wall.Wall(), bottom_point)
+                    
+                    top_point = (r, top + v_offset)
+                    bottom_point = (r, bottom - (v_offset + 1))
+
+                    self.board.add_object(wall.Wall(), top_point)
+                    self.board.add_object(wall.Wall(), bottom_point)
+                    
+                except board.GameObjectPlacementException:
+                    pass
+                    
+                l += 3
+                r -= 3
                     
         else:
-            for y in range(top, bottom+1):
-                if y % 3 == 0:
-                    try:
-                        left_point = (left + h_offset, y)
-                        right_point = (right - h_offset, y)
+            t, b = top + 1, bottom -2
+            while t <= b:
+                try:
+                    left_point = (left + h_offset, t)
+                    right_point = (right - (h_offset + 1), t)
+                    
+                    self.board.add_object(wall.Wall(), left_point)
+                    self.board.add_object(wall.Wall(), right_point)
+                    
+                    left_point = (left + h_offset, b)
+                    right_point = (right - (h_offset + 1), b)
+                    
+                    self.board.add_object(wall.Wall(), left_point)
+                    self.board.add_object(wall.Wall(), right_point)
                         
-                        logging.debug("adding a point at %s" % (left_point,))
-                        logging.debug("adding a point at %s" % (right_point,))
-                        self.board.add_object(wall.Wall(), left_point)
-                        self.board.add_object(wall.Wall(), right_point)
-                    except board.GameObjectPlacementException:
-                        pass
-        
-        logging.debug(self.dumps())
-        
+                except board.GameObjectPlacementException:
+                    pass
+                    
+                t += 3
+                b -= 3        
         
     def area_meets_requirements(self):
         return self.area.width > 10 and self.area.height > 10
