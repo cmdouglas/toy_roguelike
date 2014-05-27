@@ -1,11 +1,13 @@
 import logging
-import game
-import config
 import locale
 locale.setlocale(locale.LC_ALL,"")
 
+from rl import game
+from rl import config
+
+
 def main():
-    logging.basicConfig(filename='log/rltest.log', level=logging.DEBUG)
+    logging.basicConfig(filename='rl/log/rltest.log', level=logging.DEBUG)
     
     logging.info('Game Start')
     g = game.Game(config)

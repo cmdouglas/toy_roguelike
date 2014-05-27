@@ -1,7 +1,6 @@
-import pytest
 
-from util import partition
-from board.generators import maparea
+from rl.util import partition
+from rl.board.generators import maparea
 
 class TestPartition(object):
     
