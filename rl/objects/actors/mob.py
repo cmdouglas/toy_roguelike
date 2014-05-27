@@ -10,7 +10,7 @@ class Mob(Actor):
     timeout = 0
     events_to_process = None
     inventory = []
-    
+
     def on_move(self, old_pos, new_pos):
         old_x, old_y = old_pos
         new_x, new_y = new_pos

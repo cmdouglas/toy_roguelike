@@ -1,6 +1,7 @@
 import random
 
 from rl.board import board as board_mod
+from rl.board import tile
 
 class Painter(object):
     
@@ -42,7 +43,7 @@ class Painter(object):
         for point in self.area.get_all_points():
             try:
                 self.board.add_object(ob_type(), point)
-            except board_mod.GameObjectPlacementException:
+            except tile.GameObjectPlacementException:
                 continue
     
     def clear(self):

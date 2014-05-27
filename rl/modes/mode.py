@@ -1,7 +1,6 @@
-import enum
 
-class ModeSignal(enum.Enum):
-    MODE_EXIT = 0
+class ModeExitException(Exception):
+    pass
 
 class Mode(object):
     def __init__(self, parent=None, data=None):

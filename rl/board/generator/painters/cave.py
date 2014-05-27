@@ -84,10 +84,11 @@ class CavePainter(painter.Painter):
             return self.paint()
         
         # 4.  Add 1-9 goblins
-        for i in range((dice.d(2, 10) - 1)):
+        for i in range((dice.d(1, 10) - 1)):
             point = random.choice(self.area.get_empty_points())
             self.board.add_object(goblin.Goblin(), point)
-            
+
+
         for point in points:
             if point in border and not self.board[point].objects['obstacle']:
                 self.board.add_object(wall.Wall(), point)

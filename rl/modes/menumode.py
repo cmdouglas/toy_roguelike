@@ -17,13 +17,15 @@ class ViewInventoryMode(MenuMode):
         r.draw(self.menu)
 
         while True:
-            command = commands.get_user_command()
-            result = command.process(self.menu)
+            try:
+                command = commands.get_user_command()
+                if command:
+                    result = command.process(self.menu)
 
-            if result == mode.ModeSignal.MODE_EXIT:
+                r.draw(self.menu)
+
+            except(mode.ModeExitException):
                 return
-
-            r.draw(self.menu)
 
 class UseItemMode(MenuMode):
     def __init__(self):
@@ -34,10 +36,16 @@ class UseItemMode(MenuMode):
         r.draw(self.menu)
 
         while True:
-            command = commands.get_user_command()
-            result = command.process(self.menu)
+            try:
+                command = commands.get_user_command()
 
-            if result == mode.ModeSignal.MODE_EXIT:
+                if command:
+                    result = command.process(self.menu)
+
+                    if result:
+                        return result
+
+                r.draw(self.menu)
+
+            except(mode.ModeExitException):
                 return
-
-            r.draw(self.menu)

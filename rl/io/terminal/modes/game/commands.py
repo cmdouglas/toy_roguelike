@@ -106,9 +106,9 @@ class UseItemCommand(GameModeCommand):
         selected = m.process()
 
         if selected:
-            G.player.queue_action(item.UseItemAction(G.player, selected))
+            return item.UseItemAction(G.player, selected)
 
 class GameEndCommand(GameModeCommand):
     def process(self, player):
-        return mode.ModeSignal.MODE_EXIT
+        raise mode.ModeExitException()
 

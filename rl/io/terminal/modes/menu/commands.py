@@ -35,7 +35,7 @@ class MoveSelectedCommand(MenuModeCommand):
 
 class ExitMenuCommand(MenuModeCommand):
     def process(self, menu):
-        return mode.ModeSignal.MODE_EXIT
+        raise mode.ModeExitException()
 
 class SelectCommand(MenuModeCommand):
     def process(self, m):

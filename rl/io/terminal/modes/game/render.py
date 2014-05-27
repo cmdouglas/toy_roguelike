@@ -1,3 +1,4 @@
+import logging
 import curses
 
 from rl import globals as G
@@ -84,8 +85,8 @@ class GameModeRenderer(object):
 
                 colorpair = CursesColorPair(color, bgcolor)
                 try:
-                    G.renderer.scr.addstr(y, x, char, colorpair.attr())
-                except curses.error:
+                    G.renderer.scr.addstr(y, x, char.encode('utf-8'), colorpair.attr())
+                except curses.error as e:
                     pass
 
 

@@ -18,6 +18,7 @@ class HealingPotion(Potion):
     color = colors.yellow
     name = "healing potion"
     name_plural = "healing potions"
+    interest_level = 8
     
     def __init__(self, num=1):
         self.stack_size = num

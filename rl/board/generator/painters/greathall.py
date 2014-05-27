@@ -1,6 +1,7 @@
 import logging
 
 from rl.board import board
+from rl.board import tile
 from rl.board.generator import maparea
 from rl.board.generator.painters import painter
 from rl.objects import wall
@@ -56,7 +57,7 @@ class GreatHallPainter(painter.Painter):
                     self.board.add_object(wall.Wall(), top_point)
                     self.board.add_object(wall.Wall(), bottom_point)
                     
-                except board.GameObjectPlacementException:
+                except tile.GameObjectPlacementException:
                     pass
                     
                 l += 3
@@ -78,7 +79,7 @@ class GreatHallPainter(painter.Painter):
                     self.board.add_object(wall.Wall(), left_point)
                     self.board.add_object(wall.Wall(), right_point)
                         
-                except board.GameObjectPlacementException:
+                except tile.GameObjectPlacementException:
                     pass
                     
                 t += 3

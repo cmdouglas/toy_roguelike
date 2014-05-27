@@ -11,7 +11,7 @@ class Player(Mob):
     def __init__(self):
         self.color = colors.white
         self.char = u'@'
-        self.sight_radius = 10
+        self.sight_radius = 20
         self.name = u"Charlie"
         self.level = 1
         self.health = 20
@@ -22,6 +22,7 @@ class Player(Mob):
         self.mag = 15
         self.dex = 10
         self.gold = 300
+        self.is_alive = True
         
         self.inventory = {
             'a': potion.HealingPotion(num=3)
@@ -53,9 +54,7 @@ class Player(Mob):
         
     def die(self):
         self.emote("die.", color=colors.dark_red)
-        G.console.add_message("Thanks for playing!")
-        time.sleep(3)
-
+        self.is_alive = False
         
                 
 

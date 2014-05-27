@@ -1,12 +1,12 @@
+import time
+
 from rl import globals as G
 from rl.modes import mode
 from rl.io import console
+from rl.io import colors
 from rl.io.terminal.modes.game import commands
 from rl.io.terminal.modes.game import render
 from rl.board.generator import generator
-
-class GameEndException(Exception):
-    pass
 
 class GameMode(mode.Mode):
 
@@ -16,12 +16,16 @@ class GameMode(mode.Mode):
         G.board = g.generate()
         G.board.spawn_player()
         G.console = console.Console()
+        G.console.add_message('Hello!', colors.light_cyan)
 
         renderer = render.GameModeRenderer()
         renderer.draw()
+
+        # for some reason the first draw won't pick up the HUD and Console, but all subsequent ones will :iiam:j
+        renderer.draw()
         while True:
             try:
-                actors = [actor for actor in G.board.objects if actor.can_act]
+                actors = [ob for ob in G.board.objects if ob.can_act]
                 actors.sort(key=lambda actor: actor.timeout)
 
                 actor = actors[0]
@@ -52,9 +56,16 @@ class GameMode(mode.Mode):
                 else:
                     changed = actor.process_turn()
 
+                if not G.player.is_alive:
+                    G.console.add_message('Thanks for playing!', colors.cyan)
+                    renderer.draw()
+                    time.sleep(2)
+                    return
+
+
                 is_in_fov = actor.is_in_fov()
                 if (actor is G.player) or (changed and (was_in_fov or is_in_fov)):
                     renderer.draw()
 
-            except(GameEndException):
+            except(mode.ModeExitException):
                 return

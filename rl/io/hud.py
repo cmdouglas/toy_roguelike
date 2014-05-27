@@ -12,8 +12,9 @@ class HUD(object):
                 ob = board[pos].most_interesting_object()
                 if ob:
                     interesting_objects.append(ob)
-                
-        interesting_objects.sort(key=lambda o: o.interest_level)
+
+        # show things with the hightest interest level first
+        interesting_objects.sort(key=lambda o: -1*o.interest_level)
         
         interesting_objects_condensed = []
         c = Counter()
