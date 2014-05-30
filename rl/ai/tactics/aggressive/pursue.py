@@ -1,11 +1,10 @@
 import logging
 
 from rl import globals as G
-from rl.actions.wait import WaitAction
-from rl.actions.movement import MovementAction
+from rl.actions import wait
 from rl.ai.tactics import tactics
 from rl.ai.utils import search
-from rl.ai.events.event import TargetLostEvent
+from rl.ai import events
 from rl.ai import primitives
 
 class PursueTactics(tactics.Tactics):
@@ -16,7 +15,7 @@ class PursueTactics(tactics.Tactics):
     def describe(self):
         return "chasing %s" % self.target.describe()
         
-    def do_tactics(self, actor, events):
+    def do_tactics(self, actor):
         board = G.board
         self.target_pos = self.target.tile.pos
         
@@ -25,18 +24,10 @@ class PursueTactics(tactics.Tactics):
         
         if abs(ax-tx) <= 1 and abs(ay-ty) <= 1:
             #we're close enough to attack!
-            return {
-                'result': tactics.COMPLETE,
-                'event': None,
-                'action': None
-            }
+            raise events.TacticsCompleteEvent()
             
         elif not primitives.can_see(actor, self.target):
-            return {
-                'result': tactics.INTERRUPTED,
-                'event': TargetLostEvent(self.target_pos),
-                'action': None
-            }
+            raise events.TargetLostEvent()
             
         else:
             path = search.find_path(
@@ -44,29 +35,17 @@ class PursueTactics(tactics.Tactics):
                 actor.tile.pos, 
                 self.target.tile.pos, 
                 actors_block=False,
+                doors_block=not actor.can_open_doors,
                 max_depth=20
             )
             
             if path:
-                move = path[0]
-                if self.can_make_move(actor, move):
-                    return {
-                        'result': tactics.CONTINUE, 
-                        'event': None,
-                        'action': MovementAction(actor, move)
-                    }
-                else:
-                    return {
-                        'result': tactics.CONTINUE, 
-                        'event': None,
-                        'action': WaitAction(actor)
-                    }
+                try:
+                    return self.smart_move(actor, path)
+                except tactics.PathBlockedException:
+                    return wait.WaitAction(actor)
                 
             else:
-                return {
-                    'result': tactics.CONTINUE, 
-                    'event': None,
-                    'action': WaitAction(actor)
-                }
+                return wait.WaitAction(actor)
 
             

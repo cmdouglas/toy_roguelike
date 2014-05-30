@@ -1,11 +1,11 @@
-import logging
 import random
 
+from rl.objects.obstacles import wall
 from rl.util import dice
 from rl.board.generator.painters import painter
 from rl.board.generator import maparea
-from rl.objects import wall
 from rl.objects.actors import goblin
+
 
 class CavePainter(painter.Painter):
     tags = ['natural', 'underground']

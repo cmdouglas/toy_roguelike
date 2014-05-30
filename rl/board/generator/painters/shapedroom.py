@@ -1,12 +1,11 @@
 import random
 
+from rl.objects.obstacles import smoothwall, wall
 from rl.util import shape
-from rl.util import dice
 from rl.board.generator.painters import painter
 from rl.board.generator import maparea
-from rl.objects import wall
-from rl.objects import smoothwall
 from rl.objects.items import potion
+
 
 class ShapedRoomPainter(painter.Painter):
     def get_bounding_box(self):

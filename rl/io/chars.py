@@ -1,5 +1,8 @@
 from rl import config
 
+# boxes
+open_box = u'\u25A2'
+
 # blocks
 light_block = u'\u2591'
 medium_block = u'\u2592'

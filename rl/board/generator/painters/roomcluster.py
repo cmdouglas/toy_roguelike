@@ -3,10 +3,8 @@ import random
 from rl import globals as G
 from rl.util import dice
 from rl.util import partition
-from rl.util import shape
 from rl.board.generator.painters import painter
-from rl.objects import wall
-from rl.objects import smoothwall
+
 
 class RoomClusterPainter(painter.Painter):
     

@@ -5,7 +5,7 @@ from rl.io import commands
 from rl.io.lib.engines.curses import keypress
 from rl.modes import mode
 from rl.modes import menumode
-from rl.actions import attack
+from rl.actions import interact
 from rl.actions import movement
 from rl.actions import wait
 from rl.actions import item
@@ -75,7 +75,7 @@ class MoveOrAttackCommand(GameModeCommand):
 
             elif board[new_pos].objects['actor']:
                 other = board[new_pos].objects['actor']
-                return attack.AttackAction(actor, other)
+                return interact.AttackAction(actor, other)
 
         else:
             return movement.MovementAction(actor, self.d)

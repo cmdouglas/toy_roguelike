@@ -1,6 +1,5 @@
-class Event(object):
-    def __init__(self, ob=None):
-        self.object = ob
+class Event(Exception):
+    pass
     
 class SeeHostileEvent(Event):
     pass
@@ -18,4 +17,12 @@ class HearNoiseEvent(Event):
     pass
     
 class LowHealthEvent(Event):
+    pass
+
+
+##
+class TacticsCompleteEvent(Event):
+    pass
+
+class StrategyCompleteEvent(Event):
     pass

@@ -1,5 +1,6 @@
+from rl.ai import events
 from rl.ai.strategies import idle, aggressive, strategy
-from rl.ai.events import event
+
 
 class BasicAI(object):
     def __init__(self, actor):
@@ -7,14 +8,15 @@ class BasicAI(object):
         self.actor = actor
         self.strategy = idle.IdleStrategy()
         
-    def do_ai(self):        
-        r = self.strategy.do_strategy(self.actor, [])
+    def do_ai(self):
+        try:
+            return self.strategy.do_strategy(self.actor)
+
+        except events.SeeHostileEvent:
+            self.strategy = aggressive.AggressiveStrategy()
         
-        if r['result'] == strategy.INTERRUPTED:
-            if type(r['event']) == event.SeeHostileEvent:
-                self.strategy = aggressive.AggressiveStrategy() 
-                
-            else:
-                self.strategy = idle.IdleStrategy()
-        
-        return r['action']
+        except events.InterestLostEvent:
+            self.strategy = idle.IdleStrategy()
+
+        except events.StrategyCompleteEvent:
+            self.strategy = idle.IdleStrategy()

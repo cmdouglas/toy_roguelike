@@ -9,7 +9,7 @@ class MillTactics(wander.WanderTactics):
         self.destination = None
         self.path = None
         self.max_wait = 5
-        self.wait = self.max_wait
+        self.wait_timer = self.max_wait
     
     def should_stop(self):
         return dice.one_chance_in(6)

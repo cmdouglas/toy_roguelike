@@ -139,7 +139,10 @@ def find_area_path(board, start, end):
         for c in area.connections:
             pass
 
-def find_path(board, start, end, actors_block=False, max_depth=None):
+def find_path(board, start, end,
+              actors_block=False,
+              doors_block=True,
+              max_depth=None):
     
     def id(node):
         return node.data['point']
@@ -159,7 +162,8 @@ def find_path(board, start, end, actors_block=False, max_depth=None):
                     x2, y2 = point
                     moves.append((x1 - x2, y1 - y2))
             else:
-                if not t.objects['obstacle']:
+                obstacle = t.objects['obstacle']
+                if obstacle is None or ((not doors_block) and obstacle.is_door):
                     x1, y1 = t.pos
                     x2, y2 = point
                     moves.append((x1 - x2, y1 - y2))

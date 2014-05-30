@@ -1,10 +1,7 @@
-import logging
-
-from rl.board import board
 from rl.board import tile
 from rl.board.generator import maparea
 from rl.board.generator.painters import painter
-from rl.objects import wall
+from rl.objects.obstacles import wall
 
 
 class GreatHallPainter(painter.Painter):

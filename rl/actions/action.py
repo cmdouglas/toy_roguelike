@@ -4,5 +4,5 @@ class Action(object):
     def calculate_cost(self):
         pass
         
-    def do_action(self, actor):
+    def do_action(self):
         pass

@@ -10,6 +10,7 @@ class GameObject(object):
     can_act = False
     can_be_taken = False
     interest_level = 0
+    description = ""
             
     def move(self, dxdy):
         dx, dy = dxdy
@@ -35,6 +36,7 @@ class GameObject(object):
 class Actor(GameObject):
     blocks_movement = True
     can_act = True
+    can_open_doors = False
     
     def on_move(self, old_pos, new_pos):
         pass
@@ -45,6 +47,7 @@ class Actor(GameObject):
 class Obstacle(GameObject):
     blocks_movement = True
     blocks_vision = True
+    is_door = False
     
 class Item(GameObject):
     usable = False

@@ -1,12 +1,12 @@
-from rl import board
-from rl.objects.wall import Wall
-from rl.objects.smoothwall import SmoothWall
-from rl.objects.player import Player
-from rl.objects.actors.goblin import Goblin
-from rl.util.shape import Rectangle, Circle, Ellipse
-
 import random
 import logging
+
+from rl import board
+from rl.objects.obstacles.wall import Wall
+from rl.objects.obstacles.smoothwall import SmoothWall
+from rl.objects.player import Player
+from rl.objects.actors.goblin import Goblin
+from rl.util.shape import Ellipse
 
 
 class TestBoard(board.Board):

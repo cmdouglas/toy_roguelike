@@ -11,6 +11,7 @@ class Goblin(Mob):
     char = u'g'
     sight_radius = 8 
     max_health = 10
+    can_open_doors = True
     
     def __init__(self):
         self.health = self.max_health
@@ -20,7 +21,8 @@ class Goblin(Mob):
     def process_turn(self):
         
         action = self.ai.do_ai()
-        action.do_action()
+        if action:
+            action.do_action()
         return True
 
     def sleep_emote(self):

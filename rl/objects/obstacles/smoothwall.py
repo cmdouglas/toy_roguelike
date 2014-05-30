@@ -1,11 +1,9 @@
-import logging
-
 from rl.io import colors
 from rl.io import chars
-from rl.objects.wall import Wall
+from rl.objects.obstacles.wall import Wall
 
 class SmoothWall(Wall):
-    """A wall that updates it's glyph based on surrounding tiles"""
+    """A wall that updates its glyph based on surrounding tiles"""
     color=colors.dark_gray
     char = u' '
     

@@ -1,8 +1,9 @@
 import random
 
+from rl.objects.obstacles import wall
 from rl.util import dice
 from rl.board.generator.painters import painter
-from rl.objects import wall
+
 
 class TunnelPainter(painter.Painter):
     def area_meets_requirements(self):

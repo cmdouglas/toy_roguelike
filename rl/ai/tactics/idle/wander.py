@@ -1,10 +1,8 @@
 import random
 
 from rl import globals as G
-from rl.actions.wait import WaitAction
-from rl.actions.movement import MovementAction
-from rl.ai import primitives
-from rl.ai.events import event
+from rl.actions import wait
+from rl.ai import primitives, events
 from rl.ai.tactics import tactics
 from rl.ai.utils import search
 from rl.util import dice
@@ -14,18 +12,12 @@ class WanderTactics(tactics.Tactics):
         self.destination = None
         self.path = None
         self.max_wait = 5
-        self.wait = random.randrange(self.max_wait) + 1
+        self.wait_timer = random.randrange(self.max_wait) + 1
         
-    def do_tactics(self, actor, events):
-        board = G.board
-        
+    def do_tactics(self, actor):
         if (primitives.can_see(actor, G.player) and dice.one_chance_in(2)):
             actor.emote('points at you and shouts!')
-            return {
-                'result': tactics.INTERRUPTED,
-                'event': event.SeeHostileEvent(),
-                'action': WaitAction(actor)
-            }
+            raise events.SeeHostileEvent()
         
         if dice.one_chance_in(10):
             actor.idle_emote()
@@ -42,42 +34,25 @@ class WanderTactics(tactics.Tactics):
                 
             else:
                 # nah, let's ask the strategy what to do.
-                return {
-                    'result': tactics.COMPLETE, 
-                    'event': None,
-                    'action': None    
-                }
+                raise events.TacticsCompleteEvent()
                 
         #try to move:
         if not self.path:
             self.destination = None
-            return {
-                'result': tactics.CONTINUE, 
-                'event': None,
-                'action': WaitAction(actor)
-            }
-        
-        move = self.path[0]
-        if self.can_make_move(actor, move):
-            self.path.pop(0)
+            return wait.WaitAction(actor)
+        try:
+            result = self.smart_move(actor, self.path)
             # reset our wait timer:
-            if self.wait == 0:
-                self.wait = dice.d(1, self.max_wait)
-            return {
-                'result': tactics.CONTINUE, 
-                'event': None,
-                'action': MovementAction(actor, move)
-            }
-            
-        else:
+            if self.wait_timer == 0:
+                self.wait_timer = dice.d(1, self.max_wait)
+
+            return result
+
+        except tactics.PathBlockedException:
             # wait and see if the blocker clears
-            if self.wait > 0:
-                self.wait -= 1
-                return {
-                    'result': tactics.CONTINUE, 
-                    'event': None,
-                    'action': WaitAction(actor)
-                }
+            if self.wait_timer > 0:
+                self.wait_timer -= 1
+                return wait.WaitAction(actor)
             
             else:
                 #ok, let's recompute the path, or go somewhere else
@@ -89,11 +64,7 @@ class WanderTactics(tactics.Tactics):
                         self.destination = dest
                         self.compute_path(actor)
                                         
-        return {
-            'result': tactics.CONTINUE, 
-            'event': None,
-            'action': WaitAction(actor)
-        }
+        return wait.WaitAction(actor)
 
     def should_stop(self):
         return dice.d(1, 3) == 3
@@ -122,7 +93,10 @@ class WanderTactics(tactics.Tactics):
         
     def recompute_path(self, actor, ab=False, md=None):
         board = G.board
-        self.path = search.find_path(board, actor.tile.pos, self.destination, actors_block=ab, max_depth=md)
+        self.path = search.find_path(board, actor.tile.pos, self.destination,
+                                     doors_block = not actor.can_open_doors,
+                                     actors_block=ab,
+                                     max_depth=md)
         return self.path
         
         
