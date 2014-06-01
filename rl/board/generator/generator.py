@@ -58,7 +58,7 @@ class RandomPainterStrategy(PainterStrategy):
             shapedroom.EllipticalRoomPainter,
             #tunnel.SimpleTunnelPainter(),
             tunnel.SnakeyTunnelPainter,
-            greathall.GreatHallPainter,
+            #greathall.GreatHallPainter,
             
             cave.CavePainter
         ]

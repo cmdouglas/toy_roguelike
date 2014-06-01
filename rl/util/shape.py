@@ -1,11 +1,24 @@
 import math
 import logging
 
+from rl.util import tools
+
 class Shape(object):
     def __init__(self):
         self.points = []
         self.border = []
         self.midpoint = (0, 0)
+
+    def find_border(self):
+        border = set()
+        for point in self.points:
+            for neighbor in tools.neighbors(point):
+                if neighbor not in self.points:
+                    border.add(neighbor)
+
+        self.border = list(border)
+        return self.border
+
     
 class Rectangle(Shape):
     width = 0
@@ -21,13 +34,11 @@ class Rectangle(Shape):
         startx = -1 * int(self.width / 2)
         starty = -1 * int(self.height / 2)
         
-        for x in range(startx, startx+self.width+1):
-            for y in range(starty, starty+self.height+1):
-                if (x == startx or x == startx + self.width or 
-                    y == starty or y == starty + self.height):
-                    self.border.append((x+midx, y+midy))
-                else:
-                    self.points.append((x+midx, y+midy))
+        for x in range(startx, startx+self.width):
+            for y in range(starty, starty+self.height):
+                self.points.append((x+midx, y+midy))
+
+        self.find_border()
 
     
 class Circle(Shape):
@@ -45,27 +56,14 @@ class Circle(Shape):
         for x in range(-1*self.radius, self.radius+1):
             for y in range(-1*self.radius, self.radius+1):
                 if self.contains_point((x, y)):
-                    if self.on_border((x, y)):
-                        self.border.append((x+midx, y+midy))
-                    else:
-                        self.points.append((x+midx, y+midy))
+                    self.points.append((x+midx, y+midy))
+
+        self.find_border()
     
     def contains_point(self, p):
         x, y = p
         return (x+0.5)**2 + (y+0.5)**2 <= self.radius**2
-        
-    def on_border(self, pos):
-        x, y = pos
-        return not (
-            self.contains_point((x-1, y-1)) and
-            self.contains_point((x-1, y)) and
-            self.contains_point((x-1, y+1)) and
-            self.contains_point((x, y-1)) and
-            self.contains_point((x, y+1)) and
-            self.contains_point((x+1, y-1)) and
-            self.contains_point((x+1, y)) and
-            self.contains_point((x+1, y+1))
-        )
+
         
 class Ellipse(Shape):
     rx = 0
@@ -83,10 +81,9 @@ class Ellipse(Shape):
         for x in range(-1*self.rx, self.rx+1):
             for y in range(-1*self.ry, self.ry+1):
                 if self.contains_point((x+midx, y+midy)):
-                    if self.on_border((x+midx, y+midy)):
-                        self.border.append((x+midx, y+midy))
-                    else:
-                        self.points.append((x+midx, y+midy))
+                    self.points.append((x+midx, y+midy))
+
+        self.find_border()
 
                     
     def contains_point(self, p):
@@ -100,19 +97,4 @@ class Ellipse(Shape):
         
         return v <= 1.0
 
-        
-    def on_border(self, pos):
-        x, y = pos
-        return not (
-            self.contains_point((x-1, y-1)) and
-            self.contains_point((x-1, y)) and
-            self.contains_point((x-1, y+1)) and
-            self.contains_point((x, y-1)) and
-            self.contains_point((x, y+1)) and
-            self.contains_point((x+1, y-1)) and
-            self.contains_point((x+1, y)) and
-            self.contains_point((x+1, y+1))
-        )
-        
-                    
     

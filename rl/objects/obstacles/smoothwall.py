@@ -1,6 +1,7 @@
 from rl.io import colors
 from rl.io import chars
 from rl.objects.obstacles.wall import Wall
+from rl.objects.obstacles import door
 
 class SmoothWall(Wall):
     """A wall that updates its glyph based on surrounding tiles"""
@@ -20,6 +21,7 @@ class SmoothWall(Wall):
     char_t_east = chars.tee_e
     char_t_west = chars.tee_w
     char_cross = chars.cross
+    description = 'The smooth stone wall is solid and unyielding.'
     
     def on_spawn(self):
         self.update_char()
@@ -35,7 +37,7 @@ class SmoothWall(Wall):
         
         dirs = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
         neighbors = list(self.tile.surrounding(as_dict=True).keys())
-        filled = list(self.adjoining_smoothwalls().keys())     
+        filled = list(self.adjoining_room_border_tiles().keys())
         
         # if we're up against the edge of the map, assume
         # all non-present tiles are filled
@@ -92,6 +94,14 @@ class SmoothWall(Wall):
         
         return r
 
+    def adjoining_room_border_tiles(self):
+        neighbors = self.tile.surrounding(as_dict=True)
+        r = {}
+        for k, v in neighbors.items():
+            if isinstance(v.objects['obstacle'], SmoothWall) or isinstance(v.objects['obstacle'], door.Door):
+                r[k] = v
+
+        return r
             
     def hwall(self, dirs):
         """returns true if self should be an hwall according to dirs

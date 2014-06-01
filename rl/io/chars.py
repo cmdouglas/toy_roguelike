@@ -1,7 +1,7 @@
 from rl import config
 
 # boxes
-open_box = u'\u25A2'
+open_box = u'\u25A1'
 
 # blocks
 light_block = u'\u2591'

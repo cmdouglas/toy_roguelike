@@ -1,5 +1,6 @@
 import math
 from rl.io import colors
+from rl.actions import interact
 
 class GameObject(object):
     color = colors.light_gray
@@ -32,6 +33,12 @@ class GameObject(object):
         
     def is_in_fov(self):
         return self.tile.visible
+
+    def default_interaction(self, actor):
+        return None
+
+    def update_char(self):
+        pass
         
 class Actor(GameObject):
     blocks_movement = True
@@ -48,6 +55,9 @@ class Obstacle(GameObject):
     blocks_movement = True
     blocks_vision = True
     is_door = False
+
+    def default_interaction(self, actor):
+        return interact.ExamineAction(actor,self)
     
 class Item(GameObject):
     usable = False

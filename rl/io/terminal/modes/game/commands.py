@@ -14,22 +14,22 @@ def get_user_command():
     k = keypress.wait_for_keypress()
     commands = {
         # movement
-        ord('h'): MoveOrAttackCommand((-1, 0)),
-        keypress.KEY_LEFT: MoveOrAttackCommand((-1, 0)),
+        ord('h'): MoveOrInteractCommand((-1, 0)),
+        keypress.KEY_LEFT: MoveOrInteractCommand((-1, 0)),
 
-        ord('j'): MoveOrAttackCommand((0, 1)),
-        keypress.KEY_DOWN: MoveOrAttackCommand((0, 1)),
+        ord('j'): MoveOrInteractCommand((0, 1)),
+        keypress.KEY_DOWN: MoveOrInteractCommand((0, 1)),
 
-        ord('k'): MoveOrAttackCommand((0, -1)),
-        keypress.KEY_UP: MoveOrAttackCommand((0, -1)),
+        ord('k'): MoveOrInteractCommand((0, -1)),
+        keypress.KEY_UP: MoveOrInteractCommand((0, -1)),
 
-        ord('l'): MoveOrAttackCommand((1, 0)),
-        keypress.KEY_RIGHT: MoveOrAttackCommand((1, 0)),
+        ord('l'): MoveOrInteractCommand((1, 0)),
+        keypress.KEY_RIGHT: MoveOrInteractCommand((1, 0)),
 
-        ord('y'): MoveOrAttackCommand((-1, -1)),
-        ord('u'): MoveOrAttackCommand((1, -1)),
-        ord('b'): MoveOrAttackCommand((-1, 1)),
-        ord('n'): MoveOrAttackCommand((1, 1)),
+        ord('y'): MoveOrInteractCommand((-1, -1)),
+        ord('u'): MoveOrInteractCommand((1, -1)),
+        ord('b'): MoveOrInteractCommand((-1, 1)),
+        ord('n'): MoveOrInteractCommand((1, 1)),
 
         # wait
         ord('s'): WaitCommand(),
@@ -57,7 +57,7 @@ class WaitCommand(GameModeCommand):
     def process(self, actor):
         return wait.WaitAction(actor)
 
-class MoveOrAttackCommand(GameModeCommand):
+class MoveOrInteractCommand(GameModeCommand):
     def __init__(self, d):
         self.d = d
 
@@ -69,9 +69,9 @@ class MoveOrAttackCommand(GameModeCommand):
 
         if board.position_is_valid(new_pos) and board[new_pos].blocks_movement():
             if board[new_pos].objects['obstacle']:
+                ob = board[new_pos].objects['obstacle']
+                return ob.default_interaction(actor)
 
-                G.console.add_message('The wall is solid and unyielding.');
-                return None
 
             elif board[new_pos].objects['actor']:
                 other = board[new_pos].objects['actor']

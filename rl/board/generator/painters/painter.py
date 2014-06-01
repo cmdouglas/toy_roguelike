@@ -1,5 +1,8 @@
 import random
 
+from rl import globals as G
+from rl.ai.utils import search
+from rl.util import tools
 from rl.board import board as board_mod
 from rl.board import tile
 
@@ -124,4 +127,49 @@ class Painter(object):
             for pos in [(x0, y) for y in range(y0, y0 + length - 1, -1)]:
                 tile = self.board[pos]
                 self.board.remove_object(tile.objects['obstacle'])
+
+    def smart_draw_corridor(self, start, end, blocked):
+        """uses an A* search to find a corridor from start to end that does not cross any points in blocked"""
+
+        def id(node):
+            return node.data['point']
+
+        def possible_moves(node):
+            point = node.data['point']
+            moves = []
+
+            for p in tools.adjacent(point):
+                if self.area.contains_point(p) and p not in blocked:
+                    moves.append(p)
+
+            return moves
+
+        def apply_move(node, move):
+            path_cost = 1000
+
+            return search.SearchNode({
+                'point': move,
+                'path_cost': path_cost
+            }, id, possible_moves, apply_move)
+
+        def heuristic(search, node, goal):
+            x2, y2 = goal.data['point']
+            x1, y1 = node.data['point']
+
+            return (abs(x2-x1) + abs(y2-y1)) * 1000
+
+        start_node = search.SearchNode({
+            'point': start,
+        }, id, possible_moves, apply_move)
+
+        goal_node = search.SearchNode({
+            'point': end,
+        }, id, possible_moves, apply_move)
+
+        points = search.AStarSearch(start_node, goal_node, heuristic).do_search()
+
+        if points:
+            for point in points:
+                self.board.remove_object(self.board[point].objects['obstacle'])
+
         

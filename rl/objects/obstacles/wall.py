@@ -7,4 +7,4 @@ class Wall(Obstacle):
     char = chars.medium_block
     blocks_movement=True
     blocks_vision=True
-        
+    description = 'The rough rock wall is solid and unyielding.'
