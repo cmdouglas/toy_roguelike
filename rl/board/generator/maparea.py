@@ -14,7 +14,8 @@ class MapArea(object):
         self.adjacent = []
         self.connections = []
         self.entrance = False
-        
+        self.points = set()
+
         self.connection_cost = 0
         self.keywords = []
         
@@ -28,11 +29,24 @@ class MapArea(object):
                 self_y <= y < self_y + self.height)
 
     def get_all_points(self):
-        x0, y0 = self.ul_pos
-        
-        for x in [x for x in range(x0, x0+self.width)]:
-            for y in [y for y in range(y0, y0+self.height)]:
-                yield (x, y)
+        if not self.points:
+            x0, y0 = self.ul_pos
+
+            for x in [x for x in range(x0, x0+self.width)]:
+                for y in [y for y in range(y0, y0+self.height)]:
+                    self.points.add((x, y))
+
+        return self.points
+
+    def border(self):
+        left, top = self.ul_pos
+        right = left + self.width -1
+        bottom = top + self.height - 1
+        return [point for point in self.get_all_points
+                    if (point[0] == left
+                        or point[0] == right
+                        or point[1] == top
+                        or point[1] == bottom)]
                 
     def get_empty_points(self):
         return [point for point in self.get_all_points() if (
@@ -67,6 +81,7 @@ class MapArea(object):
             if len(adjacency['points']) >= 3:
                 point = random.choice(adjacency['points'][1:-1])
             else:
+                raise Exception(str(adjacency))
                 point = random.choice(adjacency['points'])
             other_adjacency = other.find_neighbor(self)
             neighbor_point = self.find_neighboring_point(other_adjacency, point)
@@ -149,44 +164,51 @@ class MapArea(object):
             if (self_top - 1 == other_bottom and
                 other_left <= self_right and
                 self_left <= other_right):
-                
-                self.adjacent.append({
-                    'neighbor': other, 
-                    'points': self.find_adjacent_points(other, TOP),
-                    'side': TOP
-                })
+                adjacent = self.find_adjacent_points(other, TOP)
+
+                if len(adjacent) >= 3:
+                    self.adjacent.append({
+                        'neighbor': other,
+                        'points': adjacent,
+                        'side': TOP
+                    })
                
             # adjacent on bottom 
             elif (self_bottom + 1 == other_top and
                 other_left <= self_right and
                 self_left <= other_right):
-                
-                self.adjacent.append({
-                    'neighbor': other, 
-                    'points': self.find_adjacent_points(other, BOTTOM),
-                    'side': BOTTOM
-                })
+
+                adjacent = self.find_adjacent_points(other, BOTTOM)
+                if len(adjacent) >= 3:
+                    self.adjacent.append({
+                        'neighbor': other,
+                        'points': adjacent,
+                        'side': BOTTOM
+                    })
             
             # adjacent on left
             elif (self_left - 1 == other_right and
                 other_top <= self_bottom and
                 self_top <= other_bottom):
-                
-                self.adjacent.append({
-                    'neighbor': other, 
-                    'points': self.find_adjacent_points(other, LEFT),
-                    'side': LEFT
-                })
+                adjacent = self.find_adjacent_points(other, LEFT)
+                if len(adjacent) >= 3:
+                    self.adjacent.append({
+                        'neighbor': other,
+                        'points': adjacent,
+                        'side': LEFT
+                    })
             
             # adjacent on right
             elif (self_right + 1 == other_left and
                 other_top <= self_bottom and
                 self_top <= other_bottom):
-                
-                self.adjacent.append({
-                    'neighbor': other, 
-                    'points': self.find_adjacent_points(other, RIGHT),
-                    'side': RIGHT
-                })
+
+                adjacent = self.find_adjacent_points(other, RIGHT)
+                if len(adjacent) >= 3:
+                    self.adjacent.append({
+                        'neighbor': other,
+                        'points': adjacent,
+                        'side': RIGHT
+                    })
                     
         return self.adjacent

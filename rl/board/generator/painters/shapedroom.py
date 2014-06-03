@@ -13,11 +13,11 @@ class ShapedRoomPainter(painter.Painter):
     def get_bounding_box(self):
         area_left, area_top = self.area.ul_pos
 
-        area_left += 2
-        area_top += 2
+        area_left += 3
+        area_top += 3
                 
-        width = self.area.width - 4
-        height = self.area.height - 4
+        width = self.area.width - 6
+        height = self.area.height - 6
         
         rectangle_width = random.randrange(int(width / 2), width)
         rectangle_height = random.randrange(int(height / 2), height)
@@ -38,7 +38,7 @@ class ShapedRoomPainter(painter.Painter):
         return (rectangle_center, rectangle_width, rectangle_height)
         
     def area_meets_requirements(self):
-        return self.area.width > 8 and self.area.height > 8
+        return self.area.width > 10 and self.area.height > 10
 
 class RectangularRoomPainter(ShapedRoomPainter):
     def paint(self):
@@ -71,12 +71,13 @@ class RectangularRoomPainter(ShapedRoomPainter):
             self.board.add_object(door.Door(), pos)
 
         # draw corridors
-        border_points = [c['point'] for c in self.area.connections]
-        blocked = set(room.all_points())
+        connections = [c['point'] for c in self.area.connections]
+        blocked = set(room.all_points() + self.get_border())
+        blocked -= set(connections)
 
         connected_doorsteps = []
 
-        for p in border_points:
+        for p in connections:
             self.board.remove_object(self.board[p].objects['obstacle'])
             doorstep = random.choice(doorsteps)
             connected_doorsteps.append(doorstep)
@@ -85,7 +86,7 @@ class RectangularRoomPainter(ShapedRoomPainter):
         for p in doorsteps:
             if p not in connected_doorsteps:
                 self.board.remove_object(self.board[p].objects['obstacle'])
-                border_point = random.choice(border_points)
+                border_point = random.choice(connections)
                 self.smart_draw_corridor(p, border_point, blocked)
             
         self.board[center].add_item(potion.HealingPotion())
@@ -121,12 +122,13 @@ class CircularRoomPainter(ShapedRoomPainter):
             self.board.add_object(door.Door(), pos)
 
         # draw corridors
-        border_points = [c['point'] for c in self.area.connections]
-        blocked = set(room.all_points())
+        connections = [c['point'] for c in self.area.connections]
+        blocked = set(room.all_points() + self.get_border())
+        blocked -= set(connections)
 
         connected_doorsteps = []
 
-        for p in border_points:
+        for p in connections:
             self.board.remove_object(self.board[p].objects['obstacle'])
             doorstep = random.choice(doorsteps)
             connected_doorsteps.append(doorstep)
@@ -135,7 +137,7 @@ class CircularRoomPainter(ShapedRoomPainter):
         for p in doorsteps:
             if p not in connected_doorsteps:
                 self.board.remove_object(self.board[p].objects['obstacle'])
-                border_point = random.choice(border_points)
+                border_point = random.choice(connections)
                 self.smart_draw_corridor(p, border_point, blocked)
             
         self.board[center].add_item(potion.HealingPotion())
@@ -173,12 +175,13 @@ class EllipticalRoomPainter(ShapedRoomPainter):
             self.board.add_object(door.Door(), pos)
 
         # draw corridors
-        border_points = [c['point'] for c in self.area.connections]
-        blocked = set(room.all_points())
+        connections = [c['point'] for c in self.area.connections]
+        blocked = set(room.all_points() + self.get_border())
+        blocked -= set(connections)
 
         connected_doorsteps = []
 
-        for p in border_points:
+        for p in connections:
             self.board.remove_object(self.board[p].objects['obstacle'])
             doorstep = random.choice(doorsteps)
             connected_doorsteps.append(doorstep)
@@ -187,7 +190,7 @@ class EllipticalRoomPainter(ShapedRoomPainter):
         for p in doorsteps:
             if p not in connected_doorsteps:
                 self.board.remove_object(self.board[p].objects['obstacle'])
-                border_point = random.choice(border_points)
+                border_point = random.choice(connections)
                 self.smart_draw_corridor(p, border_point, blocked)
 
         self.board[center].add_item(potion.HealingPotion())

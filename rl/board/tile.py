@@ -7,7 +7,7 @@ class Tile(object):
     def __init__(self, board, pos):
         self.pos = pos
         self.board = board
-        self.visible = False
+        self.visible = True
         self.remembered = ' '
         self.objects = {
             'obstacle': None,
@@ -147,6 +147,9 @@ class Tile(object):
 
         color = colors.light_gray
         bgcolor = colors.black
+
+        # debug
+        #self.visible = True
 
         if self.visible:
             char = '.'

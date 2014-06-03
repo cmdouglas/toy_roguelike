@@ -36,7 +36,7 @@ class Rectangle(Shape):
         
         for x in range(startx, startx+self.width):
             for y in range(starty, starty+self.height):
-                self.points.append((x+midx, y+midy))
+                self.points.append((int(x+midx), int(y+midy)))
 
         self.find_border()
 
@@ -55,8 +55,8 @@ class Circle(Shape):
         
         for x in range(-1*self.radius, self.radius+1):
             for y in range(-1*self.radius, self.radius+1):
-                if self.contains_point((x, y)):
-                    self.points.append((x+midx, y+midy))
+                if self.contains_point((int(x), int(y))):
+                    self.points.append((int(x+midx), int(y+midy)))
 
         self.find_border()
     
@@ -80,8 +80,8 @@ class Ellipse(Shape):
         
         for x in range(-1*self.rx, self.rx+1):
             for y in range(-1*self.ry, self.ry+1):
-                if self.contains_point((x+midx, y+midy)):
-                    self.points.append((x+midx, y+midy))
+                if self.contains_point((int(x+midx), int(y+midy))):
+                    self.points.append((int(x+midx), int(y+midy)))
 
         self.find_border()
 

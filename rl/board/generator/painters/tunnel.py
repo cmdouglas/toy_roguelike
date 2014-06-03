@@ -1,7 +1,7 @@
 import random
 
 from rl.objects.obstacles import wall
-from rl.util import dice
+from rl.util import dice, tools
 from rl.board.generator.painters import painter
 
 
@@ -28,6 +28,10 @@ class SimpleTunnelPainter(TunnelPainter):
 class SnakeyTunnelPainter(TunnelPainter):
     def paint(self):
         self.fill(wall.Wall)
+        border = self.get_border()
+        connections = [c['point'] for c in self.area.connections]
+        blocked = set(border)
+        blocked -= set(connections)
         
         area_left, area_top = self.area.ul_pos
         
@@ -56,6 +60,15 @@ class SnakeyTunnelPainter(TunnelPainter):
             
         for segment in segments:
             start, end = segment
-            self.draw_corridor(start, end)
+            try:
+                dug = self.smart_draw_corridor(start, end, blocked)
+                for p in dug[2:-2]:
+                    # try and keep adacent tunnels from being dug
+                    blocked += set([p])
+                    blocked += set(tools.neighbors(p))
+
+            except:
+                dug = self.smart_draw_corridor(start, end, set())
+
         
         

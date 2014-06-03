@@ -12,14 +12,19 @@ class Painter(object):
         self.board = board
         self.area = area
     
-    def dumps(self):
+    def dumps(self, show=None):
         board = self.board
         left, top = self.area.ul_pos
         rows = []
         for y in range(top, top + self.area.height):
             row = []
             for x in range(left, left + self.area.width):
-                row.append(self.board[(x, y)].draw()[0])
+                if show:
+                    if (x, y) not in show:
+                        row.append(' ')
+
+                else:
+                    row.append(self.board[(x, y)].draw()[0])
             rows.append("".join(row))
         
         return "\n".join(rows)
@@ -168,8 +173,19 @@ class Painter(object):
 
         points = search.AStarSearch(start_node, goal_node, heuristic).do_search()
 
+        if not points:
+            dump = self.dumps()
+            blocked_dump = self.dumps(show=blocked)
+            raise Exception('COULD NOT CREATE CORRIDOR from %s to %s' % (start, end) + "\n\n" + "blocked: \n" + blocked_dump + "\n\n" +dump )
+
+        self.board.remove_object(self.board[start].objects['obstacle'])
+        self.board.remove_object(self.board[end].objects['obstacle'])
+
         if points:
             for point in points:
                 self.board.remove_object(self.board[point].objects['obstacle'])
+
+
+        return points
 
         
