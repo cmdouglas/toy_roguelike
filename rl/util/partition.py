@@ -61,7 +61,6 @@ class Partition(object):
 
         
         if self.width < min_width or self.height < min_height:
-            print(self)
             raise PartitionException("Partition too small!")
         
         splith = (self.width > 2*min_width)
@@ -80,7 +79,7 @@ class Partition(object):
             new_partitions = split_vertical(self)
             
         else:
-            return self
+            return [self]
             
         return list(flatten([p.subpartition_bsp(min_width, min_height) 
             for p in new_partitions]))

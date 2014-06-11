@@ -9,6 +9,7 @@ from rl.board.generator.painters import shapedroom
 from rl.board.generator.painters import tunnel
 from rl.board.generator.painters import cave
 from rl.board.generator.painters import greathall
+from rl.board.generator.painters import roomcluster
 
     
 class PartitionStrategy(object):
@@ -59,6 +60,7 @@ class RandomPainterStrategy(PainterStrategy):
             #tunnel.SimpleTunnelPainter(),
             tunnel.SnakeyTunnelPainter,
             #greathall.GreatHallPainter,
+            roomcluster.RoomClusterPainter,
             
             cave.CavePainter
         ]

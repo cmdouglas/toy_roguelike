@@ -4,27 +4,42 @@ from rl import globals as G
 from rl.util import dice
 from rl.util import partition
 from rl.board.generator.painters import painter
+from rl.board.generator import maparea
+from rl.objects.obstacles import smoothwall, door
 
 
 class RoomClusterPainter(painter.Painter):
     
-    def __init__(self, area):
+    def __init__(self, board, area):
+        self.board = board
         self.area = area
         self.min_room_height = 5
         self.min_room_width = 5
         
     def paint(self):
-        pass
-        
-    def area_meets_requirements(self, area):
-        return area.width >= 10 and area.height >= 10
+        connecting_points = [c['point'] for c in self.area.connections]
+        for point in self.area.border():
+            if point in connecting_points:
+                self.board.add_object(door.Door(), point)
+            else:
+                self.board.add_object(smoothwall.SmoothWall(), point)
+
+        areas = self.subpartition()
+        self.connect(areas)
+
+        for area in areas:
+            self.paint_subarea(area)
+
+
+    def area_meets_requirements(self):
+        return self.area.width > 10 and self.area.height > 10
         
     def subpartition(self):
-        part = partition.Partition(self.area.ul_corner, self.area.width, self.area.height)
+        part = partition.Partition(self.area.ul_pos, self.area.width, self.area.height)
         
         ps = part.subpartition_bsp(5, 5)
-        
-        areas = [G.MapArea(p) for p in ps]
+
+        areas = [maparea.MapArea(p, self.board) for p in ps]
         for area in areas:
             area.find_neighbors(areas)
         
@@ -75,7 +90,39 @@ class RoomClusterPainter(painter.Painter):
                         frontier.append(area)
     
     def paint_subarea(self, sub):
-        if sub.contains_point():
-            pass
+        x0, y0 = sub.ul_pos
+        connecting_points = [c['point'] for c in sub.connections]
+        for x in range(x0, x0+sub.width):
+            p = (x, y0)
+            if p in connecting_points:
+                try:
+                    self.board.add_object(door.Door(), p)
+                except:
+                    pass
+
+            else:
+                try:
+                    self.board.add_object(smoothwall.SmoothWall(), p)
+                except:
+                    pass
+
+        for y in range(y0, y0+sub.height):
+            p = (x0, y)
+            if p in connecting_points:
+                try:
+                    self.board.add_object(door.Door(), p)
+                except:
+                    pass
+
+            else:
+                try:
+                    self.board.add_object(smoothwall.SmoothWall(), p)
+                except:
+                    pass
+
+
+
+
+
         
     

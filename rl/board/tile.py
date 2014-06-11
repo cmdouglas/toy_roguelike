@@ -7,7 +7,8 @@ class Tile(object):
     def __init__(self, board, pos):
         self.pos = pos
         self.board = board
-        self.visible = True
+        self.has_been_seen = False
+        self.visible = False
         self.remembered = ' '
         self.objects = {
             'obstacle': None,
@@ -149,7 +150,7 @@ class Tile(object):
         bgcolor = colors.black
 
         # debug
-        #self.visible = True
+        # self.visible = True
 
         if self.visible:
             char = '.'
@@ -167,9 +168,9 @@ class Tile(object):
                 ob = self.objects['decorations'][0]
 
             if ob:
-                char = ob.char
-                color = ob.color
-                bgcolor = ob.bgcolor
+                char, color, bgcolor = ob.draw()
+
+            self.remembered = char
         else:
             char = self.remembered
             color = colors.dark_gray
@@ -207,6 +208,19 @@ class Tile(object):
         return [self.board[neighbor] for neighbor in neighbors
             if self.board.position_is_valid(neighbor)]
 
+
+    def on_first_seen(self):
+        if self.objects['actor']:
+            self.objects['actor'].on_first_seen()
+
+        if self.objects['obstacle']:
+            self.objects['obstacle'].on_first_seen()
+
+        for item in self.objects['items']:
+            item.on_first_seen()
+
+        for decoration in self.objects['decorations']:
+            decoration.on_first_seen()
 
     def adjacent(self, as_dict=False):
         """returns the 4 adjacent tiles, fewer if called from an edge or

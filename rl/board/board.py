@@ -41,7 +41,11 @@ class Board(object):
         for point in visible_points:
             if self.position_is_valid(point):
                 tile = self[point]
-                tile.remembered = tile.remembered_char()
+
+                if not tile.has_been_seen:
+                    tile.on_first_seen()
+
+                tile.has_been_seen = True
                 tile.visible = True
             
     

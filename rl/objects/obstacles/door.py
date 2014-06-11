@@ -35,7 +35,7 @@ class Door(gameobject.Obstacle):
     def default_interaction(self, actor):
         return interact.OpenAction(actor, self)
 
-    def on_spawn(self):
-        for tile in self.tile.surrounding():
-            if tile.objects['obstacle']:
-                tile.objects['obstacle'].update_char()
+    def on_first_seen(self):
+        surrounding_obstacles = [t.objects['obstacle'] for t in self.tile.surrounding() if t.objects['obstacle']]
+        for ob in surrounding_obstacles:
+            ob.should_update = True

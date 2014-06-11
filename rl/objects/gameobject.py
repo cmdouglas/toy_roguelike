@@ -30,16 +30,23 @@ class GameObject(object):
         
     def on_spawn(self):
         pass
-        
+
+    def on_first_seen(self):
+        pass
+
     def is_in_fov(self):
         return self.tile.visible
 
     def default_interaction(self, actor):
         return None
 
+    def draw(self):
+        return (self.char, self.color, self.bgcolor)
+
     def update_char(self):
         pass
-        
+
+
 class Actor(GameObject):
     blocks_movement = True
     can_act = True

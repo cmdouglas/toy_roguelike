@@ -42,7 +42,7 @@ class MapArea(object):
         left, top = self.ul_pos
         right = left + self.width -1
         bottom = top + self.height - 1
-        return [point for point in self.get_all_points
+        return [point for point in self.get_all_points()
                     if (point[0] == left
                         or point[0] == right
                         or point[1] == top

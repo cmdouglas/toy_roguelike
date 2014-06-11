@@ -9,6 +9,9 @@ medium_block = u'\u2592'
 dark_block = u'\u2593'
 full_block = u'\u2588'
 
+#circle
+circle = u'\u25cb'
+
 #lines 
 hline = u'\u2500'
 vline = u'\u2502'
@@ -17,7 +20,7 @@ nw = u'\u250c'
 se = u'\u2518'
 sw = u'\u2514'
 tee_n = u'\u2534'
-tee_s = u'\u253c'
+tee_s = u'\u252c'
 tee_e = u'\u251c'
 tee_w = u'\u2524'
 cross = u'\u253c'
@@ -36,7 +39,7 @@ dcross = u'\u256c'
 
 
 if config.engine == "libtcod":
-    from lib.engines.libtcod import libtcodpy as libtcod
+    from rl.io.lib.engines.libtcod import libtcodpy as libtcod
     
     vline = libtcod.CHAR_VLINE
     hline = libtcod.CHAR_HLINE
