@@ -7,6 +7,7 @@ from rl.modes import mode
 from rl.modes import menumode
 from rl.actions import interact
 from rl.actions import movement
+from rl.actions import travel
 from rl.actions import wait
 from rl.actions import item
 
@@ -30,6 +31,16 @@ def get_user_command():
         ord('u'): MoveOrInteractCommand((1, -1)),
         ord('b'): MoveOrInteractCommand((-1, 1)),
         ord('n'): MoveOrInteractCommand((1, 1)),
+
+        # travel
+        ord('H'): DirectionalTravelCommand((-1, 0)),
+        ord('J'): DirectionalTravelCommand((0, 1)),
+        ord('K'): DirectionalTravelCommand((0, -1)),
+        ord('L'): DirectionalTravelCommand((1, 0)),
+        ord('Y'): DirectionalTravelCommand((-1, -1)),
+        ord('U'): DirectionalTravelCommand((1, -1)),
+        ord('B'): DirectionalTravelCommand((-1, 1)),
+        ord('N'): DirectionalTravelCommand((1, 1)),
 
         # wait
         ord('s'): WaitCommand(),
@@ -79,6 +90,14 @@ class MoveOrInteractCommand(GameModeCommand):
 
         else:
             return movement.MovementAction(actor, self.d)
+
+class DirectionalTravelCommand(GameModeCommand):
+    def __init__(self, d):
+        self.d = d
+
+    def process(self, actor):
+        return travel.DirectionalTravelAction(actor, self.d)
+
 
 class ViewInventoryCommand(GameModeCommand):
     def process(self, player):

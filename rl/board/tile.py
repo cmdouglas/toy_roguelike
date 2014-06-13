@@ -1,3 +1,5 @@
+import logging
+
 from rl.io import colors
 
 class GameObjectPlacementException(Exception):
@@ -24,6 +26,7 @@ class Tile(object):
 
         if (self.objects['actor'] and
             self.objects['actor'].blocks_movement):
+
             return True
 
         return False

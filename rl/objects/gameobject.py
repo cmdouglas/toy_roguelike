@@ -61,6 +61,7 @@ class Actor(GameObject):
 class Obstacle(GameObject):
     blocks_movement = True
     blocks_vision = True
+    is_wall = False
     is_door = False
 
     def default_interaction(self, actor):

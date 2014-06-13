@@ -97,6 +97,10 @@ class GameModeRenderer(object):
         self.draw_status(player)
         self.draw_equipment(player)
         self.draw_objects_of_interest(board)
+        self.draw_debug_info()
+
+    def draw_debug_info(self):
+        pass
 
     def draw_console(self, console):
         console_pad = curses.newpad(self.console_height, self.console_width)

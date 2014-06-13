@@ -1,4 +1,5 @@
 import time
+import logging
 
 from rl import globals as G
 from rl.modes import mode
@@ -28,10 +29,12 @@ class GameMode(mode.Mode):
                 actors = [ob for ob in G.board.objects if ob.can_act]
                 actors.sort(key=lambda actor: actor.timeout)
 
-                actor = actors[0]
+                timeouts = [actor.timeout for actor in actors]
 
-                for a in actors[1:]:
-                    a.timeout -= actor.timeout
+                actor = actors[0]
+                timeout = actor.timeout
+                for a in actors:
+                    a.timeout -= timeout
 
                 changed = False
                 was_in_fov = actor.is_in_fov()

@@ -90,10 +90,6 @@ class SmoothWall(Wall):
             else:
                 self.char = self.char_pillar
 
-
-
-        logging.debug('updated char to %s' % self.char.encode('utf-8'))
-
     def adjoining_smoothwalls(self):
         neighbors = self.tile.surrounding(as_dict=True)
         r = {}
