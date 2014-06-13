@@ -29,8 +29,6 @@ class GameMode(mode.Mode):
                 actors = [ob for ob in G.board.objects if ob.can_act]
                 actors.sort(key=lambda actor: actor.timeout)
 
-                timeouts = [actor.timeout for actor in actors]
-
                 actor = actors[0]
                 timeout = actor.timeout
                 for a in actors:
