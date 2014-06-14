@@ -39,7 +39,8 @@ class Tactics(object):
             dx, dy = move
             board = G.board
             new_pos = (x+dx, y+dy)
-            if board[new_pos].objects['obstacle'] and board[new_pos].objects['obstacle'].is_door:
+            ob = board[new_pos].objects['obstacle']
+            if (ob and ob.is_door and not ob.is_open and actor.can_open_doors):
                 return interact.OpenAction(actor, board[new_pos].objects['obstacle']);
 
             else:

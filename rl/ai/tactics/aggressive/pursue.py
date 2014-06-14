@@ -16,6 +16,7 @@ class PursueTactics(tactics.Tactics):
         return "chasing %s" % self.target.describe()
         
     def do_tactics(self, actor):
+        #logging.debug('Pursue tactics: start')
         board = G.board
         self.target_pos = self.target.tile.pos
         
@@ -23,13 +24,16 @@ class PursueTactics(tactics.Tactics):
         tx, ty = self.target.tile.pos
         
         if abs(ax-tx) <= 1 and abs(ay-ty) <= 1:
+            #logging.debug('Pursue tactics: target in range')
             #we're close enough to attack!
             raise events.TacticsCompleteEvent()
             
         elif not primitives.can_see(actor, self.target):
+            #logging.debug('Pursue tactics: target lost')
             raise events.TargetLostEvent()
             
         else:
+            #logging.debug('Pursue tactics: finding path to target')
             path = search.find_path(
                 board, 
                 actor.tile.pos, 
@@ -40,12 +44,16 @@ class PursueTactics(tactics.Tactics):
             )
             
             if path:
+                #logging.debug('Pursue tactics: path found')
                 try:
+                    #logging.debug('Pursue tactics: trying to move')
                     return self.smart_move(actor, path)
                 except tactics.PathBlockedException:
+                    #logging.debug('Pursue tactics: path blocked')
                     return wait.WaitAction(actor)
                 
             else:
+                #logging.debug('Pursue tactics: no path found')
                 return wait.WaitAction(actor)
 
             

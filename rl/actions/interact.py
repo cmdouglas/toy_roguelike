@@ -35,6 +35,7 @@ class OpenAction(Action):
         return 1000
 
     def do_action(self):
+        self.actor.timeout += self.calculate_cost()
         self.other.open()
 
 class CloseAction(Action):
@@ -46,6 +47,7 @@ class CloseAction(Action):
         return 1000
 
     def do_action(self):
+        self.actor.timeout += self.calculate_cost()
         self.other.close()
 
 
