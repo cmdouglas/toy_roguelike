@@ -7,7 +7,7 @@ from rl import config
 
 
 def main():
-    logging.basicConfig(filename='rl/log/rltest.log', level=logging.DEBUG)
+    logging.basicConfig(filename='toy_roguelike.log', level=logging.DEBUG)
     
     logging.info('Game Start')
     g = game.Game(config)
