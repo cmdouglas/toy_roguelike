@@ -23,7 +23,7 @@ class InputKey(object):
         
 
 def wait_for_keypress():
-    win = G.renderer.scr
+    win = G.active_screen
     key = win.getch()
     #logging.debug(key)
     if key in SIMPLE_KEYS or key in [KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_ENTER]:

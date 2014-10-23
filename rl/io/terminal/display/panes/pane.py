@@ -34,7 +34,7 @@ class Pane(object):
     def render_pad_at_pos(self, pad, pos, pad_width, pad_height):
         x, y = pos
 
-        pad.refresh(
+        pad.noutrefresh(
             0, 0,                   # ul_corner of contents to draw
             y, x,                   # ul_corner of box on screen to put contents
             (y + pad_height -1), (x + pad_width -1)  # lr_corner of box on screen to put contents
@@ -43,7 +43,7 @@ class Pane(object):
 
 class SinglePadPane(Pane):
     def __init__(self, width, height):
-        super(Pane, self).__init__()
+        super(SinglePadPane, self).__init__(width, height)
         self.pad = curses.newpad(self.height, self.width)
 
     def render(self, ul_corner):

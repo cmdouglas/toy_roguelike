@@ -6,7 +6,7 @@ from rl.modes import mode
 from rl.io import console
 from rl.io import colors
 from rl.io.terminal.modes.game import commands
-from rl.io.terminal.modes.game import render
+from rl.io.terminal.display.layouts import gamemodelayout
 from rl.board.generator import generator
 
 class GameMode(mode.Mode):
@@ -19,11 +19,10 @@ class GameMode(mode.Mode):
         G.console = console.Console()
         G.console.add_message('Hello!', colors.light_cyan)
 
-        renderer = render.GameModeRenderer()
-        renderer.draw()
+        layout = gamemodelayout.GameModeLayout()
+        G.active_screen = layout.main_pane.pad
 
-        # for some reason the first draw won't pick up the HUD and Console, but all subsequent ones will :iiam:j
-        renderer.draw()
+        layout.render()
         while True:
             try:
                 actors = [ob for ob in G.board.objects if ob.can_act]
@@ -59,14 +58,14 @@ class GameMode(mode.Mode):
 
                 if not G.player.is_alive:
                     G.console.add_message('Thanks for playing!', colors.cyan)
-                    renderer.draw()
+                    layout.render()
                     time.sleep(2)
                     return
 
 
                 is_in_fov = actor.is_in_fov()
                 if (actor is G.player) or (changed and (was_in_fov or is_in_fov)):
-                    renderer.draw()
+                    layout.render()
 
             except(mode.ModeExitException):
                 return

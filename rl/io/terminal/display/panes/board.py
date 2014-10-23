@@ -8,14 +8,17 @@ class BoardPane(pane.SinglePadPane):
     min_width = 36
     min_height = 19
 
-    def __init__(self, width, height, center, board=None):
-        super(pane.SinglePadPane, self).__init__(width, height)
+    def __init__(self, width, height, center=None, board=None):
+        super(BoardPane, self).__init__(width, height)
 
         self.center = center
-        if board:
-            self.board = board
-        else:
+        if not center:
+            self.center = G.player.tile.pos
+
+        self.board = board
+        if not board:
             self.board = G.board
+
 
     def draw_viewport(self, board, center):
         c_x, c_y = center

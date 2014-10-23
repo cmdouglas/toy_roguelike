@@ -9,3 +9,6 @@ console = None
 
 # the screen renderer
 renderer = None
+
+# the active screen
+active_screen = None

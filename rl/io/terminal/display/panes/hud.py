@@ -35,11 +35,11 @@ class HUDPane(Pane):
     min_width = 44
     min_height = 19
 
-    light = colors.CursesColorPair(colors.cyan, colors.black).attr()
-    dark = colors.CursesColorPair(colors.light_gray, colors.black).attr()
-
     def __init__(self, width, height):
-        super(Pane, self).__init__()
+        super(HUDPane, self).__init__(width, height)
+
+        self.light = colors.CursesColorPair(colors.cyan, colors.black).attr()
+        self.dark = colors.CursesColorPair(colors.light_gray, colors.black).attr()
 
         # character name & level
         self.name_height = 2
