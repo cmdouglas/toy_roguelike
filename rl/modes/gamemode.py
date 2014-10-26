@@ -19,10 +19,9 @@ class GameMode(mode.Mode):
         G.console = console.Console()
         G.console.add_message('Hello!', colors.light_cyan)
 
-        layout = gamemodelayout.GameModeLayout()
-        G.active_screen = layout.main_pane.pad
+        frame = gamemodelayout.GameModeLayout()
 
-        layout.render()
+        G.renderer.render(frame)
         while True:
             try:
                 actors = [ob for ob in G.board.objects if ob.can_act]
@@ -58,14 +57,15 @@ class GameMode(mode.Mode):
 
                 if not G.player.is_alive:
                     G.console.add_message('Thanks for playing!', colors.cyan)
-                    layout.render()
+
+                    G.renderer.render(frame)
                     time.sleep(2)
                     return
 
 
                 is_in_fov = actor.is_in_fov()
                 if (actor is G.player) or (changed and (was_in_fov or is_in_fov)):
-                    layout.render()
+                    G.renderer.render(frame)
 
             except(mode.ModeExitException):
                 return

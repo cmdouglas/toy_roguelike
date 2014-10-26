@@ -12,8 +12,8 @@ class Board(object):
         self.objects = []
         self.visible_to_player = set()
         
-        self.tiles = [[tile.Tile(self, (x, y)) for y in range(self.height)]
-            for x in range(self.width)]
+        self.tiles = [[tile.Tile(self, (x, y)) for x in range(self.width)]
+            for y in range(self.height)]
             
         self.areas = []
         self.setup()
@@ -51,7 +51,7 @@ class Board(object):
     
     def __getitem__(self, pos):
         x, y = pos
-        return self.tiles[int(x)][int(y)]
+        return self.tiles[int(y)][int(x)]
     
     def position_is_valid(self, pos):
         x, y = pos
@@ -162,7 +162,6 @@ class Board(object):
             
         
         except(tile.GameObjectPlacementException):
-            logging.error("Couldn't place object %s at position %s", ob, pos)
             raise
         
     def remove_object(self, ob):

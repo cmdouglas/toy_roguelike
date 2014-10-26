@@ -16,7 +16,7 @@ class GameModeLayout(layout.Layout):
         hud_width = 44
         hud_height = G.renderer.height - console_height
 
-        viewport_width = G.renderer.width - hud_width
+        viewport_width = G.renderer.width - (hud_width + 2)
         viewport_height = G.renderer.height - console_height
 
         viewport_pos = (0, 0)
@@ -28,5 +28,3 @@ class GameModeLayout(layout.Layout):
             hud_pos: hud.HUDPane(hud_width, hud_height),
             console_pos: console.ConsolePane(console_width, console_height)
         }
-
-        self.main_pane = self.panes[viewport_pos]

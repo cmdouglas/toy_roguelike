@@ -1,14 +1,13 @@
-import curses
 from rl import globals as G
+from rl.io.terminal.display.panes import pane
 
 class Layout(object):
     def __init__(self):
         self.panes = {}
-        self.main_pane = None
+        self.container = pane.Pane(G.renderer.width, G.renderer.height)
 
     def render(self):
-        for pos, pane in self.panes.items():
-            pane.render(pos)
+        if not self.container.subpanes:
+            self.container.subpanes = self.panes
 
-        curses.doupdate()
-
+        return self.container.render()

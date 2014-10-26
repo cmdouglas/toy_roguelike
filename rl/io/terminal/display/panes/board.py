@@ -4,23 +4,26 @@ from rl import globals as G
 from rl.io.terminal.display.panes import pane
 from rl.io import colors
 
-class BoardPane(pane.SinglePadPane):
-    min_width = 36
+class BoardPane(pane.Pane):
+    min_width = 34
     min_height = 19
 
     def __init__(self, width, height, center=None, board=None):
         super(BoardPane, self).__init__(width, height)
 
         self.center = center
-        if not center:
+        if not self.center:
             self.center = G.player.tile.pos
 
         self.board = board
-        if not board:
+        if not self.board:
             self.board = G.board
 
 
     def draw_viewport(self, board, center):
+
+        # set the upper left corner of the area of the board to draw.
+        # this tries to center the board on the supplied center point, but won't move past the edges
         c_x, c_y = center
 
         if c_x > board.width - self.width / 2:
@@ -37,16 +40,17 @@ class BoardPane(pane.SinglePadPane):
         else:
             ul_y = c_y - int(self.height / 2)
 
-        for x, row in enumerate(board.tiles[ul_x:(ul_x + self.width)]):
-            for y, tile in enumerate(row[ul_y:(ul_y + self.width)]):
+        # for each tile in the area rendered, render the tile and add it
+        for y, row in enumerate(board.tiles[ul_y:(ul_y + self.height)]):
+            line = []
+            for tile in row[ul_x:(ul_x + self.width)]:
 
-                char, color, bgcolor = tile.draw()
+                char, fg, bg = tile.draw()
+                char = colors.ColorString(char).add_color(fg).add_bgcolor(bg)
 
-                colorpair = colors.CursesColorPair(color, bgcolor)
-                try:
-                    self.pad.addstr(y, x, char.encode('utf-8'), colorpair.attr())
-                except curses.error as e:
-                    pass
+                line.append(char)
+
+            self.set_line(y, colors.ColorString.join("", line))
 
     def refresh(self):
         self.draw_viewport(self.board, self.center)

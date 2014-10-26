@@ -17,15 +17,27 @@ class Renderer(object):
         curses.curs_set(0)
         self.scr.keypad(1)
         self.height, self.width = self.scr.getmaxyx()
-        
+
         assert self.height >= 24
         assert self.width >= 80
-        
+
 
         return self
-        
+
     def __exit__(self, exc_type, exc_value, traceback):
-        curses.nocbreak(); 
-        self.scr.keypad(0); 
+        curses.nocbreak();
+        self.scr.keypad(0);
         curses.echo()
         curses.endwin()
+
+    def render(self, frame):
+        lines = frame.render()
+        s = str(colors.ColorString.join("\n", lines))
+
+        try:
+            self.scr.addstr(0, 0, s)
+        except curses.error:
+            pass
+
+        self.scr.refresh()
+

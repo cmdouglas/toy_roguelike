@@ -2,7 +2,7 @@ from rl import globals as G
 from rl.io.terminal.display.panes import pane
 from rl.io import colors
 
-class ConsolePane(pane.SinglePadPane):
+class ConsolePane(pane.Pane):
     """ A (minimum) 70x3 area where game messages are printed.  Newest ones are shown first.
 
     example (border not rendered):
@@ -19,5 +19,4 @@ class ConsolePane(pane.SinglePadPane):
         lines = G.console.get_last_lines(num_lines=self.height)
 
         for i, line in enumerate(lines):
-            colorpair = colors.CursesColorPair(line['color'], colors.black)
-            self.pad.addstr(i, 0, line['message'], colorpair.attr())
+            self.set_line(i, colors.ColorString(line['message']).add_color(line['color']))

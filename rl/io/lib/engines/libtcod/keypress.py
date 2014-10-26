@@ -1,5 +1,5 @@
 import logging
-from lib.engines.libtcod import libtcodpy as libtcod
+from rl.io.lib.engines.libtcod import libtcodpy as libtcod
 
 class InputKey(object):
     def __init__(self,k):
@@ -13,6 +13,6 @@ def wait_for_keypress(win=None):
     mouse = libtcod.Mouse()
     
     libtcod.sys_wait_for_event(libtcod.EVENT_KEY_PRESS, key, mouse, True)
-    logging.debug("Key: c: %s, vk: %s, lalt: %s, ralt: %s, lctrl: %s, rctrl: %s" % (key.c, key.vk, key.lalt, key.ralt, key.lctrl, key.rctrl))
+    # logging.debug("Key: c: %s, vk: %s, lalt: %s, ralt: %s, lctrl: %s, rctrl: %s" % (key.c, key.vk, key.lalt, key.ralt, key.lctrl, key.rctrl))
     
     return InputKey(key)

@@ -136,6 +136,9 @@ class Painter(object):
     def smart_draw_corridor(self, start, end, blocked):
         """uses an A* search to find a corridor from start to end that does not cross any points in blocked"""
 
+        if start == end:
+            return []
+
         def id(node):
             return node.data['point']
 
