@@ -3,10 +3,10 @@ import logging
 
 from rl import globals as G
 from rl.modes import mode
-from rl.io import console
-from rl.io import colors
-from rl.io.terminal.modes.game import commands
-from rl.io.terminal.display.layouts import gamemodelayout
+from rl.ui import console
+from rl.ui import colors
+from rl.ui.terminal.modes.game import commands
+from rl.ui.terminal.display.layouts import gamemodelayout
 from rl.board.generator import generator
 
 class GameMode(mode.Mode):

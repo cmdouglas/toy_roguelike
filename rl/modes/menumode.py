@@ -1,8 +1,8 @@
 from rl import globals as G
-from rl.io import menu
+from rl.ui import menu
 from rl.modes import mode
-from rl.io.terminal.modes.menu import render
-from rl.io.terminal.modes.menu import commands
+from rl.ui.terminal.modes.menu import render
+from rl.ui.terminal.modes.menu import commands
 
 class MenuMode(mode.Mode):
     def process(self):

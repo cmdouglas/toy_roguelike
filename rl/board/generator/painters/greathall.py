@@ -1,7 +1,7 @@
 from rl.board import tile
 from rl.board.generator import maparea
 from rl.board.generator.painters import painter
-from rl.objects.obstacles import wall
+from rl.entities.obstacles import wall
 
 
 class GreatHallPainter(painter.Painter):
@@ -22,7 +22,7 @@ class GreatHallPainter(painter.Painter):
         
         # 1. fill in the border.
         for point in self.get_border():
-            self.board.add_object(wall.Wall(), point)
+            self.board.add_entity(wall.Wall(), point)
             
         # 2. connect to the edges.
         for c in self.area.connections:
@@ -45,16 +45,16 @@ class GreatHallPainter(painter.Painter):
                     top_point = (l, top + v_offset)
                     bottom_point = (l, bottom - (v_offset + 1))
                     
-                    self.board.add_object(wall.Wall(), top_point)
-                    self.board.add_object(wall.Wall(), bottom_point)
+                    self.board.add_entity(wall.Wall(), top_point)
+                    self.board.add_entity(wall.Wall(), bottom_point)
                     
                     top_point = (r, top + v_offset)
                     bottom_point = (r, bottom - (v_offset + 1))
 
-                    self.board.add_object(wall.Wall(), top_point)
-                    self.board.add_object(wall.Wall(), bottom_point)
+                    self.board.add_entity(wall.Wall(), top_point)
+                    self.board.add_entity(wall.Wall(), bottom_point)
                     
-                except tile.GameObjectPlacementException:
+                except tile.EntityPlacementException:
                     pass
                     
                 l += 3
@@ -67,16 +67,16 @@ class GreatHallPainter(painter.Painter):
                     left_point = (left + h_offset, t)
                     right_point = (right - (h_offset + 1), t)
                     
-                    self.board.add_object(wall.Wall(), left_point)
-                    self.board.add_object(wall.Wall(), right_point)
+                    self.board.add_entity(wall.Wall(), left_point)
+                    self.board.add_entity(wall.Wall(), right_point)
                     
                     left_point = (left + h_offset, b)
                     right_point = (right - (h_offset + 1), b)
                     
-                    self.board.add_object(wall.Wall(), left_point)
-                    self.board.add_object(wall.Wall(), right_point)
+                    self.board.add_entity(wall.Wall(), left_point)
+                    self.board.add_entity(wall.Wall(), right_point)
                         
-                except tile.GameObjectPlacementException:
+                except tile.EntityPlacementException:
                     pass
                     
                 t += 3

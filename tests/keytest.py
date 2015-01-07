@@ -7,7 +7,7 @@ with t.cbreak():
     val = None
     while val not in (u'q', u'Q',):
         val = t.inkey(timeout=5)
-        print val
+        print(val)
         if not val:
            # timeout
            print("It sure is quiet in here ...")

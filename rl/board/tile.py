@@ -1,8 +1,8 @@
 import logging
 
-from rl.io import colors
+from rl.ui import colors
 
-class GameObjectPlacementException(Exception):
+class EntityPlacementException(Exception):
     pass
 
 class Tile(object):
@@ -12,7 +12,7 @@ class Tile(object):
         self.has_been_seen = False
         self.visible = False
         self.remembered = ' '
-        self.objects = {
+        self.entities = {
             'obstacle': None,
             'actor': None,
             'items': [],
@@ -20,158 +20,158 @@ class Tile(object):
         }
 
     def blocks_movement(self):
-        if (self.objects['obstacle'] and
-            self.objects['obstacle'].blocks_movement):
+        if (self.entities['obstacle'] and
+            self.entities['obstacle'].blocks_movement):
             return True
 
-        if (self.objects['actor'] and
-            self.objects['actor'].blocks_movement):
+        if (self.entities['actor'] and
+            self.entities['actor'].blocks_movement):
 
             return True
 
         return False
 
     def blocks_vision(self):
-        for k, ob in self.objects.items():
-            if type(ob) == list:
-                for o in ob:
+        for k, ent in self.entities.items():
+            if type(ent) == list:
+                for o in ent:
                     if o and o.blocks_vision:
                         return True
-            elif ob and ob.blocks_vision:
+            elif ent and ent.blocks_vision:
                 return True
 
         return False
 
-    def add_actor(self, ob):
-        if self.objects['actor'] is not None:
-            raise GameObjectPlacementException("Tried to add an actor to a"
+    def add_actor(self, ent):
+        if self.entities['actor'] is not None:
+            raise EntityPlacementException("Tried to add an actor to a"
              "square that already has one")
-        self.objects['actor'] = ob
+        self.entities['actor'] = ent
 
-    def add_obstacle(self, ob):
-        if self.objects['obstacle'] is not None:
-            raise GameObjectPlacementException("Tried to add an obstacle"
+    def add_obstacle(self, ent):
+        if self.entities['obstacle'] is not None:
+            raise EntityPlacementException("Tried to add an obstacle"
             "to a square that already has one")
-        self.objects['obstacle'] = ob
+        self.entities['obstacle'] = ent
 
-    def add_item(self, ob):
-        for item in self.objects['items']:
-            if type(ob) == type(item):
+    def add_item(self, ent):
+        for item in self.entities['items']:
+            if type(ent) == type(item):
                 item.stack_size += 1
                 return
 
-        self.objects['items'].append(ob)
+        self.entities['items'].append(ent)
 
     def remove_item(self, item, quantity=None):
-        for i, item_ in enumerate(self.objects['items']):
+        for i, item_ in enumerate(self.entities['items']):
             if type(item_) == type(item):
                 if quantity and quantity <= item_.stack_size:
                     item_.stack_size -= quantity
                     if item_.stack_size == 0:
-                        self.objects['items'].remove(item_)
+                        self.entities['items'].remove(item_)
 
                     return item_
 
                 else:
-                    self.objects['items'].remove(item_)
+                    self.entities['items'].remove(item_)
                     return item_
 
 
-    def add_decoration(self, ob):
-        if ob not in self.objects['decorations']:
-            self.objects['decorations'].append(ob)
+    def add_decoration(self, ent):
+        if ent not in self.entities['decorations']:
+            self.entities['decorations'].append(ent)
 
-    def most_interesting_object(self):
+    def most_interesting_entity(self):
         most_interesting = None
         interest_level = 0
 
-        ob = self.objects['actor']
-        if ob and ob.interest_level > interest_level:
-            most_interesting = ob
-            interest_level = ob.interest_level
+        ent = self.entities['actor']
+        if ent and ent.interest_level > interest_level:
+            most_interesting = ent
+            interest_level = ent.interest_level
 
-        ob = self.objects['obstacle']
-        if ob and ob.interest_level > interest_level:
-            most_interesting = ob
-            interest_level = ob.interest_level
+        ent = self.entities['obstacle']
+        if ent and ent.interest_level > interest_level:
+            most_interesting = ent
+            interest_level = ent.interest_level
 
-        for ob in self.objects['items']:
-            if ob and ob.interest_level > interest_level:
-                most_interesting = ob
-                interest_level = ob.interest_level
+        for ent in self.entities['items']:
+            if ent and ent.interest_level > interest_level:
+                most_interesting = ent
+                interest_level = ent.interest_level
 
-        for ob in self.objects['decorations']:
-            if ob and ob.interest_level > interest_level:
-                most_interesting = ob
-                interest_level = ob.interest_level
+        for ent in self.entities['decorations']:
+            if ent and ent.interest_level > interest_level:
+                most_interesting = ent
+                interest_level = ent.interest_level
 
         return most_interesting
 
-    def add_object(self, ob):
-        if ob.can_act:
-            self.add_actor(ob)
-        elif ob.blocks_movement:
-            self.add_obstacle(ob)
-        elif ob.can_be_taken:
-            self.add_item(ob)
+    def add_entity(self, ent):
+        if ent.can_act:
+            self.add_actor(ent)
+        elif ent.blocks_movement:
+            self.add_obstacle(ent)
+        elif ent.can_be_taken:
+            self.add_item(ent)
         else:
-            self.add_decoration(ob)
+            self.add_decoration(ent)
 
-    def remove_object(self, ob):
-        if ob.can_act and self.objects['actor'] == ob:
-            self.objects['actor'] = None
-        elif ob.blocks_movement and self.objects['obstacle'] == ob:
-            self.objects['obstacle'] = None
-        elif ob.can_be_taken and ob in self.objects['items']:
-            self.remove_item(ob)
-        elif ob in self.objects['decorations']:
-            self.objects['decorations'].remove(ob)
+    def remove_entity(self, ent):
+        if ent.can_act and self.entities['actor'] == ent:
+            self.entities['actor'] = None
+        elif ent.blocks_movement and self.entities['obstacle'] == ent:
+            self.entities['obstacle'] = None
+        elif ent.can_be_taken and ent in self.entities['items']:
+            self.remove_item(ent)
+        elif ent in self.entities['decorations']:
+            self.entities['decorations'].remove(ent)
 
     def remembered_char(self):
         char = '.'
-        ob = None
-        if self.objects['actor']:
-            ob = self.objects['actor']
+        ent = None
+        if self.entities['actor']:
+            ent = self.entities['actor']
 
-        elif self.objects['obstacle']:
-            ob = self.objects['obstacle']
+        elif self.entities['obstacle']:
+            ent = self.entities['obstacle']
 
-        elif self.objects['items']:
-            ob = self.objects['items'][0]
+        elif self.entities['items']:
+            ent = self.entities['items'][0]
 
-        elif self.objects['decorations']:
-            ob = self.objects['decorations'][0]
+        elif self.entities['decorations']:
+            ent = self.entities['decorations'][0]
 
-        if ob:
-            char = ob.char
+        if ent:
+            char = ent.char
 
         return char
 
     def draw(self):
 
         color = colors.light_gray
-        bgcolor = colors.black
+        bgcolor = None
 
         # debug
         # self.visible = True
 
         if self.visible:
             char = '.'
-            ob = None
-            if self.objects['actor']:
-                ob = self.objects['actor']
+            ent = None
+            if self.entities['actor']:
+                ent = self.entities['actor']
 
-            elif self.objects['obstacle']:
-                ob = self.objects['obstacle']
+            elif self.entities['obstacle']:
+                ent = self.entities['obstacle']
 
-            elif self.objects['items']:
-                ob = self.objects['items'][0]
+            elif self.entities['items']:
+                ent = self.entities['items'][0]
 
-            elif self.objects['decorations']:
-                ob = self.objects['decorations'][0]
+            elif self.entities['decorations']:
+                ent = self.entities['decorations'][0]
 
-            if ob:
-                char, color, bgcolor = ob.draw()
+            if ent:
+                char, color, bgcolor = ent.draw()
 
             self.remembered = char
         else:
@@ -213,16 +213,16 @@ class Tile(object):
 
 
     def on_first_seen(self):
-        if self.objects['actor']:
-            self.objects['actor'].on_first_seen()
+        if self.entities['actor']:
+            self.entities['actor'].on_first_seen()
 
-        if self.objects['obstacle']:
-            self.objects['obstacle'].on_first_seen()
+        if self.entities['obstacle']:
+            self.entities['obstacle'].on_first_seen()
 
-        for item in self.objects['items']:
+        for item in self.entities['items']:
             item.on_first_seen()
 
-        for decoration in self.objects['decorations']:
+        for decoration in self.entities['decorations']:
             decoration.on_first_seen()
 
     def adjacent(self, as_dict=False):

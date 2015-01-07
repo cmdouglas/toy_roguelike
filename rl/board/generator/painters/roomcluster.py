@@ -5,7 +5,7 @@ from rl.util import dice
 from rl.util import partition
 from rl.board.generator.painters import painter
 from rl.board.generator import maparea
-from rl.objects.obstacles import smoothwall, door
+from rl.entities.obstacles import smoothwall, door
 
 
 class RoomClusterPainter(painter.Painter):
@@ -20,9 +20,9 @@ class RoomClusterPainter(painter.Painter):
         connecting_points = [c['point'] for c in self.area.connections]
         for point in self.area.border():
             if point in connecting_points:
-                self.board.add_object(door.Door(), point)
+                self.board.add_entity(door.Door(), point)
             else:
-                self.board.add_object(smoothwall.SmoothWall(), point)
+                self.board.add_entity(smoothwall.SmoothWall(), point)
 
         areas = self.subpartition()
         self.connect(areas)
@@ -96,13 +96,13 @@ class RoomClusterPainter(painter.Painter):
             p = (x, y0)
             if p in connecting_points:
                 try:
-                    self.board.add_object(door.Door(), p)
+                    self.board.add_entity(door.Door(), p)
                 except:
                     pass
 
             else:
                 try:
-                    self.board.add_object(smoothwall.SmoothWall(), p)
+                    self.board.add_entity(smoothwall.SmoothWall(), p)
                 except:
                     pass
 
@@ -110,13 +110,13 @@ class RoomClusterPainter(painter.Painter):
             p = (x0, y)
             if p in connecting_points:
                 try:
-                    self.board.add_object(door.Door(), p)
+                    self.board.add_entity(door.Door(), p)
                 except:
                     pass
 
             else:
                 try:
-                    self.board.add_object(smoothwall.SmoothWall(), p)
+                    self.board.add_entity(smoothwall.SmoothWall(), p)
                 except:
                     pass
 

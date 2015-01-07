@@ -2,14 +2,14 @@ import logging
 import random
 
 from rl import globals as G
-from rl.objects.actors import player
+from rl.entities.actors import player
 from rl.board import tile
 
-class Board(object):
+class Board:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.objects = []
+        self.entities = []
         self.visible_to_player = set()
         
         self.tiles = [[tile.Tile(self, (x, y)) for x in range(self.width)]
@@ -22,7 +22,7 @@ class Board(object):
         G.player = player.Player()
         area = random.choice(self.areas)
         pos = random.choice(area.get_empty_points())
-        self.add_object(G.player, pos)
+        self.add_entity(G.player, pos)
 
         self.show_player_fov()
 
@@ -151,30 +151,30 @@ class Board(object):
             
         return visible
         
-    def add_object(self, ob, pos):
+    def add_entity(self, ent, pos):
         t = self[pos]
         try:
-            t.add_object(ob)
-            self.objects.append(ob)
-            ob.tile = t
+            t.add_entity(ent)
+            self.entities.append(ent)
+            ent.tile = t
                 
-            ob.on_spawn()
+            ent.on_spawn()
             
         
-        except(tile.GameObjectPlacementException):
+        except(tile.EntityPlacementException):
             raise
         
-    def remove_object(self, ob):
-        if not ob:
-            #logging.warn("Trying to remove an object that doesn't exist!")
+    def remove_entity(self, ent):
+        if not ent:
+            #logging.warn("Trying to remove an entity that doesn't exist!")
             return
             
-        ob.tile.remove_object(ob)
-        self.objects.remove(ob)
-        ob.on_despawn()
-        ob.tile = None
+        ent.tile.remove_entity(ent)
+        self.entities.remove(ent)
+        ent.on_despawn()
+        ent.tile = None
         
-    def move_object(self, ob, old_pos, new_pos):
+    def move_entity(self, ent, old_pos, new_pos):
         if self.position_is_valid(new_pos):
             old_tile = self[old_pos]
             new_tile = self[new_pos]
@@ -182,10 +182,10 @@ class Board(object):
             x2, y2 = new_pos
             
             if not new_tile.blocks_movement():
-                old_tile.remove_object(ob)
-                new_tile.add_object(ob)
-                ob.tile = new_tile
-                ob.on_move(old_pos, new_pos)
+                old_tile.remove_entity(ent)
+                new_tile.add_entity(ent)
+                ent.tile = new_tile
+                ent.on_move(old_pos, new_pos)
                 
                 return True
                 

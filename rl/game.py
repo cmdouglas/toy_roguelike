@@ -1,7 +1,7 @@
 import logging
 
 from rl import globals as G
-from rl.io.lib.engines.curses import render
+from rl.ui.lib.engines.curses import render
 from rl.modes import gamemode
 
 class Game(object):

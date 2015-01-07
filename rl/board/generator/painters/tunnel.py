@@ -1,6 +1,6 @@
 import random
 
-from rl.objects.obstacles import wall
+from rl.entities.obstacles import wall
 from rl.util import dice, tools
 from rl.board.generator.painters import painter
 

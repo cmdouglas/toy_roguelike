@@ -39,9 +39,9 @@ class Tactics(object):
             dx, dy = move
             board = G.board
             new_pos = (x+dx, y+dy)
-            ob = board[new_pos].objects['obstacle']
-            if (ob and ob.is_door and not ob.is_open and actor.can_open_doors):
-                return interact.OpenAction(actor, board[new_pos].objects['obstacle']);
+            obstacle = board[new_pos].entities['obstacle']
+            if (obstacle and obstacle.is_door and not obstacle.is_open and actor.can_open_doors):
+                return interact.OpenAction(actor, obstacle);
 
             else:
                 raise PathBlockedException()

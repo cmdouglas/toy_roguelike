@@ -47,18 +47,18 @@ class Painter(object):
                     
         return points
         
-    def fill(self, ob_type):
+    def fill(self, ent_type):
         for point in self.area.get_all_points():
             try:
-                self.board.add_object(ob_type(), point)
-            except tile.GameObjectPlacementException:
+                self.board.add_entity(ent_type(), point)
+            except tile.EntityPlacementException:
                 continue
     
     def clear(self):
         for point in self.area.get_all_points():
-            ob = self.board[point].objects['obstacle']
-            if ob:
-                self.board.remove_object(ob)
+            ent = self.board[point].entities['obstacle']
+            if ent:
+                self.board.remove_entity(ent)
                     
     def draw_corridor(self, start, end, start_dir = None, end_dir=None):
         #print "drawing corridor from %s to %s" % (start, end)
@@ -106,12 +106,12 @@ class Painter(object):
         if length > 0:
             for pos in [(x, y0) for x in range(x0, x0 + length + 1)]:
                 tile = self.board[pos]
-                self.board.remove_object(tile.objects['obstacle'])
+                self.board.remove_entity(tile.entities['obstacle'])
                 
         else:
             for pos in [(x, y0) for x in range(x0, x0 + length - 1, -1)]:
                 tile = self.board[pos]
-                self.board.remove_object(tile.objects['obstacle'])
+                self.board.remove_entity(tile.entities['obstacle'])
         
     def draw_vertical_corridor(self, start, end):
         x0, y0 = start
@@ -126,12 +126,12 @@ class Painter(object):
         if length > 0:
             for pos in [(x0, y) for y in range(y0, y0 + length +1)]:
                 tile = self.board[pos]
-                self.board.remove_object(tile.objects['obstacle'])
+                self.board.remove_entity(tile.entities['obstacle'])
                 
         else:
             for pos in [(x0, y) for y in range(y0, y0 + length - 1, -1)]:
                 tile = self.board[pos]
-                self.board.remove_object(tile.objects['obstacle'])
+                self.board.remove_entity(tile.entities['obstacle'])
 
     def smart_draw_corridor(self, start, end, blocked):
         """uses an A* search to find a corridor from start to end that does not cross any points in blocked"""
@@ -181,12 +181,12 @@ class Painter(object):
             blocked_dump = self.dumps(show=blocked)
             raise Exception('COULD NOT CREATE CORRIDOR from %s to %s' % (start, end) + "\n\n" + "blocked: \n" + blocked_dump + "\n\n" +dump )
 
-        self.board.remove_object(self.board[start].objects['obstacle'])
-        self.board.remove_object(self.board[end].objects['obstacle'])
+        self.board.remove_entity(self.board[start].entities['obstacle'])
+        self.board.remove_entity(self.board[end].entities['obstacle'])
 
         if points:
             for point in points:
-                self.board.remove_object(self.board[point].objects['obstacle'])
+                self.board.remove_entity(self.board[point].entities['obstacle'])
 
 
         return points

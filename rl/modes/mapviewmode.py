@@ -1,9 +1,9 @@
 from rl import globals as G
 from rl.modes import mode
-from rl.io import console
-from rl.io import colors
-from rl.io.terminal.modes.mapview import commands
-from rl.io.terminal.modes.mapview import render
+from rl.ui import console
+from rl.ui import colors
+from rl.ui.terminal.modes.mapview import commands
+from rl.ui.terminal.modes.mapview import render
 from rl.board.generator import generator
 
 class MapViewMode(mode.Mode):
