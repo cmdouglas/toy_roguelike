@@ -10,7 +10,7 @@ def main():
     logging.basicConfig(filename='toy_roguelike.log', level=logging.DEBUG)
     
     logging.info('Game Start')
-    g = game.Game(config)
+    g = game.Game()
     g.play()
     logging.info('Game End')
     

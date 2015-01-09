@@ -1,5 +1,6 @@
+import logging
 from rl import globals as G
-from rl.entities.entity import Actor
+from rl.entities.actors import Actor
 from rl.ui import colors
 from rl.util import dice, tools
 
@@ -8,16 +9,43 @@ class Mob(Actor):
     dex = 10
     mag = 10
     timeout = 0
+    forced_actions = []
     events_to_process = None
     inventory = []
+    name=""
+    intelligence=None
+
+    def process_turn(self):
+        success = False
+        changed = False
+
+        if not self.intelligence:
+            raise Exception("{me} has no intelligence to control it.".format(me=repr(self)))
+
+        if self.forced_actions:
+            action = self.forced_actions.pop(0)
+
+        else:
+            action = self.intelligence.get_action()
+
+        if not action:
+            return False, False
+
+        success, effect = action.do_action()
+        if success:
+            self.timeout += action.calculate_cost()
+
+        return success, effect
+
+    def force_action(self, action):
+        self.forced_actions.append(action)
 
     def on_move(self, old_pos, new_pos):
         old_x, old_y = old_pos
         new_x, new_y = new_pos
-        
     
     def add_event(self, event):
-        if self.events_to_proceess is None:
+        if self.events_to_process is None:
             self.events_to_process = []
         
         self.events_to_process.append(event)
@@ -37,7 +65,7 @@ class Mob(Actor):
             if self.name:
                 name = "The %s" % self.name
             m = "%s %s" % (name, message)
-            G.console.add_message(m, color=color)
+            G.ui.console.add_message(m, color=color)
         
     def sleep_emote(self, color=None):
         pass
@@ -48,7 +76,7 @@ class Mob(Actor):
     def describe(self, show_strategy=True):
         r =  "{name}".format(name=self.name)
         if show_strategy:
-            r += " ({strategy})".format(strategy=self.ai.strategy.describe())
+            r += " ({strategy})".format(strategy=self.intelligence.strategy.describe())
             
         return r
         
@@ -57,7 +85,7 @@ class Mob(Actor):
         damage = dice.d(1, attack_power)
         hits = "hits"
         other_desc = "the " + other.describe()
-        if self == G.player:
+        if self == G.world.player:
             hits = "hit"
         
         self.emote("{hits} {other} for {damage} damage!".format(
@@ -80,7 +108,7 @@ class Mob(Actor):
         
     def die(self):
         self.emote("dies.", color=colors.dark_red)
-        G.board.remove_entity(self)
+        G.world.board.remove_entity(self)
         
     def add_to_inventory(self, item):
         # first check and see if it's already there

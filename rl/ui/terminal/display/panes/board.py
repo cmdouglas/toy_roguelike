@@ -12,11 +12,11 @@ class BoardPane(Pane):
 
         self.center = center
         if not self.center:
-            self.center = G.player.tile.pos
+            self.center = G.world.player.tile.pos
 
         self.board = board
         if not self.board:
-            self.board = G.board
+            self.board = G.world.board
 
 
     def draw_viewport(self, board, center):

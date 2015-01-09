@@ -21,7 +21,7 @@ class Door(entity.Obstacle):
         self.blocks_vision = False
         self.description = "The ancient door stands open."
 
-        G.board.show_player_fov()
+        G.world.board.show_player_fov(G.world.player)
 
     def close(self):
         self.is_open = False
@@ -30,7 +30,7 @@ class Door(entity.Obstacle):
         self.blocks_vision = True
         self.description = "The ancient door is solidly closed."
 
-        G.board.show_player_fov()
+        G.world.board.show_player_fov(G.world.player)
 
     def default_interaction(self, actor):
         return interact.OpenAction(actor, self)

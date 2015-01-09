@@ -1,8 +1,7 @@
 import logging
 import random
 
-from rl import globals as G
-from rl.entities.actors import player
+from rl.entities.actors.player import Player
 from rl.board import tile
 
 class Board:
@@ -19,23 +18,25 @@ class Board:
         self.setup()
 
     def spawn_player(self):
-        G.player = player.Player()
+        player = Player()
         area = random.choice(self.areas)
         pos = random.choice(area.get_empty_points())
-        self.add_entity(G.player, pos)
+        self.add_entity(player, pos)
 
-        self.show_player_fov()
+        self.show_player_fov(player)
+
+        return player
 
 
     def setup(self):
         pass
     
-    def show_player_fov(self):
+    def show_player_fov(self, player):
         for row in self.tiles:
             for tile in row:
                 tile.visible = False
         
-        visible_points = self.get_visible_points(G.player.tile.pos, G.player.sight_radius)
+        visible_points = self.get_visible_points(player.tile.pos, player.sight_radius)
         self.visible_to_player = set(visible_points)
         
         for point in visible_points:

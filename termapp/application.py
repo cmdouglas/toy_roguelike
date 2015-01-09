@@ -29,7 +29,7 @@ class Screen:
 
     def update(self, frame):
         if not frame:
-            pass
+            return
 
         for screenline, newtext in zip(self.lines, frame):
             if screenline.text != newtext:
@@ -65,8 +65,9 @@ class TerminalApplication:
     def run(self):
         @asyncio.coroutine
         def keyboard_input():
-            if self.term.kbhit(0):
-                return self.handle_keypress(self.term.inkey())
+            k = self.term.inkey(timeout=0.05)
+            if k:
+                return self.handle_keypress(k)
 
         @asyncio.coroutine
         def animate():
@@ -77,7 +78,7 @@ class TerminalApplication:
                     last_frame_at = self.loop.time()
 
                     yield from keyboard_input()
-                    frame = yield from self.newframe()
+                    frame = self.newframe()
                     self.screen.update(frame)
                     self.screen.refresh()
 

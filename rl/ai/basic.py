@@ -8,7 +8,7 @@ class BasicAI(object):
         self.actor = actor
         self.strategy = idle.IdleStrategy()
         
-    def do_ai(self):
+    def get_action(self):
         try:
             return self.strategy.do_strategy(self.actor)
 

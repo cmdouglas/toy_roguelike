@@ -1,4 +1,3 @@
-from textwrap import dedent
 from termapp.layout import Pane
 from termapp.formatstring import FormatString
 
@@ -69,10 +68,12 @@ class HUDPane(Pane):
 
 
     def draw_name(self):
-        line = FormatString("{name} [cyan:(Level:] {level}[cyan:)]".format(name=G.player.name, level=G.player.level))
+        line = FormatString("{name} [cyan:(Level:] {level}[cyan:)]".format(name=G.world.player.name, level=G.world.player.level))
         self.name_pane.set_line(0, line)
 
     def draw_stats(self):
+        player = G.world.player
+
         stats = FormatString(
 """[cyan:Health:] {health:3d}[cyan:/]{max_health}
 [cyan:Energy:] {energy:3d}[cyan:/]{max_energy}
@@ -82,14 +83,14 @@ class HUDPane(Pane):
 [cyan:Dex:] {dex}
 
 [cyan:Gold:] {gold}""".format(
-                health=G.player.health,
-                energy=G.player.energy,
-                max_health=G.player.max_health,
-                max_energy=G.player.max_energy,
-                str=G.player.str,
-                dex=G.player.dex,
-                mag=G.player.mag,
-                gold=G.player.gold
+                health=player.health,
+                energy=player.energy,
+                max_health=player.max_health,
+                max_energy=player.max_energy,
+                str=player.str,
+                dex=player.dex,
+                mag=player.mag,
+                gold=player.gold
             )
         )
 
@@ -97,9 +98,10 @@ class HUDPane(Pane):
 
     def draw_bars(self):
         hud = HUD()
+        player = G.world.player
 
         # health
-        health_bar = hud.status_bar(G.player.health, G.player.max_health)
+        health_bar = hud.status_bar(player.health, player.max_health)
 
         hline = (FormatString().simple("="*health_bar['full'], color=health_bar['colors']['full']) +
                FormatString().simple("-"*health_bar['empty'], color=health_bar['colors']['empty']))
@@ -107,7 +109,7 @@ class HUDPane(Pane):
         self.bars_pane.set_line(0, hline)
 
         # energy
-        energy_bar = hud.status_bar(G.player.energy, G.player.max_energy)
+        energy_bar = hud.status_bar(player.energy, player.max_energy)
 
         eline = (FormatString().simple("="*energy_bar['full'], color=energy_bar['colors']['full']) +
                 FormatString().simple("-"*energy_bar['empty'], color=energy_bar['colors']['empty']))
@@ -123,7 +125,7 @@ class HUDPane(Pane):
 
     def draw_objects_of_interest(self):
         hud = HUD()
-        oois = hud.objects_of_interest(G.board)
+        oois = hud.objects_of_interest(G.world.board)
 
         self.ooi_pane.set_line(0, FormatString().simple("You can see:", color=colors.cyan))
         if not oois:

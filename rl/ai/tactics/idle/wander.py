@@ -15,7 +15,7 @@ class WanderTactics(tactics.Tactics):
         self.wait_timer = random.randrange(self.max_wait) + 1
         
     def do_tactics(self, actor):
-        if (primitives.can_see(actor, G.player) and dice.one_chance_in(2)):
+        if (primitives.can_see(actor, G.world.player) and dice.one_chance_in(2)):
             actor.emote('points at you and shouts!')
             raise events.SeeHostileEvent()
         
@@ -70,20 +70,20 @@ class WanderTactics(tactics.Tactics):
         return dice.d(1, 3) == 3
 
     def nearby_reachable_destination(self, actor):
-        board = G.board
+        board = G.world.board
         p = actor.tile.pos
         points = board.nearby_reachable_points(p, 5)
         if points:
             return random.choice(points)
 
     def choose_destination(self, actor):
-        board = G.board
+        board = G.world.board
         actors_area = board.area_containing_point(actor.tile.pos)
         area = random.choice(actors_area.connections)['area']
         self.destination = random.choice(area.get_empty_points())
         
     def compute_path(self, actor):
-        board = G.board
+        board = G.world.board
         path_found = self.path = search.find_path(board, actor.tile.pos, self.destination, actors_block=False)
         if not path_found:
             dest = self.nearby_reachable_destination(actor)
@@ -92,7 +92,7 @@ class WanderTactics(tactics.Tactics):
                 self.recompute_path(actor, ab=True)
         
     def recompute_path(self, actor, ab=False, md=None):
-        board = G.board
+        board = G.world.board
         self.path = search.find_path(board, actor.tile.pos, self.destination,
                                      doors_block = not actor.can_open_doors,
                                      actors_block=ab,

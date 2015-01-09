@@ -1,9 +1,7 @@
 import random
 
-from rl import globals as G
 from rl.ai.utils import search
 from rl.util import tools
-from rl.board import board as board_mod
 from rl.board import tile
 
 class Painter(object):

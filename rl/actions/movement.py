@@ -16,5 +16,10 @@ class MovementAction(Action):
             return 1000
             
     def do_action(self):
-        self.actor.timeout += self.calculate_cost()
-        self.actor.move(self.movement)
+        effect = False
+        was_in_fov = self.actor.is_in_fov()
+        success = self.actor.move(self.movement)
+
+        if success:
+            effect = was_in_fov or self.actor.is_in_fov()
+        return success, effect

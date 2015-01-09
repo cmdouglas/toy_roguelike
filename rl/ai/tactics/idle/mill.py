@@ -15,6 +15,6 @@ class MillTactics(wander.WanderTactics):
         return dice.one_chance_in(6)
            
     def choose_destination(self, actor):
-        area = G.board.area_containing_point(actor.tile.pos)
+        area = G.world.board.area_containing_point(actor.tile.pos)
         self.destination = random.choice(area.get_empty_points())
         

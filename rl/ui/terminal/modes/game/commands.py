@@ -2,30 +2,27 @@ import logging
 
 from rl import globals as G
 from rl.ui import commands
-from rl.ui.lib.engines.curses import keypress
-from rl.modes import mode
-from rl.modes import menumode
 from rl.actions import interact
 from rl.actions import movement
 from rl.actions import travel
 from rl.actions import wait
 from rl.actions import item
 
-def get_user_command():
-    k = keypress.wait_for_keypress()
+def get_user_command(keypress):
+    term = G.ui.term
     commands = {
         # movement
         ord('h'): MoveOrInteractCommand((-1, 0)),
-        keypress.KEY_LEFT: MoveOrInteractCommand((-1, 0)),
+        term.KEY_LEFT: MoveOrInteractCommand((-1, 0)),
 
         ord('j'): MoveOrInteractCommand((0, 1)),
-        keypress.KEY_DOWN: MoveOrInteractCommand((0, 1)),
+        term.KEY_DOWN: MoveOrInteractCommand((0, 1)),
 
         ord('k'): MoveOrInteractCommand((0, -1)),
-        keypress.KEY_UP: MoveOrInteractCommand((0, -1)),
+        term.KEY_UP: MoveOrInteractCommand((0, -1)),
 
         ord('l'): MoveOrInteractCommand((1, 0)),
-        keypress.KEY_RIGHT: MoveOrInteractCommand((1, 0)),
+        term.KEY_RIGHT: MoveOrInteractCommand((1, 0)),
 
         ord('y'): MoveOrInteractCommand((-1, -1)),
         ord('u'): MoveOrInteractCommand((1, -1)),
@@ -46,52 +43,64 @@ def get_user_command():
         ord('s'): WaitCommand(),
 
         # inventory management
-        ord('g'): GetItemCommand(),
-        ord(','): GetItemCommand(),
+        ord('g'): GetAllItemsCommand(),
+        ord(','): GetAllItemsCommand(),
         ord('i'): ViewInventoryCommand(),
-        ord('a'): UseItemCommand(),
+        ord('a'): SelectItemToUseCommand(),
         ord('d'): DropItemsCommand(),
 
         # quit
         ord('Q'): GameEndCommand()
     }
 
-    if k:
-        return commands.get(k.c)
+    if keypress.is_sequence:
+        code = keypress.code
+
+    else:
+        code = ord(str(keypress))
+
+    return commands.get(code)
+
 
 class GameModeCommand(commands.Command):
     pass
 
-# game mode commands
 
-class WaitCommand(GameModeCommand):
+class PlayerCommand(GameModeCommand):
+    """A command that is passed on to the player"""
+    pass
+
+# game mode commands
+class WaitCommand(PlayerCommand):
     def process(self, actor):
         return wait.WaitAction(actor)
 
-class MoveOrInteractCommand(GameModeCommand):
+
+class MoveOrInteractCommand(PlayerCommand):
     def __init__(self, d):
         self.d = d
 
     def process(self, actor):
-        board = G.board
+        board = G.world.board
         x, y = actor.tile.pos
         dx, dy = self.d
         new_pos = (x+dx, y+dy)
 
         if board.position_is_valid(new_pos) and board[new_pos].blocks_movement():
-            if board[new_pos].objects['obstacle']:
-                ob = board[new_pos].objects['obstacle']
+            if board[new_pos].entities['obstacle']:
+                ob = board[new_pos].entities['obstacle']
                 return ob.default_interaction(actor)
 
 
-            elif board[new_pos].objects['actor']:
-                other = board[new_pos].objects['actor']
+            elif board[new_pos].entities['actor']:
+                other = board[new_pos].entities['actor']
                 return interact.AttackAction(actor, other)
 
         else:
             return movement.MovementAction(actor, self.d)
 
-class DirectionalTravelCommand(GameModeCommand):
+
+class DirectionalTravelCommand(PlayerCommand):
     def __init__(self, d):
         self.d = d
 
@@ -99,14 +108,9 @@ class DirectionalTravelCommand(GameModeCommand):
         return travel.DirectionalTravelAction(actor, self.d)
 
 
-class ViewInventoryCommand(GameModeCommand):
+class GetAllItemsCommand(PlayerCommand):
     def process(self, player):
-        m = menumode.ViewInventoryMode()
-        return m.process()
-
-class GetItemCommand(GameModeCommand):
-    def process(self, player):
-        items = player.tile.objects['items']
+        items = player.tile.entities['items']
 
         if not items:
             return
@@ -114,20 +118,22 @@ class GetItemCommand(GameModeCommand):
         for item_ in items:
             player.queue_action(item.GetItemAction(player, player.tile, item_))
 
+class UseItemCommand(PlayerCommand):
+    def process(self, player, selected_item):
+        return item.UseItemAction(G.world.player, selected_item)
+
 
 class DropItemsCommand(GameModeCommand):
     def process(self, player):
         pass
 
-class UseItemCommand(GameModeCommand):
-    def process(self, player):
-        m = menumode.UseItemMode()
-        selected = m.process()
+class SelectItemToUseCommand(GameModeCommand):
+    pass
 
-        if selected:
-            return item.UseItemAction(G.player, selected)
+
+class ViewInventoryCommand(GameModeCommand):
+    def process(self, player):
+        pass
 
 class GameEndCommand(GameModeCommand):
-    def process(self, player):
-        raise mode.ModeExitException()
-
+    pass

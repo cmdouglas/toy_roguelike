@@ -12,6 +12,7 @@ class Entity(object):
     can_be_taken = False
     interest_level = 0
     description = ""
+    tile = None
             
     def move(self, dxdy):
         dx, dy = dxdy
@@ -24,6 +25,9 @@ class Entity(object):
             return True
             
         return False
+
+    def on_move(self, old_pos, new_pos):
+        pass
                 
     def on_despawn(self):
         pass
@@ -46,17 +50,6 @@ class Entity(object):
     def update_char(self):
         pass
 
-
-class Actor(Entity):
-    blocks_movement = True
-    can_act = True
-    can_open_doors = False
-    
-    def on_move(self, old_pos, new_pos):
-        pass
-        
-    def process_turn(self):
-        return False
     
 class Obstacle(Entity):
     blocks_movement = True

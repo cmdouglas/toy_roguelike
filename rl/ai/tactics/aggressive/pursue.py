@@ -17,7 +17,7 @@ class PursueTactics(tactics.Tactics):
         
     def do_tactics(self, actor):
         #logging.debug('Pursue tactics: start')
-        board = G.board
+        board = G.world.board
         self.target_pos = self.target.tile.pos
         
         ax, ay = actor.tile.pos

@@ -8,4 +8,4 @@ class WaitAction(Action):
         return 1000
             
     def do_action(self):
-        self.actor.timeout += self.calculate_cost()
+        return True, False

@@ -1,14 +1,5 @@
-# the player
-player = None
+# the world, which contains the game state
+world=None
 
-# the current board
-board = None
-
-# the game console
-console = None
-
-# the screen renderer
-renderer = None
-
-# the active screen
-active_screen = None
+# the ui, handle
+ui=None

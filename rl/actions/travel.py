@@ -2,9 +2,6 @@ import logging
 
 from rl import globals as G
 from rl.actions import action
-from rl.actions import movement
-
-
 
 class DirectionalTravelAction(action.Action):
     """A repeating movement action"""
@@ -26,9 +23,11 @@ class DirectionalTravelAction(action.Action):
     def do_action(self):
         if not self.should_stop_travelling():
             last_surroundings = self.get_surroundings()
-            self.actor.timeout += self.calculate_cost()
-            self.actor.move(self.direction)
-            self.actor.queue_action(DirectionalTravelAction(self.actor, self.direction, last_surroundings=last_surroundings))
+            success = self.actor.move(self.direction)
+            if success:
+                self.actor.queue_action(DirectionalTravelAction(self.actor, self.direction, last_surroundings=last_surroundings))
+
+            return success, success
 
     def should_stop_travelling(self):
         # first check if movement is possible:
@@ -36,14 +35,14 @@ class DirectionalTravelAction(action.Action):
         dx, dy = self.direction
         new_pos = (cx+dx, cy+dy)
 
-        if not G.board.position_is_valid(new_pos):
+        if not G.world.board.position_is_valid(new_pos):
             return True
 
-        if G.board[new_pos].blocks_movement():
+        if G.world.board[new_pos].blocks_movement():
             return True
 
         # next check for any visible hostiles:
-        visible_mobs = [mob for mob in G.board.objects if mob.can_act and mob != self.actor and mob.is_in_fov()]
+        visible_mobs = [mob for mob in G.world.board.entities if mob.can_act and mob != self.actor and mob.is_in_fov()]
 
         if visible_mobs:
             return True
@@ -99,11 +98,11 @@ class DirectionalTravelAction(action.Action):
         return list(set(s))
 
     def main_feature(self, tile):
-        if not tile.objects['obstacle']:
+        if not tile.entities['obstacle']:
             return ' '
 
-        if tile.objects['obstacle'].is_wall:
+        if tile.entities['obstacle'].is_wall:
             return '#'
 
-        if tile.objects['obstacle'].is_door:
+        if tile.entities['obstacle'].is_door:
             return '+'

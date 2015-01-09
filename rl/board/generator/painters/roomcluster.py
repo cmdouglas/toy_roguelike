@@ -1,6 +1,5 @@
 import random
 
-from rl import globals as G
 from rl.util import dice
 from rl.util import partition
 from rl.board.generator.painters import painter

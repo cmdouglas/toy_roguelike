@@ -1,18 +1,24 @@
-import logging
 
+import logging
 from rl import globals as G
-from rl.ui.lib.engines.curses import render
-from rl.modes import gamemode
+from rl.ui.terminal import TerminalUI
+from rl.world import World
+
+
 
 class Game(object):
-    def __init__(self, config):
-        pass
+    def __init__(self, config=None):
+        self.world = World()
+        G.world = self.world
+        G.world.setup()
+
+        self.ui = TerminalUI()
+        G.ui = self.ui
 
     def play(self):
-        with render.Renderer() as r:
-            G.renderer = r
-            mode = gamemode.GameMode()
-            mode.process()
-        
+        self.ui.run()
+        self.end()
+        return
+
     def end(self):
         pass

@@ -1,25 +1,29 @@
 import logging
 
-from rl import globals as G
-from rl.modes import mode
+from rl.game import globals as G
 from rl.ui import commands
-from rl.ui.lib.engines.curses import keypress
 
-def get_user_command():
-    k = keypress.wait_for_keypress()
+def get_user_command(keypress):
 
+    term = G.ui.term
     commands = {
-        keypress.KEY_UP: MoveSelectedCommand(1),
-        keypress.KEY_DOWN: MoveSelectedCommand(-1),
-        keypress.KEY_ESC: ExitMenuCommand(),
-        keypress.KEY_ENTER: SelectCommand()
-
+        term.KEY_UP: MoveSelectedCommand(1),
+        term.KEY_DOWN: MoveSelectedCommand(-1),
+        term.KEY_ESC: ExitMenuCommand(),
+        term.KEY_ENTER: SelectCommand()
     }
-    if k:
-        return commands.get(k.c)
+
+    if keypress.is_sequence:
+        code = keypress.code
+
+    else:
+        code = ord(str(keypress))
+
+    return commands.get(code)
 
 class MenuModeCommand(commands.Command):
     pass
+
 
 class MoveSelectedCommand(MenuModeCommand):
     def __init__(self, d, n=1):
@@ -33,9 +37,11 @@ class MoveSelectedCommand(MenuModeCommand):
             else:
                 menu.move_down()
 
+
 class ExitMenuCommand(MenuModeCommand):
     def process(self, menu):
-        raise mode.ModeExitException()
+        raise Exception()
+
 
 class SelectCommand(MenuModeCommand):
     def process(self, m):

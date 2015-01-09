@@ -25,7 +25,7 @@ class HealingPotion(Potion):
     
     def use_effect(self, actor):
         actor.heal(dice.d(2, 8))
-        G.console.add_message('You feel better.', colors.bright_yellow);
+        G.ui.console.add_message('You feel better.', colors.bright_yellow);
         
         actor.remove_from_inventory(self)
         

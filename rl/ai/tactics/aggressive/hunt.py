@@ -2,7 +2,6 @@ import logging
 
 from rl import globals as G
 from rl.actions import wait
-from rl import ai
 from rl.ai.tactics import tactics
 from rl.ai.utils import search
 from rl.ai import primitives, events
@@ -18,7 +17,7 @@ class HuntTactics(tactics.Tactics):
         
     def do_tactics(self, actor):
         #logging.debug('Hunting tactics: start')
-        board = G.board
+        board = G.world.board
             
         if primitives.can_see(actor, self.target):
             #logging.debug('Hunting tactics: see target')

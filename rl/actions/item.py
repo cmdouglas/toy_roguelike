@@ -11,7 +11,7 @@ class UseItemAction(Action):
             
     def do_action(self):
         self.item.use_effect(self.actor)
-        self.actor.timeout += self.calculate_cost()
+        return True, True
 
 class GetItemAction(Action):
     def __init__(self, actor, tile, item):
@@ -25,9 +25,9 @@ class GetItemAction(Action):
     def do_action(self):
         self.tile.remove_item(self.item)
         self.actor.add_to_inventory(self.item)
-        G.console.add_message("You pick up %s" % self.item.describe())
-        self.actor.timeout += self.calculate_cost()
-        
+        G.ui.console.add_message("You pick up %s" % self.item.describe())
+        return True, True
+
 class DropItemAction(Action):
     pass
         

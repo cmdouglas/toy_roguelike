@@ -1,10 +1,7 @@
 
 from rl import globals as G
-from rl import ai
-from rl.ai.utils import search
 from rl.actions import movement
 from rl.actions import interact
-from rl.actions import wait
 
 class PathBlockedException(Exception):
     pass
@@ -15,7 +12,7 @@ class Tactics(object):
         """moves the actor to d, if it's a legal move, and returns true, 
         otherwise returns false
         """
-        board = G.board
+        board = G.world.board
         
         dx, dy = move
         x, y = actor.tile.pos
@@ -37,7 +34,7 @@ class Tactics(object):
         else:
             x, y = actor.tile.pos
             dx, dy = move
-            board = G.board
+            board = G.world.board
             new_pos = (x+dx, y+dy)
             obstacle = board[new_pos].entities['obstacle']
             if (obstacle and obstacle.is_door and not obstacle.is_open and actor.can_open_doors):

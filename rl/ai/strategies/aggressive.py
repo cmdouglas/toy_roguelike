@@ -1,12 +1,9 @@
 import logging
 
 from rl import globals as G
-from rl import ai
 from rl.ai import events
 from rl.ai.strategies import strategy
-from rl.ai.tactics import tactics
 from rl.ai.tactics.aggressive import melee, pursue, hunt
-from rl.actions import wait
 
 class AggressiveStrategy(strategy.Strategy):
     def __init__(self):
@@ -79,7 +76,7 @@ class AggressiveStrategy(strategy.Strategy):
         
     def nearest_target(self):
         # right now, the only hostile is the player
-        return G.player
+        return G.world.player
     
     def describe(self):
         if not self.tactics:

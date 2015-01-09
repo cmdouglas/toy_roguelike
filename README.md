@@ -1,8 +1,4 @@
 #real name pending
 
-A simple roguelike built with libtcodpy and/or curses
+A simple roguelike for python 3.4+.
 
-dependencies:
-
- - SDL (for libtcod mode)
- - py.test (for unit tests)

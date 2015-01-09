@@ -6,6 +6,7 @@ from rl.util import dice
 
 from rl.entities.actors.mob import Mob
 from rl.entities.items import potion
+from rl.ai import userinput
 
 class Player(Mob):
     def __init__(self):
@@ -23,6 +24,7 @@ class Player(Mob):
         self.dex = 10
         self.gold = 300
         self.is_alive = True
+        self.intelligence = userinput.UserInput(self)
         
         self.inventory = {
             'a': potion.HealingPotion(num=3)
@@ -31,15 +33,18 @@ class Player(Mob):
         self.queued_actions = []
     
     def on_move(self, dx, dy):
-        self.tile.board.show_player_fov()
+        self.tile.board.show_player_fov(self)
         self.tile.visible=True
     
     def queue_action(self, action):
         self.queued_actions.append(action)
     
     def process_turn(self):
-        if dice.one_chance_in(6):
+        success, effect = super().process_turn()
+        if success and dice.one_chance_in(6):
             self.heal(1)
+
+        return success, effect
                 
     def emote(self, message, color=None):
         if not color:
@@ -47,7 +52,7 @@ class Player(Mob):
         
         name="You"
         m = "%s %s" % (name, message)
-        G.console.add_message(m, color=color)
+        G.ui.console.add_message(m, color=color)
         
     def describe(self):
         return "you"
@@ -55,7 +60,9 @@ class Player(Mob):
     def die(self):
         self.emote("die.", color=colors.dark_red)
         self.is_alive = False
-        
+
+
+
                 
 
     

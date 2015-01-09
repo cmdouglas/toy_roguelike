@@ -17,7 +17,7 @@ class ConsolePane(Pane):
     min_width = 70
 
     def refresh(self):
-        lines = G.console.get_last_lines(num_lines=self.height)
+        lines = G.ui.console.get_last_lines(num_lines=self.height)
 
         for i, line in enumerate(lines):
             self.set_line(i, FormatString().simple(line['message'], color=line['color']))

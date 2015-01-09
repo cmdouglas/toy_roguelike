@@ -15,15 +15,8 @@ class Goblin(Mob):
     
     def __init__(self):
         self.health = self.max_health
-        self.ai = BasicAI(self)
+        self.intelligence = BasicAI(self)
         self.str = 4
-        
-    def process_turn(self):
-        
-        action = self.ai.do_ai()
-        if action:
-            action.do_action()
-        return True
 
     def sleep_emote(self):
         message = random.choice([
