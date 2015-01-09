@@ -2,6 +2,7 @@ import logging
 
 from rl import globals as G
 from rl.ui import commands
+from rl.ui.terminal.modes import menu
 from rl.actions import interact
 from rl.actions import movement
 from rl.actions import travel
@@ -50,7 +51,7 @@ def get_user_command(keypress):
         ord('d'): DropItemsCommand(),
 
         # quit
-        ord('Q'): GameEndCommand()
+        ord('Q'): ExitGameCommand()
     }
 
     if keypress.is_sequence:
@@ -116,24 +117,58 @@ class GetAllItemsCommand(PlayerCommand):
             return
 
         for item_ in items:
-            player.queue_action(item.GetItemAction(player, player.tile, item_))
+            player.intelligence.add_command(GetItemCommand(item_))
+
+class GetItemCommand(PlayerCommand):
+    def __init__(self, item):
+        self.item = item
+
+    def process(self, player):
+        return item.GetItemAction(player, player.tile, self.item)
+
 
 class UseItemCommand(PlayerCommand):
-    def process(self, player, selected_item):
-        return item.UseItemAction(G.world.player, selected_item)
+    def __init__(self, item):
+        self.item=item
+
+    def process(self, player):
+        return item.UseItemAction(G.world.player, self.item)
 
 
-class DropItemsCommand(GameModeCommand):
+class DropItemsCommand(PlayerCommand):
     def process(self, player):
         pass
+
+
+##
+# these affect the ui mode of the game (bring up menus, etc)
 
 class SelectItemToUseCommand(GameModeCommand):
-    pass
+    def process(self, mode):
+        player = G.world.player
 
+        def on_select(item):
+            player.intelligence.add_command(UseItemCommand(item))
+
+        items = G.world.player.inventory
+        mode.enter_child_mode(
+            menu.SingleSelectMenuMode(
+                items,
+                empty="You have no items.",
+                selected_callback=on_select
+            )
+        )
 
 class ViewInventoryCommand(GameModeCommand):
-    def process(self, player):
-        pass
+    def process(self, mode):
+        items = G.world.player.inventory
+        mode.enter_child_mode(
+            menu.SingleSelectMenuMode(
+                items,
+                empty="You have no items."
+            )
+        )
 
-class GameEndCommand(GameModeCommand):
-    pass
+class ExitGameCommand(GameModeCommand):
+    def process(self, mode):
+        mode.exit()

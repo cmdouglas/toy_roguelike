@@ -29,6 +29,8 @@ class DirectionalTravelAction(action.Action):
 
             return success, success
 
+        return False, False
+
     def should_stop_travelling(self):
         # first check if movement is possible:
         cx, cy = self.actor.tile.pos

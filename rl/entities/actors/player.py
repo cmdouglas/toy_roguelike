@@ -29,15 +29,12 @@ class Player(Mob):
         self.inventory = {
             'a': potion.HealingPotion(num=3)
         }
-        
-        self.queued_actions = []
-    
+
     def on_move(self, dx, dy):
         self.tile.board.show_player_fov(self)
         self.tile.visible=True
     
-    def queue_action(self, action):
-        self.queued_actions.append(action)
+
     
     def process_turn(self):
         success, effect = super().process_turn()

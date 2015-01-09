@@ -5,10 +5,14 @@ from rl.ui.terminal.display.panes import board
 from rl.ui.terminal.display.panes import console
 from rl.ui.terminal.display.panes import hud
 
+from rl import globals as G
+
 class GameModeLayout(Layout):
     def __init__(self):
         super(GameModeLayout, self).__init__()
+        self.refresh()
 
+    def refresh(self):
         console_width = term.width
         console_height = 5
 
@@ -22,8 +26,17 @@ class GameModeLayout(Layout):
         hud_pos = (viewport_width, 0)
         console_pos = (0, viewport_height)
 
+        self.board_pane = board.BoardPane(viewport_width, viewport_height)
+        self.hud_pane = hud.HUDPane(hud_width, hud_height)
+        self.console_pane = console.ConsolePane(console_width, console_height)
+
         self.panes = {
-            viewport_pos: board.BoardPane(viewport_width, viewport_height),
-            hud_pos: hud.HUDPane(hud_width, hud_height),
-            console_pos: console.ConsolePane(console_width, console_height)
+            viewport_pos: self.board_pane,
+            hud_pos: self.hud_pane,
+            console_pos: self.console_pane
         }
+
+    def render(self):
+        self.board_pane.center = G.world.player.tile.pos
+        return super().render()
+

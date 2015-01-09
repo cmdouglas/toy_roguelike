@@ -9,7 +9,7 @@ class Mob(Actor):
     dex = 10
     mag = 10
     timeout = 0
-    forced_actions = []
+    queued_actions = []
     events_to_process = None
     inventory = []
     name=""
@@ -22,8 +22,8 @@ class Mob(Actor):
         if not self.intelligence:
             raise Exception("{me} has no intelligence to control it.".format(me=repr(self)))
 
-        if self.forced_actions:
-            action = self.forced_actions.pop(0)
+        if self.queued_actions:
+            action = self.queued_actions.pop(0)
 
         else:
             action = self.intelligence.get_action()
@@ -37,8 +37,8 @@ class Mob(Actor):
 
         return success, effect
 
-    def force_action(self, action):
-        self.forced_actions.append(action)
+    def queue_action(self, action):
+        self.queued_actions.append(action)
 
     def on_move(self, old_pos, new_pos):
         old_x, old_y = old_pos

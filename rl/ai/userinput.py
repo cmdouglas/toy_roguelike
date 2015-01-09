@@ -3,14 +3,12 @@
 
 class UserInput():
     def __init__(self, player):
-        self.command = None
+        self.commands = []
         self.player = player
 
-    def set_command(self, command):
-        self.command = command
+    def add_command(self, command):
+        self.commands.append(command)
 
     def get_action(self):
-        if self.command:
-            action = self.command.process(self.player)
-            self.command=None
-            return action
+        if self.commands:
+            return self.commands.pop(0).process(self.player)

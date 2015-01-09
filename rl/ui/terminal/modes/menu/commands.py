@@ -1,6 +1,6 @@
 import logging
 
-from rl.game import globals as G
+from rl import globals as G
 from rl.ui import commands
 
 def get_user_command(keypress):
@@ -9,7 +9,7 @@ def get_user_command(keypress):
     commands = {
         term.KEY_UP: MoveSelectedCommand(1),
         term.KEY_DOWN: MoveSelectedCommand(-1),
-        term.KEY_ESC: ExitMenuCommand(),
+        term.KEY_ESCAPE: ExitMenuCommand(),
         term.KEY_ENTER: SelectCommand()
     }
 
@@ -19,7 +19,7 @@ def get_user_command(keypress):
     else:
         code = ord(str(keypress))
 
-    return commands.get(code)
+    return commands.get(code, SelectCommand(code))
 
 class MenuModeCommand(commands.Command):
     pass
@@ -40,10 +40,13 @@ class MoveSelectedCommand(MenuModeCommand):
 
 class ExitMenuCommand(MenuModeCommand):
     def process(self, menu):
-        raise Exception()
+        pass
 
 
 class SelectCommand(MenuModeCommand):
-    def process(self, m):
-        selected = m.get_selected()
+    def __init__(self, key=None):
+        self.key=key
+
+    def process(self, menu):
+        selected = menu.get_selected(key=self.key)
         return selected

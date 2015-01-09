@@ -65,7 +65,8 @@ class TerminalApplication:
     def run(self):
         @asyncio.coroutine
         def keyboard_input():
-            k = self.term.inkey(timeout=0.05)
+
+            k = self.term.inkey(timeout=0.005, esc_delay=0.005)
             if k:
                 return self.handle_keypress(k)
 
