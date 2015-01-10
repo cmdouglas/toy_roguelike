@@ -8,7 +8,7 @@ from rl.board.generator import maparea
 from rl.board.generator.painters import shapedroom
 from rl.board.generator.painters import tunnel
 from rl.board.generator.painters import cave
-from rl.board.generator.painters import greathall
+from rl.board.generator.painters import maze
 from rl.board.generator.painters import roomcluster
 
     
@@ -61,6 +61,7 @@ class RandomPainterStrategy(PainterStrategy):
             tunnel.SnakeyTunnelPainter,
             #greathall.GreatHallPainter,
             roomcluster.RoomClusterPainter,
+            maze.MazePainter,
             
             cave.CavePainter
         ]

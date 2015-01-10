@@ -147,7 +147,7 @@ class Tile(object):
 
         return char
 
-    def draw(self):
+    def draw(self, force_visible=False):
 
         color = colors.light_gray
         bgcolor = None
@@ -155,7 +155,7 @@ class Tile(object):
         # debug
         # self.visible = True
 
-        if self.visible:
+        if self.visible or force_visible:
             char = '.'
             ent = None
             if self.entities['actor']:

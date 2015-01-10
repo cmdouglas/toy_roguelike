@@ -10,19 +10,14 @@ class Painter(object):
         self.board = board
         self.area = area
     
-    def dumps(self, show=None):
+    def dumps(self):
         board = self.board
         left, top = self.area.ul_pos
         rows = []
         for y in range(top, top + self.area.height):
             row = []
             for x in range(left, left + self.area.width):
-                if show:
-                    if (x, y) not in show:
-                        row.append(' ')
-
-                else:
-                    row.append(self.board[(x, y)].draw()[0])
+                row.append(self.board[(x, y)].draw(force_visible=True)[0])
             rows.append("".join(row))
         
         return "\n".join(rows)
