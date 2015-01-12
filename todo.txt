@@ -1,0 +1,30 @@
+Bugs
+ - Make smoothwalls update their glyphs correctly
+ - Goblins don't seem to be able to open doors
+
+Refactoring:
+ - implement subscriber/subject for (at first) the game console.  Try not to make a huge mess.
+ - Do something about the global variables :(
+
+Features:
+ Functionality
+  - Dying/Game over
+  - Maybe some winning condition?
+  - Save/Load
+
+ Fun
+   - moar content
+     - weapons/armour
+     - spells
+
+   - More than one board (stairs/portals)
+
+   - themed areas
+
+ Usability
+  - Autoexplore/Autotravel
+  - "look" mode
+
+Pipedreams:
+ - Tiles
+

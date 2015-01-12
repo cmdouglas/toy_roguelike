@@ -131,13 +131,25 @@ class MazePainter(painter.Painter):
 
             return walls == 3
 
+        def free_space_adjacent_dead_end(point):
+            adjacent = tools.adjacent(point)
+            for adjacent_point in adjacent:
+                if self.area.contains_point(adjacent_point) and not self.board[adjacent_point].entities['obstacle']:
+                    return adjacent_point
+
+        dead_ends = [point for point in self.area.get_empty_points() if is_dead_end(point)]
         for _ in range(to_fill):
-            dead_ends = [point for point in self.area.get_empty_points() if is_dead_end(point)]
             if not dead_ends:
                 break
-
             dead_end = random.choice(dead_ends)
+            dead_ends.remove(dead_end)
             self.board.add_entity(Wall(), dead_end)
+
+
+            new_dead_end = free_space_adjacent_dead_end(dead_end)
+
+            if new_dead_end and is_dead_end(new_dead_end):
+                dead_ends.append(new_dead_end)
 
 
 
