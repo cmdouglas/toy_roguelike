@@ -5,7 +5,7 @@ from rl.util import dice
 
 class Potion(entity.Item):
     usable = True
-    char = u'!'
+    glyph = u'!'
     
     def use_effect(self, actor):
         pass

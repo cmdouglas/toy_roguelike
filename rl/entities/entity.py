@@ -5,7 +5,7 @@ from rl.actions import interact
 class Entity(object):
     color = colors.light_gray
     bgcolor = None
-    char = ' '
+    glyph = ' '
     blocks_movement = False
     blocks_vision = False
     can_act = False
@@ -45,9 +45,9 @@ class Entity(object):
         return None
 
     def draw(self):
-        return (self.char, self.color, self.bgcolor)
+        return (self.glyph, self.color, self.bgcolor)
 
-    def update_char(self):
+    def update_glyph(self):
         pass
 
     

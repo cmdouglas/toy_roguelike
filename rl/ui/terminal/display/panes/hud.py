@@ -132,7 +132,7 @@ class HUDPane(Pane):
             self.ooi_pane.set_line(1, FormatString().simple(' Nothing of interest', color=colors.cyan))
 
         for i, ooi in enumerate(oois[:(self.ooi_height-1)]):
-            line = (FormatString().simple(" {chars}".format(chars=ooi['chars']), color=ooi['color']) +
+            line = (FormatString().simple(" {glyphs}".format(glyphs=ooi['glyphs']), color=ooi['color']) +
                     FormatString().simple(" {desc}".format(desc=ooi['description'])))
 
             self.ooi_pane.set_line(i+1, line)

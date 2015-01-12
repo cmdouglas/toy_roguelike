@@ -1,27 +1,27 @@
 import logging
 from rl.ui import colors
-from rl.ui import chars
+from rl.ui import glyphs
 from rl.entities.obstacles.wall import Wall
 from rl.entities.obstacles import door
 
 class SmoothWall(Wall):
     """A wall that updates its glyph based on surrounding tiles"""
     color=colors.dark_gray
-    char = u' '
+    glyph = u' '
     
-    char_occluded = u' '
-    char_pillar = chars.circle
-    char_vwall = chars.vline
-    char_hwall = chars.hline
-    char_necorner = chars.ne
-    char_nwcorner = chars.nw
-    char_secorner = chars.se
-    char_swcorner = chars.sw
-    char_t_north = chars.tee_n
-    char_t_south = chars.tee_s
-    char_t_east = chars.tee_e
-    char_t_west = chars.tee_w
-    char_cross = chars.cross
+    glyph_occluded = u' '
+    glyph_pillar = glyphs.circle
+    glyph_vwall = glyphs.vline
+    glyph_hwall = glyphs.hline
+    glyph_necorner = glyphs.ne
+    glyph_nwcorner = glyphs.nw
+    glyph_secorner = glyphs.se
+    glyph_swcorner = glyphs.sw
+    glyph_t_north = glyphs.tee_n
+    glyph_t_south = glyphs.tee_s
+    glyph_t_east = glyphs.tee_e
+    glyph_t_west = glyphs.tee_w
+    glyph_cross = glyphs.cross
     should_update = False
     description = 'The smooth stone wall is solid and unyielding.'
 
@@ -32,63 +32,54 @@ class SmoothWall(Wall):
 
     def draw(self):
         if self.should_update:
-            self.update_char()
+            self.update_glyph()
             self.should_update =False
 
-        return (self.char, self.color, self.bgcolor)
+        return (self.glyph, self.color, self.bgcolor)
     
-    def update_char(self):
+    def update_glyph(self):
         # logging.debug('Updating Wall at %s', self.tile.pos)
         
-        filled = list(self.adjoining_room_border_tiles(seen=True).keys())
+        filled = list(self.adjoining_room_border_tiles().keys())
                
         if len(filled) == 8:
-            self.char = self.char_occluded
+            self.glyph = self.glyph_occluded
         
         elif self.hwall(filled):
-            self.char = self.char_hwall
+            self.glyph = self.glyph_hwall
             
         elif self.vwall(filled):
-            self.char = self.char_vwall
+            self.glyph = self.glyph_vwall
             
         elif self.necorner(filled):
-            self.char = self.char_necorner
+            self.glyph = self.glyph_necorner
     
         elif self.nwcorner(filled):
-            self.char = self.char_nwcorner
+            self.glyph = self.glyph_nwcorner
             
         elif self.secorner(filled):
-            self.char = self.char_secorner
+            self.glyph = self.glyph_secorner
             
         elif self.swcorner(filled):
-            self.char = self.char_swcorner
+            self.glyph = self.glyph_swcorner
                     
         elif self.t_north(filled):
-            self.char = self.char_t_north
+            self.glyph = self.glyph_t_north
             
         elif self.t_south(filled):
-            self.char = self.char_t_south
+            self.glyph = self.glyph_t_south
             
         elif self.t_east(filled):
-            self.char = self.char_t_east
+            self.glyph = self.glyph_t_east
             
         elif self.t_west(filled):
-            self.char = self.char_t_west
+            self.glyph = self.glyph_t_west
             
         elif self.cross(filled):
-            self.char = self.char_cross
+            self.glyph = self.glyph_cross
 
         else:
-            # determine which character based on unseen
-            unseen_filled = list(self.adjoining_room_border_tiles(seen=False).keys())
-            if 'n' in unseen_filled or 's' in unseen_filled:
-                self.char = self.char_vwall
-
-            elif 'e' in unseen_filled or 'w' in unseen_filled:
-                self.char = self.char_hwall
-
-            else:
-                self.char = self.char_pillar
+            self.glyph = self.glyph_pillar
 
     def adjoining_smoothwalls(self):
         neighbors = self.tile.surrounding(as_dict=True)
@@ -99,13 +90,15 @@ class SmoothWall(Wall):
 
         return r
 
-    def adjoining_room_border_tiles(self, seen=False):
+    def adjoining_room_border_tiles(self):
         neighbors = self.tile.surrounding(as_dict=True)
         r = {}
         for k, v in neighbors.items():
-            if seen and not v.has_been_seen:
-                continue
-            if isinstance(v.entities['obstacle'], SmoothWall) or isinstance(v.entities['obstacle'], door.Door):
+            #if :
+            # for purposes of drawing tiles, assume unseen tiles are empty.
+            if ((isinstance(v.entities['obstacle'], SmoothWall)
+                or isinstance(v.entities['obstacle'], door.Door))
+                and v.has_been_seen):
                 r[k] = v
 
         return r

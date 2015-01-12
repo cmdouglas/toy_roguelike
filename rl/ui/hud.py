@@ -32,12 +32,12 @@ class HUD(object):
             if count > 1:
                 description = "%s %s" % (count, ob.name_plural)
                 
-            char = ob.char
+            glyph = ob.glyph
             color = ob.color
             
             r.append({
                 'description': description,
-                'chars': min(count, 5)*char,
+                'glyphs': min(count, 5)*glyph,
                 'color': color
             })
             

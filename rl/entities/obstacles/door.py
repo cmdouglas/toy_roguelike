@@ -1,13 +1,13 @@
 from rl import globals as G
 from rl.entities import entity
 from rl.ui import colors
-from rl.ui import chars
+from rl.ui import glyphs
 from rl.actions import interact
 
 
 class Door(entity.Obstacle):
     color = colors.sepia
-    char = '+'
+    glyph = '+'
     blocks_movement = True
     blocks_vision = True
     is_door = True
@@ -16,7 +16,7 @@ class Door(entity.Obstacle):
 
     def open(self):
         self.is_open = True
-        self.char = chars.open_box
+        self.glyph = glyphs.open_box
         self.blocks_movement = False
         self.blocks_vision = False
         self.description = "The ancient door stands open."
@@ -25,7 +25,7 @@ class Door(entity.Obstacle):
 
     def close(self):
         self.is_open = False
-        self.char = '+'
+        self.glyph = '+'
         self.blocks_movement = True
         self.blocks_vision = True
         self.description = "The ancient door is solidly closed."

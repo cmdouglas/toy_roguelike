@@ -11,7 +11,7 @@ from rl.ai import userinput
 class Player(Mob):
     def __init__(self):
         self.color = colors.bright_white
-        self.char = u'@'
+        self.glyph = u'@'
         self.sight_radius = 10
         self.name = u"Charlie"
         self.level = 1

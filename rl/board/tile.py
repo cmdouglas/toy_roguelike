@@ -127,8 +127,8 @@ class Tile(object):
         elif ent in self.entities['decorations']:
             self.entities['decorations'].remove(ent)
 
-    def remembered_char(self):
-        char = '.'
+    def remembered_glyph(self):
+        glyph = '.'
         ent = None
         if self.entities['actor']:
             ent = self.entities['actor']
@@ -143,9 +143,9 @@ class Tile(object):
             ent = self.entities['decorations'][0]
 
         if ent:
-            char = ent.char
+            glyph = ent.glyph
 
-        return char
+        return glyph
 
     def draw(self, force_visible=False):
 
@@ -156,7 +156,7 @@ class Tile(object):
         # self.visible = True
 
         if self.visible or force_visible:
-            char = '.'
+            glyph = '.'
             ent = None
             if self.entities['actor']:
                 ent = self.entities['actor']
@@ -171,15 +171,15 @@ class Tile(object):
                 ent = self.entities['decorations'][0]
 
             if ent:
-                char, color, bgcolor = ent.draw()
+                glyph, color, bgcolor = ent.draw()
 
-            self.remembered = char
+            self.remembered = glyph
         else:
-            char = self.remembered
+            glyph = self.remembered
             color = colors.dark_gray
             bgcolor = colors.black
 
-        return (char, color, bgcolor)
+        return (glyph, color, bgcolor)
 
 
     def surrounding(self, as_dict=False):

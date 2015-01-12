@@ -8,7 +8,7 @@ class Goblin(Mob):
     name_plural = u"goblins"
     interest_level = 10
     color = colors.green
-    char = u'g'
+    glyph = u'g'
     sight_radius = 8 
     max_health = 10
     can_open_doors = True
