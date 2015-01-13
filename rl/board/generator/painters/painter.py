@@ -49,7 +49,7 @@ class Painter(object):
     
     def clear(self):
         for point in self.area.get_all_points():
-            ent = self.board[point].entities['obstacle']
+            ent = self.board[point].obstacle
             if ent:
                 self.board.remove_entity(ent)
                     
@@ -99,12 +99,12 @@ class Painter(object):
         if length > 0:
             for pos in [(x, y0) for x in range(x0, x0 + length + 1)]:
                 tile = self.board[pos]
-                self.board.remove_entity(tile.entities['obstacle'])
+                self.board.remove_entity(tile.obstacle)
                 
         else:
             for pos in [(x, y0) for x in range(x0, x0 + length - 1, -1)]:
                 tile = self.board[pos]
-                self.board.remove_entity(tile.entities['obstacle'])
+                self.board.remove_entity(tile.obstacle)
         
     def draw_vertical_corridor(self, start, end):
         x0, y0 = start
@@ -119,12 +119,12 @@ class Painter(object):
         if length > 0:
             for pos in [(x0, y) for y in range(y0, y0 + length +1)]:
                 tile = self.board[pos]
-                self.board.remove_entity(tile.entities['obstacle'])
+                self.board.remove_entity(tile.obstacle)
                 
         else:
             for pos in [(x0, y) for y in range(y0, y0 + length - 1, -1)]:
                 tile = self.board[pos]
-                self.board.remove_entity(tile.entities['obstacle'])
+                self.board.remove_entity(tile.obstacle)
 
     def smart_draw_corridor(self, start, end, blocked):
         """uses an A* search to find a corridor from start to end that does not cross any points in blocked"""
@@ -170,18 +170,62 @@ class Painter(object):
         points = search.AStarSearch(start_node, goal_node, heuristic).do_search()
 
         if not points:
-            dump = self.dumps()
-            blocked_dump = self.dumps(show=blocked)
-            raise Exception('COULD NOT CREATE CORRIDOR from %s to %s' % (start, end) + "\n\n" + "blocked: \n" + blocked_dump + "\n\n" +dump )
+            blocked_dump = self.dumps()
+            raise Exception('COULD NOT CREATE CORRIDOR from %s to %s' % (start, end) + "\n\n" + "blocked: \n" + blocked_dump)
 
-        self.board.remove_entity(self.board[start].entities['obstacle'])
-        self.board.remove_entity(self.board[end].entities['obstacle'])
+        self.board.remove_entity(self.board[start].obstacle)
+        self.board.remove_entity(self.board[end].obstacle)
 
         if points:
             for point in points:
-                self.board.remove_entity(self.board[point].entities['obstacle'])
+                self.board.remove_entity(self.board[point].obstacle)
 
 
         return points
+
+    def flood_find(self, start, points=None, is_connected=None):
+        """returns a set of points connected to the given point (including it),
+        optionally using a provided is_connection function
+        """
+        if not points:
+            points = self.area.get_empty_points()
+
+        if not is_connected:
+            is_connected = lambda point: self.board[point].obstacle is None
+
+        points = set(points)
+
+        connected = set()
+        processed = set()
+        to_process = [start]
+
+        while to_process:
+            for point in to_process[:]:
+                to_process.remove(point)
+                if point not in processed:
+                    processed.add(point)
+                    if point in points and (point == start or is_connected(point)):
+                        connected.add(point)
+                        to_process.extend(tools.adjacent(point))
+
+        return connected
+
+    def find_zones(self, points=None, is_connected = None):
+        zones = []
+        if not points:
+            points = self.area.get_empty_points()
+
+        processed = set()
+        to_process = list(points)
+
+        while to_process:
+            point = to_process[0]
+            zone = self.flood_find(point, points=points, is_connected=is_connected)
+            for p in zone:
+                to_process.remove(p)
+
+            zones.append(zone)
+
+        return zones
 
         

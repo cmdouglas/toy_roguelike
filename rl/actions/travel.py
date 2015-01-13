@@ -100,11 +100,11 @@ class DirectionalTravelAction(action.Action):
         return list(set(s))
 
     def main_feature(self, tile):
-        if not tile.entities['obstacle']:
+        if not tile.obstacle:
             return ' '
 
-        if tile.entities['obstacle'].is_wall:
+        if tile.obstacle.is_wall:
             return '#'
 
-        if tile.entities['obstacle'].is_door:
+        if tile.obstacle.is_door:
             return '+'

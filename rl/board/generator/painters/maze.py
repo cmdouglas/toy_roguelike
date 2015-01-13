@@ -14,7 +14,7 @@ class MazeCell:
         self.walls = self.border()
         self.visited = False
 
-        self.board.remove_entity(self.board[self.point].entities['obstacle'])
+        self.board.remove_entity(self.board[self.point].obstacle)
 
     def border(self):
         b = set()
@@ -28,7 +28,7 @@ class MazeCell:
 
     def remove_wall(self, point):
         if point in self.walls:
-            self.board.remove_entity(self.board[point].entities['obstacle'])
+            self.board.remove_entity(self.board[point].obstacle)
             self.walls.remove(point)
 
 class MazeCellGrid:
@@ -116,7 +116,7 @@ class MazePainter(painter.Painter):
                 points.append((x-1, y))
 
             for point in points:
-                self.board.remove_entity(self.board[point].entities['obstacle'])
+                self.board.remove_entity(self.board[point].obstacle)
 
         empty_points = self.area.get_empty_points()
 
@@ -126,7 +126,7 @@ class MazePainter(painter.Painter):
             adjacent = tools.adjacent(point)
             walls = 0
             for adjacent_point in adjacent:
-                if self.area.contains_point(adjacent_point) and self.board[adjacent_point].entities['obstacle']:
+                if self.area.contains_point(adjacent_point) and self.board[adjacent_point].obstacle:
                     walls += 1
 
             return walls == 3
@@ -134,7 +134,7 @@ class MazePainter(painter.Painter):
         def free_space_adjacent_dead_end(point):
             adjacent = tools.adjacent(point)
             for adjacent_point in adjacent:
-                if self.area.contains_point(adjacent_point) and not self.board[adjacent_point].entities['obstacle']:
+                if self.area.contains_point(adjacent_point) and not self.board[adjacent_point].obstacle:
                     return adjacent_point
 
         dead_ends = [point for point in self.area.get_empty_points() if is_dead_end(point)]

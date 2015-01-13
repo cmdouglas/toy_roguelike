@@ -50,7 +50,7 @@ class MapArea(object):
                 
     def get_empty_points(self):
         return [point for point in self.get_all_points() if (
-            not self.board[point].entities['obstacle'] and not self.board[point].entities['actor'])]
+            not self.board[point].obstacle and not self.board[point].actor)]
         
     def find_neighbor(self, other):
         for a in self.adjacent:

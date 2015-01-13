@@ -157,12 +157,12 @@ def find_path(board, start, end,
             
             # not counting an actor on the goal point as blocking.
             if actors_block and t.pos != end:
-                if not t.entities['obstacle'] and not t.entities['actor']:
+                if not t.obstacle and not t.obstacle:
                     x1, y1 = t.pos
                     x2, y2 = point
                     moves.append((x1 - x2, y1 - y2))
             else:
-                obstacle = t.entities['obstacle']
+                obstacle = t.obstacle
                 if obstacle is None or ((not doors_block) and obstacle.is_door):
                     x1, y1 = t.pos
                     x2, y2 = point

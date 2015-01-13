@@ -88,13 +88,13 @@ class MoveOrInteractCommand(PlayerCommand):
         new_pos = (x+dx, y+dy)
 
         if board.position_is_valid(new_pos) and board[new_pos].blocks_movement():
-            if board[new_pos].entities['obstacle']:
-                ob = board[new_pos].entities['obstacle']
+            if board[new_pos].obstacle:
+                ob = board[new_pos].obstacle
                 return ob.default_interaction(actor)
 
 
-            elif board[new_pos].entities['actor']:
-                other = board[new_pos].entities['actor']
+            elif board[new_pos].actor:
+                other = board[new_pos].actor
                 return interact.AttackAction(actor, other)
 
         else:
@@ -111,7 +111,7 @@ class DirectionalTravelCommand(PlayerCommand):
 
 class GetAllItemsCommand(PlayerCommand):
     def process(self, player):
-        items = player.tile.entities['items']
+        items = player.tile.items
 
         if not items:
             return

@@ -85,8 +85,8 @@ class SmoothWall(Wall):
         neighbors = self.tile.surrounding(as_dict=True)
         r = {}
         for k, v in neighbors.items():
-            if isinstance(v.entities['obstacle'], SmoothWall):
-                r[k] = v.entities['obstacle']
+            if isinstance(v.obstacle, SmoothWall):
+                r[k] = v.obstacle
 
         return r
 
@@ -96,8 +96,8 @@ class SmoothWall(Wall):
         for k, v in neighbors.items():
             #if :
             # for purposes of drawing tiles, assume unseen tiles are empty.
-            if ((isinstance(v.entities['obstacle'], SmoothWall)
-                or isinstance(v.entities['obstacle'], door.Door))
+            if ((isinstance(v.obstacle, SmoothWall)
+                or isinstance(v.obstacle, door.Door))
                 and v.has_been_seen):
                 r[k] = v
 

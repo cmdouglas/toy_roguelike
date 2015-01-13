@@ -57,16 +57,16 @@ class RectangularRoomPainter(ShapedRoomPainter):
         #draw room
         for pos in room.interior:
             tile = self.board[pos]
-            self.board.remove_entity(tile.entities['obstacle'])
+            self.board.remove_entity(tile.obstacle)
             
         for pos in room.walls:
             tile = self.board[pos]
-            self.board.remove_entity(tile.entities['obstacle'])
+            self.board.remove_entity(tile.obstacle)
             self.board.add_entity(smoothwall.SmoothWall(), pos)
 
         for pos in room.doors:
             tile = self.board[pos]
-            self.board.remove_entity(tile.entities['obstacle'])
+            self.board.remove_entity(tile.obstacle)
             self.board.add_entity(door.Door(), pos)
 
         # draw corridors
@@ -77,14 +77,14 @@ class RectangularRoomPainter(ShapedRoomPainter):
         connected_doorsteps = []
 
         for p in connections:
-            self.board.remove_entity(self.board[p].entities['obstacle'])
+            self.board.remove_entity(self.board[p].obstacle)
             doorstep = random.choice(doorsteps)
             connected_doorsteps.append(doorstep)
             self.smart_draw_corridor(p, doorstep, blocked)
 
         for p in doorsteps:
             if p not in connected_doorsteps:
-                self.board.remove_entity(self.board[p].entities['obstacle'])
+                self.board.remove_entity(self.board[p].obstacle)
                 border_point = random.choice(connections)
                 self.smart_draw_corridor(p, border_point, blocked)
             
@@ -108,16 +108,16 @@ class CircularRoomPainter(ShapedRoomPainter):
         #draw room
         for pos in room.interior:
             tile = self.board[pos]
-            self.board.remove_entity(tile.entities['obstacle'])
+            self.board.remove_entity(tile.obstacle)
 
         for pos in room.walls:
             tile = self.board[pos]
-            self.board.remove_entity(tile.entities['obstacle'])
+            self.board.remove_entity(tile.obstacle)
             self.board.add_entity(smoothwall.SmoothWall(), pos)
 
         for pos in room.doors:
             tile = self.board[pos]
-            self.board.remove_entity(tile.entities['obstacle'])
+            self.board.remove_entity(tile.obstacle)
             self.board.add_entity(door.Door(), pos)
 
         # draw corridors
@@ -128,14 +128,14 @@ class CircularRoomPainter(ShapedRoomPainter):
         connected_doorsteps = []
 
         for p in connections:
-            self.board.remove_entity(self.board[p].entities['obstacle'])
+            self.board.remove_entity(self.board[p].obstacle)
             doorstep = random.choice(doorsteps)
             connected_doorsteps.append(doorstep)
             self.smart_draw_corridor(p, doorstep, blocked)
 
         for p in doorsteps:
             if p not in connected_doorsteps:
-                self.board.remove_entity(self.board[p].entities['obstacle'])
+                self.board.remove_entity(self.board[p].obstacle)
                 border_point = random.choice(connections)
                 self.smart_draw_corridor(p, border_point, blocked)
             
@@ -161,16 +161,16 @@ class EllipticalRoomPainter(ShapedRoomPainter):
         #draw room
         for pos in room.interior:
             tile = self.board[pos]
-            self.board.remove_entity(tile.entities['obstacle'])
+            self.board.remove_entity(tile.obstacle)
 
         for pos in room.walls:
             tile = self.board[pos]
-            self.board.remove_entity(tile.entities['obstacle'])
+            self.board.remove_entity(tile.obstacle)
             self.board.add_entity(smoothwall.SmoothWall(), pos)
 
         for pos in room.doors:
             tile = self.board[pos]
-            self.board.remove_entity(tile.entities['obstacle'])
+            self.board.remove_entity(tile.obstacle)
             self.board.add_entity(door.Door(), pos)
 
         # draw corridors
@@ -181,14 +181,14 @@ class EllipticalRoomPainter(ShapedRoomPainter):
         connected_doorsteps = []
 
         for p in connections:
-            self.board.remove_entity(self.board[p].entities['obstacle'])
+            self.board.remove_entity(self.board[p].obstacle)
             doorstep = random.choice(doorsteps)
             connected_doorsteps.append(doorstep)
             self.smart_draw_corridor(p, doorstep, blocked)
 
         for p in doorsteps:
             if p not in connected_doorsteps:
-                self.board.remove_entity(self.board[p].entities['obstacle'])
+                self.board.remove_entity(self.board[p].obstacle)
                 border_point = random.choice(connections)
                 self.smart_draw_corridor(p, border_point, blocked)
 

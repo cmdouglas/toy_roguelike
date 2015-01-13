@@ -1,7 +1,7 @@
 import random
 
 from rl.entities.obstacles import wall
-from rl.util import dice
+from rl.util import tools
 from rl.board.generator.painters import painter
 from rl.board.generator import maparea
 from rl.entities.actors import goblin
@@ -35,7 +35,7 @@ class CavePainter(painter.Painter):
             num_walls += num_tiles - len(r)
             
             for p in r:
-                if self.board[p].entities['obstacle']:
+                if self.board[p].obstacle:
                     num_walls += 1
                     
             return num_walls
@@ -55,45 +55,43 @@ class CavePainter(painter.Painter):
         for i in range(4):
             for point in points:
                 if walls_in_r(r(point, 1), 1) >= 5:
-                    if not self.board[point].entities['obstacle']:
+                    if not self.board[point].obstacle:
                         self.board.add_entity(wall.Wall(), point)
                     
                 elif walls_in_r(r(point, 2), 2) <= 2:
-                    if not self.board[point].entities['obstacle']:
+                    if not self.board[point].obstacle:
                         self.board.add_entity(wall.Wall(), point)
                 else:
-                    if self.board[point].entities['obstacle'] and not point in border:
+                    if self.board[point].obstacle and not point in border:
                         
-                        self.board.remove_entity(self.board[point].entities['obstacle'])
+                        self.board.remove_entity(self.board[point].obstacle)
                         
                         
         # 3.  3 repitions of r(1) == 4 
         for i in range(3):            
             for point in points:
                 if walls_in_r(r(point, 1), 1) >= 5:
-                    if not self.board[point].entities['obstacle']:
+                    if not self.board[point].obstacle:
                         self.board.add_entity(wall.Wall(), point)
                 else:
-                    if self.board[point].entities['obstacle'] and not point in border:
-                        self.board.remove_entity(self.board[point].entities['obstacle'])
-                    
-                    
-        # sanity check!  make sure that there's room for the goblins!
-        if len(self.area.get_empty_points()) < 10:
-            self.clear()
-            return self.paint()
-        
-        # 4.  Add 1-9 goblins
-        for i in range((dice.d(1, 10) - 1)):
-            point = random.choice(self.area.get_empty_points())
-            self.board.add_entity(goblin.Goblin(), point)
+                    if self.board[point].obstacle and not point in border:
+                        self.board.remove_entity(self.board[point].obstacle)
 
 
-        for point in points:
-            if point in border and not self.board[point].entities['obstacle']:
-                self.board.add_entity(wall.Wall(), point)
+        for border_point in border:
+            if not self.board[border_point].obstacle:
+                self.board.add_entity(wall.Wall(), border_point)
+
+        #make sure zones are connected
+        zones = self.find_zones()
+        if len(zones) > 1:
+            for zone1, zone2 in tools.pairwise(zones):
+                p1 = random.choice(zone1)
+                p2 = random.choice(zone2)
+
+                self.smart_draw_corridor(p1, p2)
                         
-        #5.  Connect to the area entrances
+        # 5.  Connect to the area entrances
         point = random.choice(self.area.get_empty_points())
         
         for c in self.area.connections:

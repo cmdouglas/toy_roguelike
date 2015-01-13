@@ -19,13 +19,38 @@ class Tile(object):
             'decorations': []
         }
 
+
+    @property
+    def obstacle(self):
+        return self.entities['obstacle']
+
+    @obstacle.setter
+    def obstacle(self, val):
+        self.entities['obstacle'] = val
+
+    @property
+    def actor(self):
+        return self.entities['actor']
+
+    @actor.setter
+    def actor(self, val):
+        self.entities['actor'] = val
+
+    @property
+    def items(self):
+        return self.entities['items']
+
+    @property
+    def decorations(self):
+        return self.entities['decorations']
+
     def blocks_movement(self):
-        if (self.entities['obstacle'] and
-            self.entities['obstacle'].blocks_movement):
+        if (self.obstacle and
+            self.obstacle.blocks_movement):
             return True
 
-        if (self.entities['actor'] and
-            self.entities['actor'].blocks_movement):
+        if (self.actor and
+            self.actor.blocks_movement):
 
             return True
 
@@ -43,64 +68,64 @@ class Tile(object):
         return False
 
     def add_actor(self, ent):
-        if self.entities['actor'] is not None:
+        if self.actor is not None:
             raise EntityPlacementException("Tried to add an actor to a"
              "square that already has one")
-        self.entities['actor'] = ent
+        self.actor = ent
 
     def add_obstacle(self, ent):
-        if self.entities['obstacle'] is not None:
+        if self.obstacle is not None:
             raise EntityPlacementException("Tried to add an obstacle"
             "to a square that already has one")
-        self.entities['obstacle'] = ent
+        self.obstacle = ent
 
     def add_item(self, ent):
-        for item in self.entities['items']:
+        for item in self.items:
             if type(ent) == type(item):
                 item.stack_size += 1
                 return
 
-        self.entities['items'].append(ent)
+        self.items.append(ent)
 
     def remove_item(self, item, quantity=None):
-        for i, item_ in enumerate(self.entities['items']):
+        for i, item_ in enumerate(self.items):
             if type(item_) == type(item):
                 if quantity and quantity <= item_.stack_size:
                     item_.stack_size -= quantity
                     if item_.stack_size == 0:
-                        self.entities['items'].remove(item_)
+                        self.items.remove(item_)
 
                     return item_
 
                 else:
-                    self.entities['items'].remove(item_)
+                    self.items.remove(item_)
                     return item_
 
 
     def add_decoration(self, ent):
-        if ent not in self.entities['decorations']:
-            self.entities['decorations'].append(ent)
+        if ent not in self.decorations:
+            self.decorations.append(ent)
 
     def most_interesting_entity(self):
         most_interesting = None
         interest_level = 0
 
-        ent = self.entities['actor']
+        ent = self.actor
         if ent and ent.interest_level > interest_level:
             most_interesting = ent
             interest_level = ent.interest_level
 
-        ent = self.entities['obstacle']
+        ent = self.obstacle
         if ent and ent.interest_level > interest_level:
             most_interesting = ent
             interest_level = ent.interest_level
 
-        for ent in self.entities['items']:
+        for ent in self.items:
             if ent and ent.interest_level > interest_level:
                 most_interesting = ent
                 interest_level = ent.interest_level
 
-        for ent in self.entities['decorations']:
+        for ent in self.decorations:
             if ent and ent.interest_level > interest_level:
                 most_interesting = ent
                 interest_level = ent.interest_level
@@ -118,29 +143,29 @@ class Tile(object):
             self.add_decoration(ent)
 
     def remove_entity(self, ent):
-        if ent.can_act and self.entities['actor'] == ent:
-            self.entities['actor'] = None
-        elif ent.blocks_movement and self.entities['obstacle'] == ent:
-            self.entities['obstacle'] = None
-        elif ent.can_be_taken and ent in self.entities['items']:
+        if ent.can_act and self.actor == ent:
+            self.actor = None
+        elif ent.blocks_movement and self.obstacle == ent:
+            self.obstacle = None
+        elif ent.can_be_taken and ent in self.items:
             self.remove_item(ent)
-        elif ent in self.entities['decorations']:
-            self.entities['decorations'].remove(ent)
+        elif ent in self.decorations:
+            self.decorations.remove(ent)
 
     def remembered_glyph(self):
         glyph = '.'
         ent = None
-        if self.entities['actor']:
-            ent = self.entities['actor']
+        if self.actor:
+            ent = self.actor
 
-        elif self.entities['obstacle']:
-            ent = self.entities['obstacle']
+        elif self.obstacle:
+            ent = self.obstacle
 
-        elif self.entities['items']:
-            ent = self.entities['items'][0]
+        elif self.items:
+            ent = self.items[0]
 
-        elif self.entities['decorations']:
-            ent = self.entities['decorations'][0]
+        elif self.decorations:
+            ent = self.decorations[0]
 
         if ent:
             glyph = ent.glyph
@@ -158,17 +183,17 @@ class Tile(object):
         if self.visible or force_visible:
             glyph = '.'
             ent = None
-            if self.entities['actor']:
-                ent = self.entities['actor']
+            if self.actor:
+                ent = self.actor
 
-            elif self.entities['obstacle']:
-                ent = self.entities['obstacle']
+            elif self.obstacle:
+                ent = self.obstacle
 
-            elif self.entities['items']:
-                ent = self.entities['items'][0]
+            elif self.items:
+                ent = self.items[0]
 
-            elif self.entities['decorations']:
-                ent = self.entities['decorations'][0]
+            elif self.decorations:
+                ent = self.decorations[0]
 
             if ent:
                 glyph, color, bgcolor = ent.draw()
@@ -213,16 +238,16 @@ class Tile(object):
 
 
     def on_first_seen(self):
-        if self.entities['actor']:
-            self.entities['actor'].on_first_seen()
+        if self.actor:
+            self.actor.on_first_seen()
 
-        if self.entities['obstacle']:
-            self.entities['obstacle'].on_first_seen()
+        if self.obstacle:
+            self.obstacle.on_first_seen()
 
-        for item in self.entities['items']:
+        for item in self.items:
             item.on_first_seen()
 
-        for decoration in self.entities['decorations']:
+        for decoration in self.decorations:
             decoration.on_first_seen()
 
     def adjacent(self, as_dict=False):
