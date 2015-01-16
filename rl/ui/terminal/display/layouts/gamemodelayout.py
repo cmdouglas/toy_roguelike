@@ -14,7 +14,7 @@ class GameModeLayout(Layout):
 
     def refresh(self):
         console_width = term.width
-        console_height = 5
+        console_height = 4
 
         hud_width = 44
         hud_height = (term.height - console_height) - 1

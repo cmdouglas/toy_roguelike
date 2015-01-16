@@ -11,6 +11,9 @@ from rl.board.generator.painters import cave
 from rl.board.generator.painters import maze
 from rl.board.generator.painters import roomcluster
 
+from rl.entities.actors.goblin import Goblin
+from rl.entities.items.potion import HealingPotion
+
     
 class PartitionStrategy(object):
     pass
@@ -132,9 +135,21 @@ class Generator(object):
         
     def generate(self, width=80, height=80):
         b = board.Board(width, height)
-        b.areas = self.partition_strategy.partition(b, 16, 16)
+        b.areas = self.partition_strategy.partition(b, 12, 12)
         self.connection_strategy.connect(b.areas)
         self.painter_strategy.paint(b)
+
+        for i in range(20):
+            area = random.choice(b.areas)
+            point = random.choice(area.get_empty_points())
+
+            b.add_entity(Goblin(), point)
+
+        for i in range(5):
+            area = random.choice(b.areas)
+            point = random.choice(area.get_empty_points())
+
+            b.add_entity(HealingPotion(), point)
         
         return b
         

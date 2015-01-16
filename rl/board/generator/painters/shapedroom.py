@@ -87,9 +87,8 @@ class RectangularRoomPainter(ShapedRoomPainter):
                 self.board.remove_entity(self.board[p].obstacle)
                 border_point = random.choice(connections)
                 self.smart_draw_corridor(p, border_point, blocked)
-            
-        self.board[center].add_item(potion.HealingPotion())
-            
+
+
 class CircularRoomPainter(ShapedRoomPainter):
     def paint(self):
         self.fill(wall.Wall)
@@ -138,9 +137,7 @@ class CircularRoomPainter(ShapedRoomPainter):
                 self.board.remove_entity(self.board[p].obstacle)
                 border_point = random.choice(connections)
                 self.smart_draw_corridor(p, border_point, blocked)
-            
-        self.board[center].add_item(potion.HealingPotion())
-            
+
             
 class EllipticalRoomPainter(ShapedRoomPainter):
 
@@ -192,6 +189,4 @@ class EllipticalRoomPainter(ShapedRoomPainter):
                 border_point = random.choice(connections)
                 self.smart_draw_corridor(p, border_point, blocked)
 
-        self.board[center].add_item(potion.HealingPotion())
-        
 

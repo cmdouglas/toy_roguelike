@@ -46,7 +46,7 @@ class CavePainter(painter.Painter):
         border = self.get_border()
         
         for point in points:
-            if point in border:
+            if point in border and not self.board[point].obstacle:
                 self.board.add_entity(wall.Wall(), point)
             elif random.randrange(100) < 40:
                 self.board.add_entity(wall.Wall(), point)
@@ -86,13 +86,17 @@ class CavePainter(painter.Painter):
         zones = self.find_zones()
         if len(zones) > 1:
             for zone1, zone2 in tools.pairwise(zones):
-                p1 = random.choice(zone1)
-                p2 = random.choice(zone2)
+                p1 = random.choice(list(zone1))
+                p2 = random.choice(list(zone2))
 
                 self.smart_draw_corridor(p1, p2)
                         
         # 5.  Connect to the area entrances
-        point = random.choice(self.area.get_empty_points())
+        empty_points = self.area.get_empty_points()
+        if not empty_points:
+            return self.paint()
+
+        point = random.choice(empty_points)
         
         for c in self.area.connections:
             #print "connecting point %s to %s" % (rectangle_center, pos)

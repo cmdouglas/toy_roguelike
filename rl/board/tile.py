@@ -137,7 +137,7 @@ class Tile(object):
             self.add_actor(ent)
         elif ent.blocks_movement:
             self.add_obstacle(ent)
-        elif ent.can_be_taken:
+        elif (ent.usable or ent.equippable):
             self.add_item(ent)
         else:
             self.add_decoration(ent)
