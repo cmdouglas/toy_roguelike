@@ -89,7 +89,7 @@ class CavePainter(painter.Painter):
                 p1 = random.choice(list(zone1))
                 p2 = random.choice(list(zone2))
 
-                self.smart_draw_corridor(p1, p2)
+                self.smart_draw_corridor(p1, p2, [])
                         
         # 5.  Connect to the area entrances
         empty_points = self.area.get_empty_points()
