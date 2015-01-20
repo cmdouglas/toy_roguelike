@@ -1,9 +1,10 @@
 Bugs
- - Make smoothwalls update their glyphs correctly
+ - Make smoothwalls update their glyphs correctly (halfway done)
  - Goblins don't seem to be able to open doors
+ - Objects of interest sometimes shows phantom objects -- is it's list not getting updated correctly?
 
 Refactoring:
- - implement subscriber/subject for (at first) the game console.  Try not to make a huge mess.
+ - implement subscriber/subject for the game console (at least). Try not to make a huge mess.
  - Do something about the global variables :(
 
 Features:
