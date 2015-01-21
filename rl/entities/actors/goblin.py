@@ -3,16 +3,17 @@ from rl.ui import colors
 from rl.entities.actors.mob import Mob
 from rl.ai.basic import BasicAI
 
+
 class Goblin(Mob):
-    name=u"goblin"
+    name = u"goblin"
     name_plural = u"goblins"
     interest_level = 10
     color = colors.green
     glyph = u'g'
-    sight_radius = 8 
+    sight_radius = 8
     max_health = 10
     can_open_doors = True
-    
+
     def __init__(self):
         self.health = self.max_health
         self.intelligence = BasicAI(self)
@@ -23,9 +24,9 @@ class Goblin(Mob):
             "snores.",
             "mumbles something in its sleep."
         ])
-        
+
         self.emote(message)
-        
+
     def idle_emote(self):
         message = random.choice([
             "growls.",
@@ -34,5 +35,5 @@ class Goblin(Mob):
             "mutters something unintelligable.",
             "sticks its tongue out."
         ])
-    
+
         self.emote(message)
