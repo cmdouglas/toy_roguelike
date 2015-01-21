@@ -3,6 +3,7 @@ from termapp.formatstring import FormatString
 
 t = term.term
 
+
 class Layout(object):
     def __init__(self):
         self.panes = {}
@@ -14,8 +15,10 @@ class Layout(object):
 
         return self.container.render()
 
+
 class PaneException(Exception):
     pass
+
 
 class Pane(object):
     min_width = 0
@@ -25,7 +28,8 @@ class Pane(object):
 
         if height < self.min_height or width < self.min_width:
             raise PaneException(
-                "Trying to create a pane that is too small: Minimum: {min_width} x {min_height}, "
+                "Trying to create a pane that is too small:"
+                " Minimum: {min_width} x {min_height}, "
                 "received {width} x {height}".format(
                     min_width=self.min_width,
                     min_height=self.min_height,
@@ -45,7 +49,10 @@ class Pane(object):
         # make sure it fits in the pane
         assert l < self.height
         assert l >= 0
-        assert s.width() <= self.width, "too_wide: {width} > {max}".format(width=s.width(), max=self.width)
+        assert s.width() <= self.width, "too_wide: {width} > {max}".format(
+            width=s.width(),
+            max=self.width
+        )
 
         self.lines[l] = s.ljust(self.width)
 
@@ -57,6 +64,12 @@ class Pane(object):
     def refresh(self):
         pass
 
+    def clear(self):
+        self.lines = [FormatString().simple("") for line in range(self.height)]
+        if self.subpanes:
+            for pane in self.subpanes.values():
+                pane.clear()
+
     def render(self):
         self.refresh()
 
@@ -66,11 +79,13 @@ class Pane(object):
                 subpane.render()
 
             for i, line in enumerate(self.lines):
-                line = FormatString.join("", self.get_line_from_subpanes(i, self.subpanes))
+                line = FormatString.join(
+                    "",
+                    self.get_line_from_subpanes(i, self.subpanes)
+                )
                 self.lines[i] = line
 
         return self.lines
-
 
     def get_line_from_subpanes(self, line_number, subpanes):
         r = []
@@ -83,7 +98,7 @@ class Pane(object):
                 panes_on_line[pos] = pane
 
         # get the appropriate line for each pane, sorted by their x position
-        for pos in sorted(panes_on_line.keys(), key=lambda p:p[0]):
+        for pos in sorted(panes_on_line.keys(), key=lambda p: p[0]):
             x, y = pos
             pane = panes_on_line[pos]
             # print "pane height: %d" % (pane.height,)
@@ -93,5 +108,3 @@ class Pane(object):
             r.append(line)
 
         return r
-
-
