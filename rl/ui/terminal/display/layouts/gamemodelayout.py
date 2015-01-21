@@ -7,6 +7,7 @@ from rl.ui.terminal.display.panes import hud
 
 from rl import globals as G
 
+
 class GameModeLayout(Layout):
     def __init__(self):
         super(GameModeLayout, self).__init__()
@@ -19,8 +20,8 @@ class GameModeLayout(Layout):
         hud_width = 44
         hud_height = (term.height - console_height) - 1
 
-        viewport_width = term.width - (hud_width + 2)
-        viewport_height = (term.height - console_height) - 1
+        viewport_width = min((term.width - (hud_width + 2), 80))
+        viewport_height = min(((term.height - console_height) - 1, 80))
 
         viewport_pos = (0, 0)
         hud_pos = (viewport_width, 0)
@@ -39,4 +40,3 @@ class GameModeLayout(Layout):
     def render(self):
         self.board_pane.center = G.world.player.tile.pos
         return super().render()
-
