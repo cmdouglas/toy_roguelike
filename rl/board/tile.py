@@ -2,8 +2,12 @@ import logging
 
 from rl.ui import colors
 
+logging.debug('board.py loaded')
+
+
 class EntityPlacementException(Exception):
     pass
+
 
 class Tile(object):
     def __init__(self, board, pos):
@@ -18,7 +22,6 @@ class Tile(object):
             'items': [],
             'decorations': []
         }
-
 
     @property
     def obstacle(self):
@@ -45,12 +48,10 @@ class Tile(object):
         return self.entities['decorations']
 
     def blocks_movement(self):
-        if (self.obstacle and
-            self.obstacle.blocks_movement):
+        if (self.obstacle and self.obstacle.blocks_movement):
             return True
 
-        if (self.actor and
-            self.actor.blocks_movement):
+        if (self.actor and self.actor.blocks_movement):
 
             return True
 
@@ -69,14 +70,16 @@ class Tile(object):
 
     def add_actor(self, ent):
         if self.actor is not None:
-            raise EntityPlacementException("Tried to add an actor to a"
-             "square that already has one")
+            raise EntityPlacementException(
+                "Tried to add an actor to a square that already has one"
+            )
         self.actor = ent
 
     def add_obstacle(self, ent):
         if self.obstacle is not None:
-            raise EntityPlacementException("Tried to add an obstacle"
-            "to a square that already has one")
+            raise EntityPlacementException(
+                "Tried to add an obstacle to a square that already has one"
+            )
         self.obstacle = ent
 
     def add_item(self, ent):
@@ -100,7 +103,6 @@ class Tile(object):
                 else:
                     self.items.remove(item_)
                     return item_
-
 
     def add_decoration(self, ent):
         if ent not in self.decorations:
@@ -206,21 +208,20 @@ class Tile(object):
 
         return (glyph, color, bgcolor)
 
-
     def surrounding(self, as_dict=False):
         """returns up to 8 surrounding tiles, fewer if called from an
         edge or corner"""
         x, y = self.pos
 
         neighbors = [
-            (x, y-1),   # north
-            (x+1, y-1), # northeast
-            (x+1, y),   # east
-            (x+1, y+1), # southeast
-            (x, y+1),   # south
-            (x-1, y+1), # southwest
-            (x-1, y),   # west
-            (x-1, y-1), # northwest
+            (x, y-1),    # north
+            (x+1, y-1),  # northeast
+            (x+1, y),    # east
+            (x+1, y+1),  # southeast
+            (x, y+1),    # south
+            (x-1, y+1),  # southwest
+            (x-1, y),    # west
+            (x-1, y-1),  # northwest
         ]
 
         if as_dict:
@@ -233,9 +234,10 @@ class Tile(object):
 
             return r
 
-        return [self.board[neighbor] for neighbor in neighbors
-            if self.board.position_is_valid(neighbor)]
-
+        return [
+            self.board[neighbor] for neighbor in neighbors
+            if self.board.position_is_valid(neighbor)
+        ]
 
     def on_first_seen(self):
         if self.actor:
@@ -272,5 +274,7 @@ class Tile(object):
 
             return r
 
-        return [self.board[neighbor] for neighbor in neighbors
-            if self.board.position_is_valid(neighbor)]
+        return [
+            self.board[neighbor] for neighbor in neighbors
+            if self.board.position_is_valid(neighbor)
+        ]
