@@ -2,9 +2,10 @@ import random
 import math
 
 from rl.entities.obstacles.wall import Wall
-from rl.util import dice, tools
+from rl.util import tools
 from rl.board.generator.painters import painter
 from rl.board.generator import maparea
+
 
 class MazeCell:
     def __init__(self, point, board, area):
@@ -31,6 +32,7 @@ class MazeCell:
             self.board.remove_entity(self.board[point].obstacle)
             self.walls.remove(point)
 
+
 class MazeCellGrid:
     def __init__(self, board, area):
         self.board = board
@@ -43,7 +45,7 @@ class MazeCellGrid:
         while y < ul_y + self.area.height - 1:
             row = []
             x = ul_x + 1
-            while x < ul_x + self.area.width -1:
+            while x < ul_x + self.area.width - 1:
                 row.append(MazeCell((x, y), self.board, self.area))
                 x += 2
             self.rows.append(row)
@@ -63,7 +65,11 @@ class MazeCellGrid:
 
     def unvisited_neighbors(self, pos):
         neighbors = self.neighbors(pos)
-        return [(neighbor, self.get_cell(neighbor)) for neighbor in neighbors if self.get_cell(neighbor).visited == False]
+        return [
+            (neighbor, self.get_cell(neighbor))
+            for neighbor in neighbors
+            if self.get_cell(neighbor).visited is False
+        ]
 
     def get_cell(self, pos):
         x, y = pos
@@ -79,7 +85,6 @@ class MazeCellGrid:
 class MazePainter(painter.Painter):
     def paint(self):
         self.fill(Wall)
-
 
         cellgrid = MazeCellGrid(self.board, self.area)
         pos, start = cellgrid.random_cell()
@@ -101,7 +106,6 @@ class MazePainter(painter.Painter):
             else:
                 stack.pop()
 
-
         for connection in self.area.connections:
             x, y = connection['point']
             points = [(x, y)]
@@ -120,13 +124,16 @@ class MazePainter(painter.Painter):
 
         empty_points = self.area.get_empty_points()
 
-        to_fill = random.randrange(int(math.sqrt(len(empty_points))), int(len(empty_points) / 2))
+        to_fill = random.randrange(
+            int(math.sqrt(len(empty_points))), int(len(empty_points) / 2)
+        )
 
         def is_dead_end(point):
             adjacent = tools.adjacent(point)
             walls = 0
             for adjacent_point in adjacent:
-                if self.area.contains_point(adjacent_point) and self.board[adjacent_point].obstacle:
+                if (self.area.contains_point(adjacent_point)
+                   and self.board[adjacent_point].obstacle):
                     walls += 1
 
             return walls == 3
@@ -134,10 +141,14 @@ class MazePainter(painter.Painter):
         def free_space_adjacent_dead_end(point):
             adjacent = tools.adjacent(point)
             for adjacent_point in adjacent:
-                if self.area.contains_point(adjacent_point) and not self.board[adjacent_point].obstacle:
+                if (self.area.contains_point(adjacent_point)
+                   and not self.board[adjacent_point].obstacle):
                     return adjacent_point
 
-        dead_ends = [point for point in self.area.get_empty_points() if is_dead_end(point)]
+        dead_ends = [
+            point for point in self.area.get_empty_points()
+            if is_dead_end(point)
+        ]
         for _ in range(to_fill):
             if not dead_ends:
                 break
@@ -145,14 +156,7 @@ class MazePainter(painter.Painter):
             dead_ends.remove(dead_end)
             self.board.add_entity(Wall(), dead_end)
 
-
             new_dead_end = free_space_adjacent_dead_end(dead_end)
 
             if new_dead_end and is_dead_end(new_dead_end):
                 dead_ends.append(new_dead_end)
-
-
-
-
-
-
