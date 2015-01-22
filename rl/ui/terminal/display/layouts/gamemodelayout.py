@@ -1,3 +1,5 @@
+import logging
+
 from termapp.layout import Layout
 from termapp.term import term
 
@@ -6,6 +8,8 @@ from rl.ui.terminal.display.panes import console
 from rl.ui.terminal.display.panes import hud
 
 from rl import globals as G
+
+logger = logging.getLogger('rl')
 
 
 class GameModeLayout(Layout):

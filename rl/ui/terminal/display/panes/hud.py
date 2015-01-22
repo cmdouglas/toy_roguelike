@@ -148,10 +148,10 @@ class HUDPane(Pane):
     def draw_objects_of_interest(self):
         hud = HUD()
         oois = hud.objects_of_interest(G.world.board)
+        # logger.debug(oois)
 
         self.ooi_pane.clear()
 
-        logger.debug("ooi pane lines: " + str(self.ooi_pane.lines))
         self.ooi_pane.set_line(
             0, FormatString().simple("You can see:", color=colors.cyan)
         )

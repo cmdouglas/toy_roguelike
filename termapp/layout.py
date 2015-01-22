@@ -65,7 +65,9 @@ class Pane(object):
         pass
 
     def clear(self):
-        self.lines = [FormatString().simple("") for line in range(self.height)]
+        for i in range(len(self.lines)):
+            self.set_line(i, "")
+
         if self.subpanes:
             for pane in self.subpanes.values():
                 pane.clear()
