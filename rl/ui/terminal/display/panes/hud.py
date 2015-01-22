@@ -1,9 +1,13 @@
+import logging
+
 from termapp.layout import Pane
 from termapp.formatstring import FormatString
 
 from rl import globals as G
 from rl.ui.hud import HUD
 from rl.ui import colors
+
+logger = logging.getLogger('rl')
 
 
 class HUDPane(Pane):
@@ -147,6 +151,7 @@ class HUDPane(Pane):
 
         self.ooi_pane.clear()
 
+        logger.debug("ooi pane lines: " + str(self.ooi_pane.lines))
         self.ooi_pane.set_line(
             0, FormatString().simple("You can see:", color=colors.cyan)
         )

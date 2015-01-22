@@ -6,6 +6,9 @@ from rl.entities.obstacles import door
 
 from rl import globals as G
 
+logger = logging.getLogger('rl')
+
+
 class SmoothWall(Wall):
     """A wall that updates its glyph based on surrounding tiles"""
     color = colors.dark_gray
@@ -80,7 +83,7 @@ class SmoothWall(Wall):
             return self.glyph_pillar
 
     def update_glyph(self, vantage_point=None):
-        # logging.debug('Updating Wall at %s', self.tile.pos)
+        # logger.debug('Updating Wall at %s', self.tile.pos)
 
         filled = list(self.adjoining_room_border_tiles().keys())
         glyph = self.choose_glyph(filled)
@@ -338,7 +341,7 @@ class SmoothWall(Wall):
                 tdirs = t(dirs)
 
             if (contains_all(tdirs, pattern['filled']) and
-                contains_none(tdirs, pattern['empty'])):
+               contains_none(tdirs, pattern['empty'])):
                 return True
 
         return False

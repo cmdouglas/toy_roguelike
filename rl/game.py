@@ -1,9 +1,10 @@
-
 import logging
+
 from rl import globals as G
 from rl.ui.terminal import TerminalUI
 from rl.world import World
 
+logger = logging.getLogger('rl')
 
 
 class Game(object):

@@ -9,6 +9,9 @@ from rl.actions import travel
 from rl.actions import wait
 from rl.actions import item
 
+logger = logging.getLogger('rl')
+
+
 def get_user_command(keypress):
     term = G.ui.term
     commands = {
@@ -71,6 +74,7 @@ class PlayerCommand(GameModeCommand):
     """A command that is passed on to the player"""
     pass
 
+
 # game mode commands
 class WaitCommand(PlayerCommand):
     def process(self, actor):
@@ -87,11 +91,11 @@ class MoveOrInteractCommand(PlayerCommand):
         dx, dy = self.d
         new_pos = (x+dx, y+dy)
 
-        if board.position_is_valid(new_pos) and board[new_pos].blocks_movement():
+        if (board.position_is_valid(new_pos)
+           and board[new_pos].blocks_movement()):
             if board[new_pos].obstacle:
                 ob = board[new_pos].obstacle
                 return ob.default_interaction(actor)
-
 
             elif board[new_pos].actor:
                 other = board[new_pos].actor
@@ -119,6 +123,7 @@ class GetAllItemsCommand(PlayerCommand):
         for item_ in items:
             player.intelligence.add_command(GetItemCommand(item_))
 
+
 class GetItemCommand(PlayerCommand):
     def __init__(self, item):
         self.item = item
@@ -129,7 +134,7 @@ class GetItemCommand(PlayerCommand):
 
 class UseItemCommand(PlayerCommand):
     def __init__(self, item):
-        self.item=item
+        self.item = item
 
     def process(self, player):
         return item.UseItemAction(G.world.player, self.item)
@@ -159,6 +164,7 @@ class SelectItemToUseCommand(GameModeCommand):
             )
         )
 
+
 class ViewInventoryCommand(GameModeCommand):
     def process(self, mode):
         items = G.world.player.inventory
@@ -168,6 +174,7 @@ class ViewInventoryCommand(GameModeCommand):
                 empty="You have no items."
             )
         )
+
 
 class ExitGameCommand(GameModeCommand):
     def process(self, mode):

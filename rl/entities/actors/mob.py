@@ -4,7 +4,7 @@ from rl.entities.actors import Actor
 from rl.ui import colors
 from rl.util import dice, tools
 
-logging.debug("mob.py loaded")
+logger = logging.getLogger('rl')
 
 
 class Mob(Actor):

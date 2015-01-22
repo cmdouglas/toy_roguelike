@@ -2,7 +2,7 @@ import logging
 
 from rl.ui import colors
 
-logging.debug('board.py loaded')
+logger = logging.getLogger('rl')
 
 
 class EntityPlacementException(Exception):

@@ -3,6 +3,9 @@ import logging
 from rl import globals as G
 from rl.ui import commands
 
+logger = logging.getLogger('rl')
+
+
 def get_user_command(keypress):
 
     term = G.ui.term
@@ -20,6 +23,7 @@ def get_user_command(keypress):
         code = ord(str(keypress))
 
     return commands.get(code, SelectCommand(code))
+
 
 class MenuModeCommand(commands.Command):
     pass
@@ -45,7 +49,7 @@ class ExitMenuCommand(MenuModeCommand):
 
 class SelectCommand(MenuModeCommand):
     def __init__(self, key=None):
-        self.key=key
+        self.key = key
 
     def process(self, menu):
         selected = menu.get_selected(key=self.key)
