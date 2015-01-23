@@ -51,7 +51,7 @@ def get_user_command(keypress):
         ord(','): GetAllItemsCommand(),
         ord('i'): ViewInventoryCommand(),
         ord('a'): SelectItemToUseCommand(),
-        ord('d'): DropItemsCommand(),
+        ord('d'): SelectItemToDropCommand(),
 
         # quit
         ord('Q'): ExitGameCommand()
@@ -129,7 +129,7 @@ class GetItemCommand(PlayerCommand):
         self.item = item
 
     def process(self, player):
-        return item.GetItemAction(player, player.tile, self.item)
+        return item.GetItemAction(player, self.item)
 
 
 class UseItemCommand(PlayerCommand):
@@ -140,9 +140,12 @@ class UseItemCommand(PlayerCommand):
         return item.UseItemAction(G.world.player, self.item)
 
 
-class DropItemsCommand(PlayerCommand):
+class DropItemCommand(PlayerCommand):
+    def __init__(self, items):
+        self.items = items
+
     def process(self, player):
-        pass
+        return item.DropItemAction(G.world.player, self.items)
 
 
 ##
@@ -172,6 +175,23 @@ class ViewInventoryCommand(GameModeCommand):
             menu.SingleSelectMenuMode(
                 items,
                 empty="You have no items."
+            )
+        )
+
+
+class SelectItemToDropCommand(GameModeCommand):
+    def process(self, mode):
+        player = G.world.player
+
+        def on_select(item):
+            player.intelligence.add_command(DropItemCommand(item))
+
+        items = G.world.player.inventory
+        mode.enter_child_mode(
+            menu.SingleSelectMenuMode(
+                items,
+                empty="You have no items.",
+                selected_callback=on_select
             )
         )
 
