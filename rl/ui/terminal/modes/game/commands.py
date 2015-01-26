@@ -161,7 +161,7 @@ class SelectItemToUseCommand(GameModeCommand):
         items = G.world.player.inventory
         mode.enter_child_mode(
             menu.SingleSelectMenuMode(
-                items,
+                items.to_dict(),
                 empty="You have no items.",
                 selected_callback=on_select
             )
@@ -173,7 +173,7 @@ class ViewInventoryCommand(GameModeCommand):
         items = G.world.player.inventory
         mode.enter_child_mode(
             menu.SingleSelectMenuMode(
-                items,
+                items.to_dict(),
                 empty="You have no items."
             )
         )
@@ -189,7 +189,7 @@ class SelectItemToDropCommand(GameModeCommand):
         items = G.world.player.inventory
         mode.enter_child_mode(
             menu.SingleSelectMenuMode(
-                items,
+                items.to_dict(),
                 empty="You have no items.",
                 selected_callback=on_select
             )

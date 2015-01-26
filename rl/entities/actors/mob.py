@@ -1,8 +1,9 @@
 import logging
+
 from rl import globals as G
 from rl.entities.actors import Actor
 from rl.ui import colors
-from rl.util import dice, tools
+from rl.util import dice, tools, collections
 
 logger = logging.getLogger('rl')
 
@@ -14,7 +15,7 @@ class Mob(Actor):
     timeout = 0
     queued_actions = []
     events_to_process = None
-    inventory = []
+    inventory = collections.KeyedStackableBag()
     name = ""
     intelligence = None
 
@@ -119,42 +120,5 @@ class Mob(Actor):
         self.emote("dies.", color=colors.dark_red)
         G.world.board.remove_entity(self)
 
-    def add_to_inventory(self, item):
-        # first check and see if it's already there
-        inventory_keys = list(
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        )
-        for key, item_ in self.inventory.items():
-            if type(item) == type(item_):
-                self.inventory[key].stack_size += 1
-                return
-
-        new_key = None
-        for k in inventory_keys:
-            if k in self.inventory:
-                continue
-
-            new_key = k
-            break
-
-        if not new_key:
-            raise InventoryFullException("inventory full")
-
-        self.inventory[new_key] = item
-
-    def remove_from_inventory(self, item):
-        for key, item_ in self.inventory.items():
-            if type(item) == type(item_):
-                self.inventory[key].stack_size -= 1
-
-                if self.inventory[key].stack_size < 1:
-                    self.inventory.pop(key)
-
-                return
-
     def __str__(self):
         return "%s: (%s)" % (self.__class__, self.timeout)
-
-
-class InventoryFullException(Exception):
-    pass

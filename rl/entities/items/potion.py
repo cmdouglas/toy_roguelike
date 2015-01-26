@@ -1,12 +1,12 @@
 from rl import globals as G
-from rl.entities import entity
 from rl.ui import colors
 from rl.util import dice
+from rl.entities import items
 
 
-class Potion(entity.Item):
+class Potion(items.Item):
     usable = True
-    glyph = u'!'
+    glyph = '!'
 
     def use_effect(self, actor):
         pass
@@ -28,4 +28,4 @@ class HealingPotion(Potion):
         actor.heal(dice.d(2, 8))
         G.ui.console.add_message('You feel better.', colors.bright_yellow)
 
-        actor.remove_from_inventory(self)
+        actor.inventory.remove(item=self)

@@ -25,7 +25,7 @@ class GetItemAction(Action):
 
     def do_action(self):
         self.actor.tile.remove_item(self.item)
-        self.actor.add_to_inventory(self.item)
+        self.actor.inventory.add(self.item)
         G.ui.console.add_message("You pick up %s" % self.item.describe())
         return True, True
 
@@ -39,6 +39,7 @@ class DropItemAction(Action):
         return 1000
 
     def do_action(self):
-        self.actor.remove_from_inventory(self.item)
-        self.actor.tile.add_item(self.item)
+        item = self.actor.inventory.remove(item=self.item)
+        self.actor.tile.add_item(item)
+        G.ui.console.add_message("You drop %s." % item.describe())
         return True, True
