@@ -1,5 +1,6 @@
 from rl.board.generator import generator
 
+
 class World:
     def __init__(self):
         self.board = None
@@ -10,6 +11,7 @@ class World:
     def setup(self):
         self.board = generator.Generator().generate()
         self.player = self.board.spawn_player()
+        self.first_tick = True
 
     def tick(self):
         if not self.current_actor:
@@ -22,10 +24,17 @@ class World:
         success, changed = self.current_actor.process_turn()
 
         if success:
-            self.actors.sort(key=lambda actor:actor.timeout)
+            self.actors.sort(key=lambda actor: actor.timeout)
             self.current_actor = self.actors[0]
 
-        return self.current_actor is self.player or (success and changed)
+        should_redraw = (success and changed)
+
+        # always tell the UI to redraw on the first tick.
+        if self.first_tick:
+            should_redraw = True
+            self.first_tick = False
+
+        return should_redraw
 
     def update(self):
         if not self.board:
@@ -36,3 +45,5 @@ class World:
 
         self.current_actor = self.actors[0]
 
+    def is_players_turn(self):
+        return self.current_actor == self.player

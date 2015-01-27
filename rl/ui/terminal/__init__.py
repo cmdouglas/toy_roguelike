@@ -3,6 +3,7 @@ from termapp import application
 from rl.ui.terminal.modes.game import GameMode
 from rl.ui.console import Console
 
+
 class TerminalUI(application.TerminalApplication):
     def __init__(self):
         super().__init__()

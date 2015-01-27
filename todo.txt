@@ -1,7 +1,6 @@
 Bugs
  - Make smoothwalls update their glyphs correctly (halfway done)
  - Goblins don't seem to be able to open doors
- - Objects of interest sometimes shows phantom objects -- is it's list not getting updated correctly?
 
 Refactoring:
  - implement subscriber/subject for the game console (at least). Try not to make a huge mess.
@@ -9,7 +8,7 @@ Refactoring:
 
 Features:
  Functionality
-  - Dying/Game over
+  - Dying/Game Over
   - Maybe some winning condition?
   - Save/Load
 
@@ -24,7 +23,7 @@ Features:
 
  Usability
   - Autoexplore/Autotravel
-  - "look" mode
+  - "look/explore" mode
 
 Pipedreams:
  - Tiles

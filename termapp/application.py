@@ -1,8 +1,8 @@
 import asyncio
 import blessed
 
-
 t = blessed.Terminal()
+
 
 class ScreenLine:
     def __init__(self):
@@ -17,7 +17,7 @@ class Screen:
     def clear(self):
         for line in self.lines:
             line.text = " " * t.width
-            line.dirty=True
+            line.dirty = True
 
     def refresh(self):
         for y, line in enumerate(self.lines):
@@ -44,7 +44,7 @@ class StopApplication(Exception):
 class TerminalApplication:
     def __init__(self, config=None):
         if not config:
-            config={}
+            config = {}
         self.term = t
         self.screen = Screen()
         self.loop = asyncio.get_event_loop()
@@ -80,8 +80,9 @@ class TerminalApplication:
 
                     yield from keyboard_input()
                     frame = self.newframe()
-                    self.screen.update(frame)
-                    self.screen.refresh()
+                    if frame:
+                        self.screen.update(frame)
+                        self.screen.refresh()
 
                     wait = max(last_frame_at+dt - self.loop.time(), 0)
                     yield from asyncio.sleep(wait)
@@ -90,7 +91,9 @@ class TerminalApplication:
                 return
 
         self.on_start()
-        with self.term.fullscreen(), self.term.hidden_cursor(), self.term.cbreak():
+        t = self.term
+
+        with t.fullscreen(), t.hidden_cursor(), t.cbreak():
             self.loop.run_until_complete(animate())
 
         self.on_end()
