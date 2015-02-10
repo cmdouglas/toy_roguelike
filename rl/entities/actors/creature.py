@@ -86,8 +86,11 @@ class Creature(Actor):
         attack_power = self.str
         damage = dice.d(1, attack_power)
 
-        result = other.take_damage(damage)
-        return [AttackEvent(self, other)].extend(result)
+        result = [AttackEvent(self, other)]
+        attack_result = other.take_damage(damage, self)
+        result.extend(attack_result)
+
+        return result
 
     def heal(self, amount):
         self.health += amount

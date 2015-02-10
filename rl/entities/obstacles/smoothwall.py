@@ -27,7 +27,7 @@ class SmoothWall(Wall):
     glyph_cross = glyphs.cross
     should_update = False
     description = 'The smooth stone wall is solid and unyielding.'
-    short_description = "smooth stone wall"
+    name = "smooth stone wall"
 
     def on_first_seen(self):
         self.should_update = True

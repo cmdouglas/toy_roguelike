@@ -13,7 +13,9 @@ class UseItemAction(Action):
 
     def do_action(self):
         use_events = self.item.use_effect(self.actor)
-        return [UseItemEvent(self.actor, self.item)].extend(use_events)
+        r = [UseItemEvent(self.actor, self.item)]
+        r.extend(use_events)
+        return r
 
 class GetItemAction(Action):
     def __init__(self, actor, item):

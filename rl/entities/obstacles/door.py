@@ -12,7 +12,7 @@ class Door(entity.Obstacle):
     is_door = True
     is_open = False
     description = "The ancient door is solidly closed."
-    short_description = "ancient door"
+    name = "ancient door"
 
     def open(self):
         self.is_open = True

@@ -9,3 +9,4 @@ class Wall(Obstacle):
     blocks_vision=True
     is_wall = True
     description = 'The rough rock wall is solid and unyielding.'
+    name = "rock wall"

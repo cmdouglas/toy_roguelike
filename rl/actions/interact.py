@@ -1,7 +1,10 @@
+import logging
 from rl.actions.action import Action
 from rl.events.interactions.combat import AttackEvent
 from rl.events.interactions.misc import ExamineEvent, OpenEvent, CloseEvent
 
+
+logger = logging.getLogger('rl')
 
 class AttackAction(Action):
     def __init__(self, actor, other):
@@ -13,7 +16,11 @@ class AttackAction(Action):
             
     def do_action(self):
         attack_result = self.actor.attack(self.other)
-        return [AttackEvent(self.actor, self.other)].extend(attack_result)
+        logger.debug(attack_result)
+        r = [AttackEvent(self.actor, self.other)]
+        r.extend(attack_result)
+
+        return r
 
 
 class ExamineAction(Action):

@@ -18,14 +18,6 @@ class WanderTactics(tactics.Tactics):
         self.wait_timer = random.randrange(self.max_wait) + 1
 
     def do_tactics(self, actor, world):
-        if (primitives.can_see(actor, world.player, world)
-           and dice.one_chance_in(2)):
-            actor.emote('points at you and shouts!')
-            raise events.SeeHostileEvent()
-
-        if dice.one_chance_in(10):
-            actor.idle_emote()
-
         if not self.destination:
             self.choose_destination(actor, world)
             self.compute_path(actor, world)
@@ -68,7 +60,7 @@ class WanderTactics(tactics.Tactics):
                         self.destination = dest
                         self.compute_path(actor, world)
 
-        return wait.WaitAction(actor)
+                return wait.WaitAction(actor)
 
     def should_stop(self):
         return dice.d(1, 3) == 3

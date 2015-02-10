@@ -56,6 +56,7 @@ class Obstacle(Entity):
     blocks_vision = True
     is_wall = False
     is_door = False
+    name=""
 
     def default_interaction(self, actor):
         return interact.ExamineAction(actor, self)

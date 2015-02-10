@@ -1,4 +1,5 @@
 from rl.actions.action import Action
+from rl.events.movement import WaitEvent
 
 class WaitAction(Action):
     def __init__(self, actor):
@@ -9,4 +10,4 @@ class WaitAction(Action):
             
     def do_action(self):
         # literally nothing happens
-        return []
+        return [WaitEvent(self.actor)]

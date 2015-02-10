@@ -19,9 +19,6 @@ class SleepTactics(tactics.Tactics):
         if self.turns_to_sleep == 0:
             raise events.TacticsCompleteEvent()
             
-        if dice.one_chance_in(10):
-            actor.sleep_emote()
-        
         return wait.WaitAction(actor)
             
     def describe(self):

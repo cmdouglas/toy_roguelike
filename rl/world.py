@@ -1,6 +1,7 @@
 from rl.board.generator import generator
 
 from rl.events.death import DeathEvent
+from rl.events.interactions.misc import OpenEvent, CloseEvent
 
 
 class GameOver(Exception):
@@ -37,7 +38,6 @@ class World:
         return events
 
     def respond_to_event(self, event):
-        # right now we only respond to death events
         if type(event) == DeathEvent:
             actor = event.actor
             if actor == self.player:
@@ -45,5 +45,9 @@ class World:
 
             else:
                 self.board.remove_entity(actor)
+
+        # if a door is opened or closed, recalculate FOV
+        if type(event) in [OpenEvent, CloseEvent] and event.perceptible(self.player):
+            self.board.update_fov(self.player)
 
 

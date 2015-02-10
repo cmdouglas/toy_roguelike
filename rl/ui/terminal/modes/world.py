@@ -25,6 +25,7 @@ class WorldMode(Mode):
 
         self.console = console.Console()
         self.layout = gamemodelayout.GameModeLayout(self.world, self.console)
+        self.rendered = False
 
         self.player_commands = {
             # movement
@@ -114,8 +115,10 @@ class WorldMode(Mode):
                         if event.perceptible(self.world.player):
                             self.console.add_message(event.describe(self.world.player))
                             changed = True
-
-                    return self.layout.render()
+                            del event
+                    if changed or not self.rendered:
+                        self.rendered = True
+                        return self.layout.render()
 
                 if self.world.current_actor == self.world.player:
                     return

@@ -49,8 +49,8 @@ class MoveOrInteractCommand(PlayerCommand):
                 ob = board[new_pos].obstacle
                 return ob.default_interaction(player)
 
-            elif board[new_pos].player:
-                other = board[new_pos].player
+            elif board[new_pos].actor:
+                other = board[new_pos].actor
                 return interact.AttackAction(player, other)
 
         else:
@@ -158,7 +158,7 @@ class GetAllItemsCommand(PlayerCommand):
             return
 
         for item_ in items:
-            player.intelligence.add_command(GetItemCommand(item_))
+            player.intelligence.add_command(GetItemCommand(self.world, item_))
 
 
 class GetItemCommand(PlayerCommand):

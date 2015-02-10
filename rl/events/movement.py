@@ -11,6 +11,11 @@ class MoveEvent(Event):
         return self.actor == player or player.can_see(self.from_pos) or player.can_see(self.to_pos)
 
 
+class WaitEvent(Event):
+    def __init__(self, actor):
+        self.actor = actor
+
+
 class TeleportEvent(MoveEvent):
     def perceptible(self, player):
         return self.actor == player or player.can_see(self.from_pos) or player.can_see(self.to_pos)
