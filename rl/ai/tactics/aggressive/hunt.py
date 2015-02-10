@@ -1,6 +1,5 @@
 import logging
 
-from rl import globals as G
 from rl.actions import wait
 from rl.ai.tactics import tactics
 from rl.ai.utils import search
@@ -17,11 +16,11 @@ class HuntTactics(tactics.Tactics):
     def describe(self):
         return "hunting"
 
-    def do_tactics(self, actor):
+    def do_tactics(self, actor, world):
         # logger.debug('Hunting tactics: start')
-        board = G.world.board
+        board = world.board
 
-        if primitives.can_see(actor, self.target):
+        if primitives.can_see(actor, self.target, world):
             # logger.debug('Hunting tactics: see target')
             raise events.SeeHostileEvent()
 
@@ -45,7 +44,7 @@ class HuntTactics(tactics.Tactics):
                 # logger.debug('Hunting tactics: path found')
                 try:
                     # logger.debug('Hunting tactics: trying to move.')
-                    return self.smart_move(actor, path)
+                    return self.smart_move(actor, world, path)
                 except tactics.PathBlockedException:
                     # logger.debug('Hunting tactics: path blocked')
                     return wait.WaitAction(actor)

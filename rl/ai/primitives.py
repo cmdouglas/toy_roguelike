@@ -1,10 +1,9 @@
 import math
 
-from rl import globals as G
 from rl.ai.utils import search
 
-def move_towards(actor1, actor2):
-    board = G.world.board
+def move_towards(actor1, actor2, world):
+    board = world.board
     self_pos = actor1.tile.pos
     other_pos = actor2.tile.pos
     
@@ -13,8 +12,8 @@ def move_towards(actor1, actor2):
     if path:
         actor1.move(path[0])
         
-def move_towards_player(actor):
-    return move_towards(actor, G.world.player)
+def move_towards_player(actor, world):
+    return move_towards(actor, world.player, world)
     
 def is_home(actor):
     pass
@@ -22,11 +21,11 @@ def is_home(actor):
 def go_home(actor):
     pass
     
-def can_see_player(actor):
-    return can_see(actor, G.world.player)
+def can_see_player(actor, world):
+    return can_see(actor, world.player, world)
     
-def can_see(actor1, actor2):
-    board=G.world.board
+def can_see(actor1, actor2, world):
+    board=world.board
     
     def get_direction(p_from, p_to):
         x1, y1 = p_from

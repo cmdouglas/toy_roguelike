@@ -1,5 +1,5 @@
 from rl.actions.action import Action
-
+from rl.events.movement import MoveEvent
 
 class MovementAction(Action):
     def __init__(self, actor, movement):
@@ -17,10 +17,11 @@ class MovementAction(Action):
             return 1000
 
     def do_action(self):
-        effect = False
-        was_in_fov = self.actor.is_in_fov()
         success = self.actor.move(self.movement)
+        old = self.actor.tile.pos
+        x, y = old
+        dx, dy = self.movement
+        new = (x+dx, y+dy)
 
         if success:
-            effect = was_in_fov or self.actor.is_in_fov()
-        return success, effect
+            return [MoveEvent(self.actor, old, new)]

@@ -13,7 +13,7 @@ class MeleeTactics(tactics.Tactics):
     def describe(self):
         return "fighting %s" % self.target.describe()
 
-    def do_tactics(self, actor):
+    def do_tactics(self, actor, world):
         # logger.debug('Melee tactics: start')
         # does my target exist?
         if not self.target:
@@ -25,7 +25,7 @@ class MeleeTactics(tactics.Tactics):
         tx, ty = self.target.tile.pos
         x, y = actor.tile.pos
         if (abs(tx - x) > 1 or abs(ty - y) > 1):
-            if primitives.can_see(actor, self.target):
+            if primitives.can_see(actor, self.target, world):
                 # logger.debug('Melee tactics: target out of range')
                 raise events.TargetOutOfRangeEvent()
 

@@ -13,9 +13,9 @@ class IdleStrategy(strategy.Strategy):
             wander.WanderTactics()
         ])
     
-    def do_strategy(self, actor):
+    def do_strategy(self, actor, world):
         try:
-            return self.tactics.do_tactics(actor)
+            return self.tactics.do_tactics(actor, world)
         except events.TacticsCompleteEvent:
             self.tactics = random.choice([
                 mill.MillTactics(),

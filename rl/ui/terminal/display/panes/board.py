@@ -1,28 +1,37 @@
 from termapp.layout import Pane
 from termapp.formatstring import FormatString, FormatStringChunk, Format
 
-from rl import globals as G
+from rl.ui import colors
+
 
 class BoardPane(Pane):
     min_width = 34
     min_height = 19
 
-    def __init__(self, width, height, center=None, board=None):
+    def __init__(self, width, height, world, center=None, cursor_pos=None,
+                 cursor_attr=None, highlight=None,
+                 highlight_color=colors.cyan):
         super(BoardPane, self).__init__(width, height)
+
+        self.world = world
 
         self.center = center
         if not self.center:
-            self.center = G.world.player.tile.pos
+            self.center = self.world.player.tile.pos
 
-        self.board = board
-        if not self.board:
-            self.board = G.world.board
+        self.highlight = highlight
+        if not self.highlight:
+            self.highlight = set()
 
+        self.highlight_color = highlight_color
+        self.cursor_pos = cursor_pos
+        self.cursor_attr = cursor_attr
 
     def draw_viewport(self, board, center):
 
         # set the upper left corner of the area of the board to draw.
-        # this tries to center the board on the supplied center point, but won't move past the edges
+        # this tries to center the board on the supplied center point, but
+        # won't move past the edges
         c_x, c_y = center
 
         if c_x > board.width - self.width / 2:
@@ -47,6 +56,16 @@ class BoardPane(Pane):
             for tile in row[ul_x:(ul_x + self.width)]:
 
                 char, fg, bg = tile.draw()
+
+                if tile.pos in self.highlight:
+                    bg = self.highlight_color
+
+                if self.cursor_pos and tile.pos == self.cursor_pos:
+                    c_char, c_fg, c_bg = self.cursor_attr
+                    char = c_char or char
+                    fg = c_fg or fg
+                    bg = c_bg or bg
+
                 if fg != fmt.color or bg != fmt.bgcolor:
                     s = "".join(run)
                     line.chunks.append(FormatStringChunk(s, fmt))
@@ -61,4 +80,4 @@ class BoardPane(Pane):
             self.set_line(y, line)
 
     def refresh(self):
-        self.draw_viewport(self.board, self.center)
+        self.draw_viewport(self.world.board, self.center)

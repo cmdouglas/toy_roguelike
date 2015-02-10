@@ -1,49 +1,49 @@
 from rl.board.generator import generator
 
+from rl.events.death import DeathEvent
+
+
+class GameOver(Exception):
+    pass
+
 
 class World:
     def __init__(self):
-        self.board = None
-        self.player = None
-        self.actors = []
-        self.current_actor = None
-
-    def setup(self):
         self.board = generator.Generator().generate()
         self.player = self.board.spawn_player()
-        self.first_tick = True
+        self.actors = []
+        self.current_actor = None
+        self.ticks = 0
 
     def tick(self):
         if not self.current_actor:
-            self.update()
-
-        timeout = self.current_actor.timeout
-        for actor in self.actors:
-            actor.timeout -= timeout
-
-        success, changed = self.current_actor.process_turn()
-
-        if success:
-            self.actors.sort(key=lambda actor: actor.timeout)
+            self.actors = sorted(self.board.actors, key=lambda actor: actor.timeout)
             self.current_actor = self.actors[0]
 
-        should_redraw = (success and changed)
+        timeout = self.current_actor.timeout
 
-        # always tell the UI to redraw on the first tick.
-        if self.first_tick:
-            should_redraw = True
-            self.first_tick = False
+        if timeout > 0:
+            for actor in self.actors:
+                actor.timeout -= timeout
 
-        return should_redraw
+        events = self.current_actor.process_turn(self)
 
-    def update(self):
-        if not self.board:
-            return
+        if events:
+            for event in events:
+                self.respond_to_event(event)
+            self.current_actor = None
+            self.ticks += 1
 
-        self.actors = [ent for ent in self.board.entities if ent.can_act]
-        self.actors.sort(key=lambda actor: actor.timeout)
+        return events
 
-        self.current_actor = self.actors[0]
+    def respond_to_event(self, event):
+        # right now we only respond to death events
+        if type(event) == DeathEvent:
+            actor = event.actor
+            if actor == self.player:
+                raise GameOver()
 
-    def is_players_turn(self):
-        return self.current_actor == self.player
+            else:
+                self.board.remove_entity(actor)
+
+

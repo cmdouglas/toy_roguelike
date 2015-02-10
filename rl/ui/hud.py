@@ -6,15 +6,17 @@ from rl.util.tools import clamp
 
 class HUD(object):
 
-    def objects_of_interest(self, board):
+    def objects_of_interest(self, world):
+        board = world.board
+        player = world.player
         interesting_objects = []
-        for pos in board.visible_to_player:
+        for pos in player.fov:
             if board.position_is_valid(pos):
                 ob = board[pos].most_interesting_entity()
                 if ob:
                     interesting_objects.append(ob)
 
-        # show things with the hightest interest level first
+        # show things with the highest interest level first
         interesting_objects.sort(key=lambda o: -1*o.interest_level)
 
         interesting_objects_condensed = []

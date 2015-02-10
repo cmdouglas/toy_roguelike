@@ -1,9 +1,42 @@
-# import math
+import math
 import logging
 
 from rl.util import tools
 
 logger = logging.getLogger('rl')
+
+def line(p1, p2):
+    def get_direction(p_from, p_to):
+        x1, y1 = p_from
+        x2, y2 = p_to
+
+        dx = x2 - x1
+        dy = y2 - y1
+
+        distance = math.sqrt(dx ** 2 + dy ** 2)
+
+        #normalize it to length 1 (preserving direction), then round it and
+        #convert to integer so the movement is restricted to the map grid
+        dx = int(round(dx / distance))
+        dy = int(round(dy / distance))
+
+        return (dx, dy)
+
+
+    x1, y1 = p1
+    x2, y2 = p2
+
+    p  = p1
+    points = [p]
+    while p != p2:
+        direction = get_direction(p, p2)
+        x, y = p
+        dx, dy = direction
+
+        p = (x + dx, y + dy)
+        points.append(p)
+
+    return points
 
 
 class Shape(object):

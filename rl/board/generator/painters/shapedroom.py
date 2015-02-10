@@ -1,7 +1,7 @@
 import random
 
 from rl.entities.obstacles import smoothwall, wall, door
-from rl.util import shape
+from rl.util import geometry
 from rl.util import dice
 from rl.board.rooms import room as room_mod
 from rl.board.generator.painters import painter
@@ -44,7 +44,7 @@ class RectangularRoomPainter(ShapedRoomPainter):
         self.fill(wall.Wall)
         center, width, height = self.get_bounding_box()
         
-        rectangle = shape.Rectangle(center, width, height)
+        rectangle = geometry.Rectangle(center, width, height)
         room = room_mod.Room(rectangle)
 
         # place 1d3 doors
@@ -94,7 +94,7 @@ class CircularRoomPainter(ShapedRoomPainter):
         self.fill(wall.Wall)
         center, width, height = self.get_bounding_box()
 
-        circle = shape.Circle(center, min(width, height)/2)
+        circle = geometry.Circle(center, min(width, height)/2)
         room = room_mod.Room(circle)
 
         # place 1d3 doors
@@ -145,7 +145,7 @@ class EllipticalRoomPainter(ShapedRoomPainter):
         self.fill(wall.Wall)
         center, width, height = self.get_bounding_box()
 
-        ellipse = shape.Ellipse(center, width/2, height/2)
+        ellipse = geometry.Ellipse(center, width/2, height/2)
         room = room_mod.Room(ellipse)
 
         # place 1d3 doors

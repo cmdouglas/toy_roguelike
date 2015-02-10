@@ -8,4 +8,5 @@ class WaitAction(Action):
         return 1000
             
     def do_action(self):
-        return True, False
+        # literally nothing happens
+        return []

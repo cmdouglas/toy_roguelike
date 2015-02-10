@@ -1,5 +1,5 @@
 from rl.ai import events
-from rl.ai.strategies import idle, aggressive, strategy
+from rl.ai.strategies import idle, aggressive
 
 
 class BasicAI(object):
@@ -8,9 +8,9 @@ class BasicAI(object):
         self.actor = actor
         self.strategy = idle.IdleStrategy()
         
-    def get_action(self):
+    def get_action(self, world):
         try:
-            return self.strategy.do_strategy(self.actor)
+            return self.strategy.do_strategy(self.actor, world)
 
         except events.SeeHostileEvent:
             self.strategy = aggressive.AggressiveStrategy()

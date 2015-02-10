@@ -1,13 +1,13 @@
-from rl import globals as G
 from rl.ui import colors
 from rl.util import dice
 
-from rl.entities.actors.mob import Mob
+from rl.entities.actors.creature import Creature
 from rl.entities.items import potion
-from rl.ai import userinput
+from rl.ai import playercommand
 
 
-class Player(Mob):
+class Player(Creature):
+    is_player = True
     def __init__(self):
         self.color = colors.bright_white
         self.glyph = u'@'
@@ -23,20 +23,25 @@ class Player(Mob):
         self.dex = 10
         self.gold = 300
         self.is_alive = True
-        self.intelligence = userinput.UserInput(self)
+        self.intelligence = playercommand.UserInput(self)
+        self.fov = set()
 
         self.inventory.add(potion.HealingPotion(num=3))
 
     def on_move(self, dx, dy):
-        self.tile.board.show_player_fov(self)
+        self.tile.board.update_fov(self)
         self.tile.visible = True
 
-    def process_turn(self):
-        success, effect = super().process_turn()
-        if success and dice.one_chance_in(6):
+    def process_turn(self, world):
+        events = super().process_turn(world)
+
+        if events and dice.one_chance_in(10):
             self.heal(1)
 
-        return success, effect
+        return events
+
+    def can_see(self, point, board=None):
+        return point in self.fov
 
     def emote(self, message, color=None):
         if not color:
@@ -44,9 +49,9 @@ class Player(Mob):
 
         name = "You"
         m = "%s %s" % (name, message)
-        G.ui.console.add_message(m, color=color)
+        return m
 
-    def describe(self):
+    def describe(self, show_strategy=False):
         return "you"
 
     def die(self):

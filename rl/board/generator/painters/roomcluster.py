@@ -10,6 +10,7 @@ from rl.entities.obstacles import smoothwall, door
 class RoomClusterPainter(painter.Painter):
     
     def __init__(self, board, area):
+        super().__init__(board, area)
         self.board = board
         self.area = area
         self.min_room_height = 5

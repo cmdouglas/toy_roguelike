@@ -1,4 +1,3 @@
-from rl import globals as G
 from rl.ui import colors
 from rl.util import dice
 from rl.entities import items
@@ -7,12 +6,19 @@ from rl.entities import items
 class Potion(items.Item):
     usable = True
     glyph = '!'
+    name = "potion"
 
-    def use_effect(self, actor):
+    def use_effect(self, actor, world):
         pass
 
-    def throw_effect(self, actor):
+    def throw_effect(self, actor, world):
         pass
+
+    def describe_use(self, third_person=False):
+        if third_person:
+            return "drinks"
+        else:
+            return "drink"
 
 
 class HealingPotion(Potion):
@@ -24,8 +30,6 @@ class HealingPotion(Potion):
     def __init__(self, num=1):
         self.stack_size = num
 
-    def use_effect(self, actor):
+    def use_effect(self, actor, world):
         actor.heal(dice.d(2, 8))
-        G.ui.console.add_message('You feel better.', colors.bright_yellow)
-
         actor.inventory.remove(item=self)

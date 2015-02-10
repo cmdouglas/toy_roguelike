@@ -1,6 +1,5 @@
 import logging
 
-from rl import globals as G
 from rl.actions import wait
 from rl.ai.tactics import tactics
 from rl.ai.utils import search
@@ -18,9 +17,9 @@ class PursueTactics(tactics.Tactics):
     def describe(self):
         return "chasing %s" % self.target.describe()
 
-    def do_tactics(self, actor):
+    def do_tactics(self, actor, world):
         # logger.debug('Pursue tactics: start')
-        board = G.world.board
+        board = world.board
         self.target_pos = self.target.tile.pos
 
         ax, ay = actor.tile.pos
@@ -31,7 +30,7 @@ class PursueTactics(tactics.Tactics):
             # we're close enough to attack!
             raise events.TacticsCompleteEvent()
 
-        elif not primitives.can_see(actor, self.target):
+        elif not primitives.can_see(actor, self.target, world):
             # logger.debug('Pursue tactics: target lost')
             raise events.TargetLostEvent()
 
@@ -50,7 +49,7 @@ class PursueTactics(tactics.Tactics):
                 # logger.debug('Pursue tactics: path found')
                 try:
                     # logger.debug('Pursue tactics: trying to move')
-                    return self.smart_move(actor, path)
+                    return self.smart_move(actor, world, path)
                 except tactics.PathBlockedException:
                     # logger.debug('Pursue tactics: path blocked')
                     return wait.WaitAction(actor)

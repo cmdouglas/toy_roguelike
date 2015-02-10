@@ -1,6 +1,5 @@
 from termapp.formatstring import FormatString
 from termapp.layout import Pane
-from rl import globals as G
 
 
 class ConsolePane(Pane):
@@ -16,8 +15,12 @@ class ConsolePane(Pane):
     min_height = 3
     min_width = 70
 
+    def __init__(self, width, height, console):
+        super().__init__(width, height)
+        self.console = console
+
     def refresh(self):
-        lines = G.ui.console.get_last_lines(num_lines=self.height)
+        lines = self.console.get_last_lines(num_lines=self.height)
 
         for i, line in enumerate(lines):
             self.set_line(i, FormatString().simple(line['message'], color=line['color']))

@@ -1,5 +1,7 @@
-from rl import globals as G
 from rl.actions.action import Action
+from rl.events.interactions.combat import AttackEvent
+from rl.events.interactions.misc import ExamineEvent, OpenEvent, CloseEvent
+
 
 class AttackAction(Action):
     def __init__(self, actor, other):
@@ -10,9 +12,9 @@ class AttackAction(Action):
         return 1000
             
     def do_action(self):
-        effect = self.actor.is_in_fov() or self.other.is_in_fov()
-        self.actor.attack(self.other)
-        return True, effect
+        attack_result = self.actor.attack(self.other)
+        return [AttackEvent(self.actor, self.other)].extend(attack_result)
+
 
 class ExamineAction(Action):
     def __init__(self, actor, other):
@@ -24,12 +26,8 @@ class ExamineAction(Action):
 
     def do_action(self):
         self.actor.timeout += self.calculate_cost()
-        effect = False
-        if self.other.description:
-            effect = True
-            G.ui.console.add_message(self.other.description)
 
-        return True, effect
+        return [ExamineEvent(self.actor, self.other)]
 
 class OpenAction(Action):
     def __init__(self, actor, other):
@@ -40,10 +38,9 @@ class OpenAction(Action):
         return 1000
 
     def do_action(self):
-        effect = self.actor.is_in_fov() or self.other.is_in_fov()
         self.other.open()
+        return [OpenEvent(self.actor, self.other)]
 
-        return True, effect
 
 class CloseAction(Action):
     def __init__(self, actor, other):
@@ -54,10 +51,7 @@ class CloseAction(Action):
         return 1000
 
     def do_action(self):
-        effect = self.actor.is_in_fov() or self.other.is_in_fov()
-
         self.other.close()
-        return True, effect
-
+        return [CloseEvent(self.actor, self.other)]
 
 

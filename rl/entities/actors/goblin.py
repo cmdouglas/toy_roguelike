@@ -1,10 +1,10 @@
 import random
 from rl.ui import colors
-from rl.entities.actors.mob import Mob
+from rl.entities.actors.creature import Creature
 from rl.ai.basic import BasicAI
 
 
-class Goblin(Mob):
+class Goblin(Creature):
     name = u"goblin"
     name_plural = u"goblins"
     interest_level = 10
@@ -19,21 +19,3 @@ class Goblin(Mob):
         self.intelligence = BasicAI(self)
         self.str = 4
 
-    def sleep_emote(self):
-        message = random.choice([
-            "snores.",
-            "mumbles something in its sleep."
-        ])
-
-        self.emote(message)
-
-    def idle_emote(self):
-        message = random.choice([
-            "growls.",
-            "blinks dimly.",
-            "scratches its ears.",
-            "mutters something unintelligable.",
-            "sticks its tongue out."
-        ])
-
-        self.emote(message)

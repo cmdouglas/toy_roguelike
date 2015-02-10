@@ -14,5 +14,8 @@ class Item(Entity, Stackable):
         else:
             return "stack of %s %s" % (self.stack_size, self.name_plural)
 
+    def describe_use(self, third_person=False):
+        return ""
+
     def __str__(self):
         return self.describe()

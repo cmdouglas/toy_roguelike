@@ -1,7 +1,6 @@
 import random
 import logging
 
-from rl import globals as G
 from rl.actions import wait
 from rl.ai import primitives, events
 from rl.ai.tactics import tactics
@@ -18,8 +17,8 @@ class WanderTactics(tactics.Tactics):
         self.max_wait = 5
         self.wait_timer = random.randrange(self.max_wait) + 1
 
-    def do_tactics(self, actor):
-        if (primitives.can_see(actor, G.world.player)
+    def do_tactics(self, actor, world):
+        if (primitives.can_see(actor, world.player, world)
            and dice.one_chance_in(2)):
             actor.emote('points at you and shouts!')
             raise events.SeeHostileEvent()
@@ -28,14 +27,14 @@ class WanderTactics(tactics.Tactics):
             actor.idle_emote()
 
         if not self.destination:
-            self.choose_destination(actor)
-            self.compute_path(actor)
+            self.choose_destination(actor, world)
+            self.compute_path(actor, world)
 
         if actor.tile.pos == self.destination:
             if not self.should_stop():
                 # let's wander somewhere else
-                self.choose_destination(actor)
-                self.compute_path(actor)
+                self.choose_destination(actor, world)
+                self.compute_path(actor, world)
 
             else:
                 # nah, let's ask the strategy what to do.
@@ -46,7 +45,7 @@ class WanderTactics(tactics.Tactics):
             self.destination = None
             return wait.WaitAction(actor)
         try:
-            result = self.smart_move(actor, self.path)
+            result = self.smart_move(actor, world, self.path)
             # reset our wait timer:
             if self.wait_timer == 0:
                 self.wait_timer = dice.d(1, self.max_wait)
@@ -61,34 +60,34 @@ class WanderTactics(tactics.Tactics):
 
             else:
                 # ok, let's recompute the path, or go somewhere else
-                path_found = self.recompute_path(actor, ab=True, md=10)
+                path_found = self.recompute_path(actor, world, ab=True, md=10)
                 if not path_found:
                     # logger.debug('no path found, going somewhere else')
-                    dest = self.nearby_reachable_destination(actor)
+                    dest = self.nearby_reachable_destination(actor, world)
                     if dest:
                         self.destination = dest
-                        self.compute_path(actor)
+                        self.compute_path(actor, world)
 
         return wait.WaitAction(actor)
 
     def should_stop(self):
         return dice.d(1, 3) == 3
 
-    def nearby_reachable_destination(self, actor):
-        board = G.world.board
+    def nearby_reachable_destination(self, actor, world):
+        board = world.board
         p = actor.tile.pos
         points = board.nearby_reachable_points(p, 5)
         if points:
             return random.choice(points)
 
-    def choose_destination(self, actor):
-        board = G.world.board
+    def choose_destination(self, actor, world):
+        board = world.board
         actors_area = board.area_containing_point(actor.tile.pos)
         area = random.choice(actors_area.connections)['area']
         self.destination = random.choice(area.get_empty_points())
 
-    def compute_path(self, actor):
-        board = G.world.board
+    def compute_path(self, actor, world):
+        board = world.board
         path_found = self.path = search.find_path(
             board,
             actor.tile.pos,
@@ -97,13 +96,13 @@ class WanderTactics(tactics.Tactics):
         )
 
         if not path_found:
-            dest = self.nearby_reachable_destination(actor)
+            dest = self.nearby_reachable_destination(actor, world)
             if dest:
                 self.destination = dest
-                self.recompute_path(actor, ab=True)
+                self.recompute_path(actor, world, ab=True)
 
-    def recompute_path(self, actor, ab=False, md=None):
-        board = G.world.board
+    def recompute_path(self, actor, world, ab=False, md=None):
+        board = world.board
         self.path = search.find_path(board, actor.tile.pos, self.destination,
                                      doors_block=not actor.can_open_doors,
                                      actors_block=ab,

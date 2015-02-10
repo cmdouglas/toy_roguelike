@@ -11,7 +11,7 @@ class Board:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.entities = []
+        self.actors = []
         self.visible_to_player = set()
 
         self.tiles = [
@@ -28,14 +28,14 @@ class Board:
         pos = random.choice(area.get_empty_points())
         self.add_entity(player, pos)
 
-        self.show_player_fov(player)
+        self.update_fov(player)
 
         return player
 
     def setup(self):
         pass
 
-    def show_player_fov(self, player):
+    def update_fov(self, player):
         for row in self.tiles:
             for tile_ in row:
                 tile_.visible = False
@@ -43,7 +43,7 @@ class Board:
         visible_points = self.get_visible_points(
             player.tile.pos, player.sight_radius
         )
-        self.visible_to_player = set(visible_points)
+        player.fov = set(visible_points)
 
         for point in visible_points:
             if self.position_is_valid(point):
@@ -160,7 +160,8 @@ class Board:
         t = self[pos]
         try:
             t.add_entity(ent)
-            self.entities.append(ent)
+            if ent.can_act:
+                self.actors.append(ent)
             ent.tile = t
 
             ent.on_spawn()
@@ -174,7 +175,8 @@ class Board:
             return
 
         ent.tile.remove_entity(ent)
-        self.entities.remove(ent)
+        if ent.can_act:
+            self.actors.remove(ent)
         ent.on_despawn()
         ent.tile = None
 

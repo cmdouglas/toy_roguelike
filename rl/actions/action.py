@@ -12,4 +12,4 @@ class Action(object):
         effect -- whether there is any noticeable effect from the player's perspective (i.e., whether the screen
         should be redrawn)
         """
-        return False, False
+        return []

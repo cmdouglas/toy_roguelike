@@ -3,7 +3,6 @@ import logging
 from termapp.layout import Pane
 from termapp.formatstring import FormatString
 
-from rl import globals as G
 from rl.ui.hud import HUD
 from rl.ui import colors
 
@@ -43,9 +42,10 @@ class HUDPane(Pane):
     light = colors.cyan
     dark = colors.light_gray
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, world):
         super(HUDPane, self).__init__(width, height)
 
+        self.world = world
         # character name & level (44x2), located at 0,0
         self.name_pane = Pane(44, 2)
         self.subpanes[(0, 0)] = self.name_pane
@@ -73,13 +73,13 @@ class HUDPane(Pane):
 
     def draw_name(self):
         line = FormatString("{name} [cyan:(Level:] {level}[cyan:)]".format(
-            name=G.world.player.name,
-            level=G.world.player.level)
+            name=self.world.player.name,
+            level=self.world.player.level)
         )
         self.name_pane.set_line(0, line)
 
     def draw_stats(self):
-        player = G.world.player
+        player = self.world.player
 
         stats = FormatString(
             "[cyan:Health:] {health:3d}[cyan:/]{max_health}\n"
@@ -105,7 +105,7 @@ class HUDPane(Pane):
 
     def draw_bars(self):
         hud = HUD()
-        player = G.world.player
+        player = self.world.player
 
         # health
         health_bar = hud.status_bar(player.health, player.max_health)
@@ -147,7 +147,7 @@ class HUDPane(Pane):
 
     def draw_objects_of_interest(self):
         hud = HUD()
-        oois = hud.objects_of_interest(G.world.board)
+        oois = hud.objects_of_interest(self.world)
         # logger.debug(oois)
 
         self.ooi_pane.clear()

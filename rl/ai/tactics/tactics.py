@@ -1,18 +1,18 @@
 
-from rl import globals as G
 from rl.actions import movement
 from rl.actions import interact
+
 
 class PathBlockedException(Exception):
     pass
 
+
 class Tactics(object):
-    
-    def can_make_move(self, actor, move):
+    def can_make_move(self, actor, world, move):
         """moves the actor to d, if it's a legal move, and returns true, 
         otherwise returns false
         """
-        board = G.world.board
+        board = world.board
         
         dx, dy = move
         x, y = actor.tile.pos
@@ -21,24 +21,24 @@ class Tactics(object):
         
         return not board[new_pos].blocks_movement()
 
-    def smart_move(self, actor, path):
+    def smart_move(self, actor, world, path):
         """will make a move if possible, handling any issues, if possible:
          - if a closed door is in the way, will open it if the actor can.
         """
         move = path[0]
 
-        if self.can_make_move(actor, move):
+        if self.can_make_move(actor, world, move):
             path.pop(0)
             return movement.MovementAction(actor, move)
 
         else:
             x, y = actor.tile.pos
             dx, dy = move
-            board = G.world.board
+            board = world.board
             new_pos = (x+dx, y+dy)
             obstacle = board[new_pos].obstacle
-            if (obstacle and obstacle.is_door and not obstacle.is_open and actor.can_open_doors):
-                return interact.OpenAction(actor, obstacle);
+            if obstacle and obstacle.is_door and not obstacle.is_open and actor.can_open_doors:
+                return interact.OpenAction(actor, obstacle)
 
             else:
                 raise PathBlockedException()

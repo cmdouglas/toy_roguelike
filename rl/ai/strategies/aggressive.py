@@ -1,6 +1,5 @@
 import logging
 
-from rl import globals as G
 from rl.ai import events
 from rl.ai.strategies import strategy
 from rl.ai.tactics.aggressive import melee, pursue, hunt
@@ -14,11 +13,11 @@ class AggressiveStrategy(strategy.Strategy):
         self.target_last_seen = None
         self.tactics = None
 
-    def do_strategy(self, actor):
+    def do_strategy(self, actor, world):
         # logger.debug('Aggressive strategy: start')
         if not self.target:
             # logger.debug('Aggressive strategy: finding target')
-            self.target = self.nearest_target()
+            self.target = self.nearest_target(actor, world)
 
         self.target_last_seen = self.target.tile.pos
 
@@ -29,10 +28,10 @@ class AggressiveStrategy(strategy.Strategy):
         if type(self.tactics) == melee.MeleeTactics:
             try:
                 # logger.debug('Aggressive strategy: doing melee tactics')
-                return self.tactics.do_tactics(actor)
+                return self.tactics.do_tactics(actor, world)
             except events.TargetOutOfRangeEvent:
                 # logger.debug('Aggressive strategy: target out of range')
-                self.target = self.nearest_target()
+                self.target = self.nearest_target(actor, world)
                 if self.target:
                     # logger.debug(
                     #   'Aggressive strategy: setting tactics to pursue'
@@ -62,7 +61,7 @@ class AggressiveStrategy(strategy.Strategy):
         elif type(self.tactics == pursue.PursueTactics):
             try:
                 # logger.debug('Aggressive strategy: doing pursue tactics')
-                return self.tactics.do_tactics(actor)
+                return self.tactics.do_tactics(actor, world)
             except events.TargetLostEvent:
                 # logger.debug(
                 #    "Aggressive strategy: target lost,"
@@ -83,7 +82,7 @@ class AggressiveStrategy(strategy.Strategy):
         elif type(self.tactics == hunt.HuntTactics):
             try:
                 # logger.debug('Aggressive strategy: doing hunt tactics')
-                return self.tactics.do_tactics(actor)
+                return self.tactics.do_tactics(actor, world)
             except events.SeeHostileEvent:
                 # logger.debug(
                 #     'Aggressive strategy: hostile sighted,'
@@ -98,9 +97,9 @@ class AggressiveStrategy(strategy.Strategy):
                 # )
                 raise
 
-    def nearest_target(self):
+    def nearest_target(self, actor, world):
         # right now, the only hostile is the player
-        return G.world.player
+        return world.player
 
     def describe(self):
         if not self.tactics:

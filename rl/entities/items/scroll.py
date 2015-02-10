@@ -1,6 +1,5 @@
 import random
 
-from rl import globals as G
 from rl.entities.items import Item
 from rl.ui import colors
 
@@ -10,8 +9,16 @@ class Scroll(Item):
     glyph = '?'
     color = colors.bright_white
 
-    def use_effect(self, actor):
+    def use_effect(self, actor, world):
         pass
+
+
+    def describe_use(self, third_person=False):
+        if third_person:
+            return "reads"
+
+        else:
+            return "read"
 
 
 class TeleportationScroll(Scroll):
@@ -19,13 +26,11 @@ class TeleportationScroll(Scroll):
     name_plural = "teleportation scrolls"
     interest_level = 5
 
-    def use_effect(self, actor):
-        area = random.choice(G.world.board.areas)
+    def use_effect(self, actor, world):
+        area = random.choice(world.board.areas)
         new_pos = random.choice(area.get_empty_points())
         old_pos = actor.tile.pos
 
-        G.world.board.move_entity(actor, old_pos, new_pos)
-        G.ui.console.add_message("Your surroundings suddenly seem different",
-                                 color=colors.bright_cyan)
+        world.board.move_entity(actor, old_pos, new_pos)
 
         actor.inventory.remove(item=self)

@@ -4,8 +4,6 @@ from rl.ui import glyphs
 from rl.entities.obstacles.wall import Wall
 from rl.entities.obstacles import door
 
-from rl import globals as G
-
 logger = logging.getLogger('rl')
 
 
@@ -29,6 +27,7 @@ class SmoothWall(Wall):
     glyph_cross = glyphs.cross
     should_update = False
     description = 'The smooth stone wall is solid and unyielding.'
+    short_description = "smooth stone wall"
 
     def on_first_seen(self):
         self.should_update = True
@@ -37,7 +36,14 @@ class SmoothWall(Wall):
 
     def draw(self):
         if self.should_update:
-            self.update_glyph(vantage_point=G.world.player.tile.pos)
+            # find the player on the board
+            player = None
+            for actor in self.tile.board.actors:
+                if actor.is_player:
+                    player = actor
+                    break
+
+            self.update_glyph(vantage_point=player.tile.pos)
             self.should_update = False
 
         return (self.glyph, self.color, self.bgcolor)

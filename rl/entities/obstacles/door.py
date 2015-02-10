@@ -1,4 +1,3 @@
-from rl import globals as G
 from rl.entities import entity
 from rl.ui import colors
 from rl.ui import glyphs
@@ -13,6 +12,7 @@ class Door(entity.Obstacle):
     is_door = True
     is_open = False
     description = "The ancient door is solidly closed."
+    short_description = "ancient door"
 
     def open(self):
         self.is_open = True
@@ -21,16 +21,12 @@ class Door(entity.Obstacle):
         self.blocks_vision = False
         self.description = "The ancient door stands open."
 
-        G.world.board.show_player_fov(G.world.player)
-
     def close(self):
         self.is_open = False
         self.glyph = '+'
         self.blocks_movement = True
         self.blocks_vision = True
         self.description = "The ancient door is solidly closed."
-
-        G.world.board.show_player_fov(G.world.player)
 
     def default_interaction(self, actor):
         return interact.OpenAction(actor, self)
