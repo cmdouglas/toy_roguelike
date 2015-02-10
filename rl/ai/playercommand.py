@@ -84,10 +84,10 @@ class DirectionalTravelCommand(PlayerCommand):
             return True
 
         # next check for any visible hostiles:
-        visible_mobs = [mob for mob in self.world.board.entities
-                        if mob.can_act and mob != player and player.can_see(mob, self.world.board)]
+        visible_hostiles = [hostile for hostile in self.world.board.actors
+                        if hostile != player and player.can_see(hostile)]
 
-        if visible_mobs:
+        if visible_hostiles:
             return True
 
         # next check if we've hit a fork in the road

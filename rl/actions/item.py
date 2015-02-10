@@ -1,4 +1,3 @@
-from rl import globals as G
 from rl.actions.action import Action
 from rl.events.items import UseItemEvent, PickUpItemEvent, DropItemEvent
 

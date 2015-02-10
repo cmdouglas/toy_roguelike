@@ -20,4 +20,4 @@ class Mode:
         pass
 
     def exit(self):
-        self.owner.exit_mode(self)
+        self.owner.exit_mode()

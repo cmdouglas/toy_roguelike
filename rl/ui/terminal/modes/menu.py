@@ -15,10 +15,10 @@ class SingleSelectMenuMode(Mode):
         self.layout = menumodelayout.MenuModeLayout(self.menu)
 
         self.commands = {
-            term.KEY_UP: MoveSelectedCommand(1),
-            term.KEY_DOWN: MoveSelectedCommand(-1),
-            term.KEY_ESCAPE: ExitMenuCommand(),
-            term.KEY_ENTER: SelectCommand()
+            term.KEY_UP: MoveSelectedCommand(self, 1),
+            term.KEY_DOWN: MoveSelectedCommand(self, -1),
+            term.KEY_ESCAPE: ExitMenuCommand(self),
+            term.KEY_ENTER: SelectCommand(self)
         }
 
     def newframe(self):
@@ -33,7 +33,7 @@ class SingleSelectMenuMode(Mode):
             letter = str(key)
             code = ord(letter)
 
-        command = self.commands.get(code, SelectCommand(letter))
+        command = self.commands.get(code, SelectCommand(self, key=letter))
 
         if not command:
             return

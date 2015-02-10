@@ -16,11 +16,8 @@ class AttackAction(Action):
             
     def do_action(self):
         attack_result = self.actor.attack(self.other)
-        logger.debug(attack_result)
-        r = [AttackEvent(self.actor, self.other)]
-        r.extend(attack_result)
 
-        return r
+        return attack_result
 
 
 class ExamineAction(Action):

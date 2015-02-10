@@ -4,6 +4,8 @@ from rl.events import Event
 class DeathEvent(Event):
     def __init__(self, actor):
         self.actor = actor
+        # save this because the tile might get cleared out before this has a chance to report
+        self.pos = actor.tile.pos
 
     def describe(self, player):
         if self.actor == player:
@@ -16,5 +18,5 @@ class DeathEvent(Event):
         if self.actor == player:
             return True
 
-        if player.can_see(self.actor):
+        if player.can_see(self.pos):
             return True

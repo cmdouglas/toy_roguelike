@@ -1,4 +1,3 @@
-from rl import globals as G
 from rl.ai.tactics import tactics
 from rl.ai import primitives, events
 from rl.actions import wait

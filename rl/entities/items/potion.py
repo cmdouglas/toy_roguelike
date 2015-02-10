@@ -2,16 +2,18 @@ from rl.ui import colors
 from rl.util import dice
 from rl.entities import items
 
+from rl.events.health import GainHealthEvent
+
 
 class Potion(items.Item):
     usable = True
     glyph = '!'
     name = "potion"
 
-    def use_effect(self, actor, world):
+    def use_effect(self, actor):
         pass
 
-    def throw_effect(self, actor, world):
+    def throw_effect(self, actor):
         pass
 
     def describe_use(self, third_person=False):
@@ -30,6 +32,9 @@ class HealingPotion(Potion):
     def __init__(self, num=1):
         self.stack_size = num
 
-    def use_effect(self, actor, world):
-        actor.heal(dice.d(2, 8))
+    def use_effect(self, actor):
+        amount = dice.d(2, 8)
+        actor.heal(amount)
         actor.inventory.remove(item=self)
+        return [GainHealthEvent(actor, amount)]
+

@@ -15,7 +15,7 @@ class Console(object):
             'important': important
         })
 
-    def get_last_lines(self, num_lines=5):
+    def get_last_lines(self, num_lines=4):
         last_messages = self.messages[-1*num_lines:]
         lines = []
         for message in reversed(last_messages):

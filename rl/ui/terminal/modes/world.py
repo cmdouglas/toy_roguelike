@@ -1,3 +1,4 @@
+import logging
 from rl.ui.terminal.modes import Mode
 from rl.ui.terminal.modes import menu
 from rl.ui.terminal.display.layouts import gamemodelayout
@@ -5,6 +6,8 @@ from rl.ui import console
 from rl.ai import playercommand
 from rl.world import World, GameOver
 from termapp.term import term
+
+logger = logging.getLogger('rl')
 
 class WorldMode(Mode):
     """
@@ -110,12 +113,13 @@ class WorldMode(Mode):
             try:
                 events = self.world.tick()
                 if events:
-                    changed = False
+                    changed=False
                     for event in events:
                         if event.perceptible(self.world.player):
-                            self.console.add_message(event.describe(self.world.player))
+                            message = event.describe(self.world.player)
+                            if message:
+                                self.console.add_message(message)
                             changed = True
-                            del event
                     if changed or not self.rendered:
                         self.rendered = True
                         return self.layout.render()
