@@ -1,4 +1,5 @@
 import random
+import math
 
 from rl.ai.utils import search
 from rl.util import tools
@@ -157,7 +158,7 @@ class Painter(object):
             x2, y2 = goal.data['point']
             x1, y1 = node.data['point']
 
-            return (abs(x2-x1) + abs(y2-y1)) * 1000
+            return int(math.sqrt(abs(x2-x1)**2 + abs(y2-y1)**2)) * 1000
 
         start_node = search.SearchNode({
             'point': start,

@@ -1,10 +1,14 @@
 """Not really an AI, but this is how user controlled critters get their
 actions."""
 
+import logging
+
 from rl.actions import interact
 from rl.actions import movement
 from rl.actions import wait
 from rl.actions import item
+
+logger = logging.getLogger('rl')
 
 
 class UserInput():
@@ -64,11 +68,15 @@ class DirectionalTravelCommand(PlayerCommand):
         self.last_surroundings = last_surroundings
 
     def process(self, player):
-        if not self.should_stop_travelling():
+        first_move = self.last_surroundings is None
+
+        if first_move or not self.should_stop_travelling():
             self.world.player.intelligence.add_command(
                 DirectionalTravelCommand(self.world, self.direction, self.get_surroundings())
             )
-        return movement.MovementAction(player, self.direction)
+            return movement.MovementAction(player, self.direction)
+
+
 
     def should_stop_travelling(self):
         # first check if movement is possible:
@@ -85,9 +93,14 @@ class DirectionalTravelCommand(PlayerCommand):
 
         # next check for any visible hostiles:
         visible_hostiles = [hostile for hostile in self.world.board.actors
-                        if hostile != player and player.can_see(hostile)]
+                        if hostile != player and player.can_see(hostile.tile.pos)]
+
 
         if visible_hostiles:
+            return True
+
+        # if the player is standing on an item, stop
+        if player.tile.items:
             return True
 
         # next check if we've hit a fork in the road
