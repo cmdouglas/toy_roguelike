@@ -41,19 +41,40 @@ def line(p1, p2):
 
 class Shape(object):
     def __init__(self):
-        self.points = []
-        self.border = []
+        self._points = []
+        self._border = []
+        self.dirty = True
         self.midpoint = (0, 0)
+
+    @property
+    def border(self):
+        if self.dirty:
+            self.find_points()
+            self.find_border()
+            self.dirty = False
+
+        return self._border
+
+    @property
+    def points(self):
+        if self.dirty:
+            self.find_points()
+            self.find_border()
+            self.dirty = False
+
+        return self._points
+
+    def find_points(self):
+        raise NotImplementedError()
 
     def find_border(self):
         border = set()
-        for point in self.points:
+        for point in self._points:
             for neighbor in tools.neighbors(point):
-                if neighbor not in self.points:
+                if neighbor not in self._points:
                     border.add(neighbor)
 
-        self.border = list(border)
-        return self.border
+        self._border = list(border)
 
 
 class Rectangle(Shape):
@@ -61,39 +82,39 @@ class Rectangle(Shape):
     height = 0
 
     def __init__(self, midpoint, width, height):
-        super(Rectangle, self).__init__()
+        super().__init__()
         self.midpoint = midpoint
         self.width = width
         self.height = height
+        ul_x = -1 * int(self.width / 2)
+        ul_y = -1 * int(self.height / 2)
+        self.ul = (ul_x, ul_y)
 
+    def find_points(self):
+        startx, starty = self.ul
         midx, midy = self.midpoint
-        startx = -1 * int(self.width / 2)
-        starty = -1 * int(self.height / 2)
 
         for x in range(startx, startx+self.width):
             for y in range(starty, starty+self.height):
-                self.points.append((int(x+midx), int(y+midy)))
-
-        self.find_border()
+                self._points.append((int(x+midx), int(y+midy)))
 
 
 class Circle(Shape):
     radius = 0
 
     def __init__(self, midpoint, radius):
-        super(Circle, self).__init__()
+        super().__init__()
 
         self.midpoint = midpoint
         self.radius = int(radius)
 
+    def find_points(self):
         midx, midy = self.midpoint
 
         for x in range(-1*self.radius, self.radius+1):
             for y in range(-1*self.radius, self.radius+1):
                 if self.contains_point((int(x), int(y))):
-                    self.points.append((int(x+midx), int(y+midy)))
-
-        self.find_border()
+                    self._points.append((int(x+midx), int(y+midy)))
 
     def contains_point(self, p):
         x, y = p
@@ -111,14 +132,13 @@ class Ellipse(Shape):
         self.rx = int(rx)
         self.ry = int(ry)
 
+    def find_points(self):
         midx, midy = self.midpoint
 
         for x in range(-1*self.rx, self.rx+1):
             for y in range(-1*self.ry, self.ry+1):
                 if self.contains_point((int(x+midx), int(y+midy))):
-                    self.points.append((int(x+midx), int(y+midy)))
-
-        self.find_border()
+                    self._points.append((int(x+midx), int(y+midy)))
 
     def contains_point(self, p):
         x, y = p

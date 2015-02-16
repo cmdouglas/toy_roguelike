@@ -1,4 +1,11 @@
-    
+import heapq
+import logging
+
+from functools import total_ordering
+
+logger = logging.getLogger('rl')
+
+@total_ordering
 class SearchNode(object):
     """Represents a state of a space used for a search.  Initialization 
     requires a dictionary and 3 functions:
@@ -62,13 +69,13 @@ class SearchNode(object):
         if not self.path_length:
             self.path_length = self.compute_path_length()
             
-        return self.path_length;
+        return self.path_length
             
     def get_path_depth(self):
         if not self.path_depth:
             self.path_depth = self.compute_path_depth()
             
-        return self.path_depth;
+        return self.path_depth
             
     def get_path(self):
         moves = []
@@ -79,7 +86,14 @@ class SearchNode(object):
             n = n.parent
             
         return [m for m in reversed(moves)]
-        
+
+    def __str__(self):
+        return str(self.data)
+
+    def __lt__(self, other):
+        # for the most part, these will be compared based on their g+h values.  this is a tie-breaker for when those
+        # are equal
+        return self.id(self) < other.id(other)
     
         
 
@@ -98,37 +112,56 @@ class AStarSearch(object):
         
     def do_search(self):
         visited = {}
-        frontier = [self.start]
-        
+
         def sortkey(node):
             if not node.h:
                 node.h = self.heuristic(self, node, self.goal)
             
             return node.get_path_length() + node.h
-        
+
+        frontier = [(sortkey(self.start), self.start)]
+        heapq.heapify(frontier)
+        fset = set()
+        fset.add(self.start.id(self.start))
+
+        # logger.debug('SEARCH START')
+        # logger.debug('start:' + str(self.start))
+        # logger.debug('goal:' + str(self.goal))
+        # logger.debug('frontier: ' + str(frontier))
+
         while frontier:
-            current = frontier.pop(0)
+            # logger.debug('frontier:' + str(frontier))
+            # logger.debug('visited:' + str(visited))
+            _, current = heapq.heappop(frontier)
             
             if current == self.goal:
+                # logger.debug('GOAL FOUND')
                 return current.get_path()
                 
             for new in current.expand():
+                # logger.debug('expand found: '+ str(new))
                 if (new.id(new) in visited and
                     new.get_path_length() >= visited[new.id(new)].get_path_length()):
+                    # logger.debug('shorter path to here already found')
                     continue
                         
-                if new in frontier:
+                if new.id(new) in fset:
+                    # logger.debug('already in frontier')
                     continue
                 
-                if not self.max_depth: 
-                    frontier.append(new)
-                
+                if not self.max_depth:
+                    # logger.debug('adding to frontier')
+                    heapq.heappush(frontier, (sortkey(new), new))
+                    fset.add(new.id(new))
+
                 elif new.get_path_depth() < self.max_depth:
-                    frontier.append(new)
-                
+                    # logger.debug('adding to frontier')
+                    heapq.heappush(frontier, (sortkey(new), new))
+                    fset.add(new.id(new))
+
+                # logger.debug('adding to visited.')
                 visited[new.id(new)] = new
-            frontier.sort(key=sortkey)
-            
+
         return None
         
     
