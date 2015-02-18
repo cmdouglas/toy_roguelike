@@ -45,18 +45,22 @@ class WanderTactics(tactics.Tactics):
             return result
 
         except tactics.PathBlockedException:
+            # logger.debug('path blocked')
             # wait and see if the blocker clears
             if self.wait_timer > 0:
+                # logger.debug('waiting: {timer} more turns'.format(timer=self.wait_timer))
                 self.wait_timer -= 1
                 return wait.WaitAction(actor)
 
             else:
+                # logger.debug('trying to repath')
                 # ok, let's recompute the path, or go somewhere else
                 path_found = self.recompute_path(actor, world, ab=True, md=10)
                 if not path_found:
                     # logger.debug('no path found, going somewhere else')
                     dest = self.nearby_reachable_destination(actor, world)
                     if dest:
+                        # logger.debug('nearby destination found!')
                         self.destination = dest
                         self.compute_path(actor, world)
 

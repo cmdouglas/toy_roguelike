@@ -190,7 +190,7 @@ def find_path(board, start, end,
             
             # not counting an actor on the goal point as blocking.
             if actors_block and t.pos != end:
-                if not t.obstacle and not t.obstacle:
+                if not t.obstacle and not t.actor:
                     x1, y1 = t.pos
                     x2, y2 = point
                     moves.append((x1 - x2, y1 - y2))
