@@ -30,9 +30,14 @@ class SnakeyTunnelPainter(TunnelPainter):
         self.fill(wall.Wall)
         border = self.get_border()
         connections = [c['point'] for c in self.area.connections]
-        blocked = set(border)
-        blocked -= set(connections)
-        
+        costs = {}
+        base_cost = 1000
+        for point in self.area.get_all_points():
+            costs[point] = base_cost
+
+        for point in border:
+            costs[point] = 100*base_cost
+
         area_left, area_top = self.area.ul_pos
         
         area_left += 2
@@ -52,23 +57,22 @@ class SnakeyTunnelPainter(TunnelPainter):
             ])
         
         points.append(self.area.connections[-1]['point'])
-        
+        for point in points:
+            costs[point] = 200*base_cost
+            for n in tools.neighbors(point):
+                costs[n] = 100*base_cost
+
         segments = []
         
         for i, point in enumerate(points[:-1]):
             segments.append((point, points[i+1]))
-            
+
         for segment in segments:
             start, end = segment
-            try:
-                dug = self.smart_draw_corridor(start, end, blocked)
-                for p in dug[2:-2]:
-                    # try and keep adacent tunnels from being dug
-                    blocked += set([p])
-                    blocked += set(tools.neighbors(p))
+            dug = self.smart_draw_corridor(start, end, costs=costs)
+            for p in dug:
+                # try and keep adacent tunnels from being dug
+                costs[p] = 200*base_cost
+                for p in tools.neighbors(p):
+                    costs[p] = 100*base_cost
 
-            except:
-                dug = self.smart_draw_corridor(start, end, set())
-
-        
-        

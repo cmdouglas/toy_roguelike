@@ -127,8 +127,13 @@ class Painter(object):
                 tile = self.board[pos]
                 self.board.remove_entity(tile.obstacle)
 
-    def smart_draw_corridor(self, start, end, blocked):
+    def smart_draw_corridor(self, start, end, blocked=None, costs=None):
         """uses an A* search to find a corridor from start to end that does not cross any points in blocked"""
+        if not blocked:
+            blocked = set()
+
+        if not costs:
+            costs = {}
 
         if start == end:
             return []
@@ -147,7 +152,10 @@ class Painter(object):
             return moves
 
         def apply_move(node, move):
-            path_cost = 1000
+            if costs:
+                path_cost = costs.get(move, 1000)
+            else:
+                path_cost = 1000
 
             return search.SearchNode({
                 'point': move,
