@@ -5,6 +5,11 @@ from rl.util import tools
 
 logger = logging.getLogger('rl')
 
+NORTH = (0, -1)
+SOUTH = (0, 1)
+EAST = (1, 0)
+WEST = (-1, 0)
+
 def line(p1, p2):
     def get_direction(p_from, p_to):
         x1, y1 = p_from
@@ -49,6 +54,8 @@ class Shape(object):
     @property
     def border(self):
         if self.dirty:
+            self._points = []
+            self._border = []
             self.find_points()
             self.find_border()
             self.dirty = False
@@ -58,6 +65,8 @@ class Shape(object):
     @property
     def points(self):
         if self.dirty:
+            self._points = []
+            self._points = []
             self.find_points()
             self.find_border()
             self.dirty = False
@@ -84,20 +93,78 @@ class Rectangle(Shape):
     def __init__(self, midpoint, width, height):
         super().__init__()
         self.midpoint = midpoint
+        midx, midy = midpoint
         self.width = width
         self.height = height
-        ul_x = -1 * int(self.width / 2)
-        ul_y = -1 * int(self.height / 2)
+        ul_x = -1 * int(self.width / 2) + midx
+        ul_y = -1 * int(self.height / 2) + midy
         self.ul = (ul_x, ul_y)
 
     def find_points(self):
         startx, starty = self.ul
         midx, midy = self.midpoint
 
-        for x in range(startx, startx+self.width):
-            for y in range(starty, starty+self.height):
-                self._points.append((int(x+midx), int(y+midy)))
+        for x in range(int(startx), int(startx)+self.width):
+            for y in range(int(starty), int(starty)+self.height):
+                self._points.append((int(x), int(y)))
 
+    def grow(self, direction):
+        if direction == NORTH:
+            old_x, old_y = self.ul
+            self.ul = (old_x, old_y - 1)
+            new_x, new_y = self.ul
+            self.height += 1
+            new_midy = new_y + int(self.height/2)
+            self.midpoint = (self.midpoint[0], new_midy)
+
+        elif direction == WEST:
+            old_x, old_y = self.ul
+            self.ul = (old_x - 1, old_y)
+            new_x, new_y = self.ul
+            self.width += 1
+            new_midx = new_x + int(self.width/2)
+            self.midpoint = (new_midx, self.midpoint[1])
+
+        elif direction == SOUTH:
+            self.height += 1
+            x, y = self.ul
+            new_midy = y + int(self.height/2)
+            self.midpoint = (self.midpoint[0], new_midy)
+
+        elif direction == EAST:
+            self.width += 1
+            x, y = self.ul
+            new_midx = x + int(self.width/2)
+            self.midpoint = (new_midx, self.midpoint[1])
+
+        self.dirty = True
+
+    def edge(self, direction):
+        """points on the border along the <direction> edge"""
+        points = set()
+        if direction == NORTH:
+            ul_x, y = self.ul
+            for x in range(ul_x, ul_x + self.width):
+                points.add((x, y - 1))
+
+        elif direction == SOUTH:
+            ll_x, ul_y = self.ul
+            y = ul_y + self.height - 1
+            for x in range(ll_x, ll_x + self.width):
+                points.add((x, y + 1))
+
+        elif direction == EAST:
+            ul_x, ul_y = self.ul
+            x = ul_x + self.width - 1
+            for y in range(ul_y, ul_y + self.height):
+                points.add((x + 1, y))
+
+        elif direction == WEST:
+            x, ul_y = self.ul
+            for y in range(ul_y, ul_y + self.height):
+                points.add((x-1, y))
+
+        return points
 
 class Circle(Shape):
     radius = 0

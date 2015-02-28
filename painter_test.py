@@ -2,6 +2,7 @@ import random
 from rl.board.generator.painters.cave import CavePainter
 from rl.board.generator.painters.shapedroom import RectangularRoomPainter, EllipticalRoomPainter, CircularRoomPainter
 from rl.board.generator.painters.tunnel import SnakeyTunnelPainter, SimpleTunnelPainter
+from rl.board.generator.painters.roomcluster import RoomClusterPainter
 
 from rl.util.partition import Partition
 from rl.board.generator.maparea import MapArea, LEFT, RIGHT, TOP, BOTTOM
@@ -9,7 +10,7 @@ from rl.board.board import Board
 
 width = 20
 height = 20
-painter_type = SnakeyTunnelPainter
+painter_type = RoomClusterPainter
 
 def main():
     partition = Partition((0, 0), width, height)

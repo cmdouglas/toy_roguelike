@@ -58,7 +58,7 @@ class SnakeyTunnelPainter(TunnelPainter):
         
         points.append(self.area.connections[-1]['point'])
         for point in points:
-            costs[point] = 200*base_cost
+            costs[point] = 400*base_cost
             for n in tools.neighbors(point):
                 costs[n] = 100*base_cost
 
@@ -72,7 +72,7 @@ class SnakeyTunnelPainter(TunnelPainter):
             dug = self.smart_draw_corridor(start, end, costs=costs)
             for p in dug:
                 # try and keep adacent tunnels from being dug
-                costs[p] = 200*base_cost
+                costs[p] = 400*base_cost
                 for p in tools.neighbors(p):
                     costs[p] = 100*base_cost
 

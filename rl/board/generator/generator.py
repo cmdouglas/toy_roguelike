@@ -12,6 +12,7 @@ from rl.board.generator.painters import maze
 from rl.board.generator.painters import roomcluster
 
 from rl.entities.actors.goblin import Goblin
+from rl.entities.actors.ogre import Ogre
 from rl.entities.items.potion import HealingPotion
 from rl.entities.items.scroll import TeleportationScroll
 
@@ -160,5 +161,9 @@ class Generator(object):
             point = random.choice(area.get_empty_points())
 
             b.add_entity(TeleportationScroll(), point)
+
+        area = random.choice(b.areas)
+        point = random.choice(area.get_empty_points())
+        b.add_entity(Ogre(), point)
 
         return b
