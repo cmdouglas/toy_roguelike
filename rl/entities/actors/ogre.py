@@ -17,4 +17,4 @@ class Ogre(Creature):
     def __init__(self):
         self.health = self.max_health
         self.intelligence = BasicAI(self)
-        self.str = 16
+        self.str = 10

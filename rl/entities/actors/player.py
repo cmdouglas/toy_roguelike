@@ -1,9 +1,30 @@
+import math
 from rl.ui import colors
 from rl.util import dice
 
 from rl.entities.actors.creature import Creature
 from rl.entities.items import potion
 from rl.ai import playercommand
+
+def xp_table():
+    def round_significant(n, s=2):
+        digits = math.floor(math.log10(n))
+        round_to = max(digits-s, 2)
+        return round(n, -1*int(round_to))
+
+    total = 0
+    factor = 0.93
+    levels = 30
+    to_next = 100
+
+    for level in range(1, levels+1):
+        print("Level {level:>2} | {total:>8} | {to_next:>8}".format(
+            level=level,
+            total=total,
+            to_next=to_next,
+        ))
+        total += to_next
+        to_next = round_significant(int(to_next * (1 + factor**level)))
 
 
 class Player(Creature):

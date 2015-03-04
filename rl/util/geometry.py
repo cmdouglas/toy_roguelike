@@ -108,6 +108,9 @@ class Rectangle(Shape):
             for y in range(int(starty), int(starty)+self.height):
                 self._points.append((int(x), int(y)))
 
+    def area(self):
+        return self.width * self.height
+
     def grow(self, direction):
         if direction == NORTH:
             old_x, old_y = self.ul
@@ -138,6 +141,15 @@ class Rectangle(Shape):
             self.midpoint = (new_midx, self.midpoint[1])
 
         self.dirty = True
+
+    def move(self, direction):
+        dx, dy = direction
+        ul_x, ul_y = self.ul
+        mx, my = self.midpoint
+        self.ul = ul_x+dx, ul_y+dy
+        self.midpoint = mx+dx, my+dy
+
+        self.dirty=True
 
     def edge(self, direction):
         """points on the border along the <direction> edge"""
@@ -175,6 +187,14 @@ class Circle(Shape):
         self.midpoint = midpoint
         self.radius = int(radius)
 
+    @classmethod
+    def from_rect(cls, rect):
+        diameter = min(rect.width, rect.height)
+        radius = int(diameter/2)
+        midpoint = rect.midpoint
+
+        return Circle(midpoint, radius)
+
     def find_points(self):
         midx, midy = self.midpoint
 
@@ -198,6 +218,13 @@ class Ellipse(Shape):
         self.midpoint = midpoint
         self.rx = int(rx)
         self.ry = int(ry)
+
+    def from_rect(self, rect):
+        ry = int(rect.height/2)
+        rx = int(rect.width/2)
+        midpoint = rect.midpoint
+
+        return Ellipse(midpoint, rx, ry)
 
     def find_points(self):
         midx, midy = self.midpoint
