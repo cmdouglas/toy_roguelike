@@ -17,11 +17,9 @@ class MovementAction(Action):
             return 1000
 
     def do_action(self):
-        success = self.actor.move(self.movement)
         old = self.actor.tile.pos
-        x, y = old
-        dx, dy = self.movement
-        new = (x+dx, y+dy)
+        success = self.actor.move(self.movement)
+        new = self.actor.tile.pos
 
         if success:
             return [MoveEvent(self.actor, old, new)]
