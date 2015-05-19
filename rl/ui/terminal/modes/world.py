@@ -102,27 +102,36 @@ class WorldMode(Mode):
             ord('Q'): ExitGameCommand(self)
         }
 
+    def on_enter(self):
+        self.rendered = False
+
+    def on_reenter(self):
+        self.rendered = False
+
     def newframe(self):
         ##
-        # Convoluted logic:  return a frame if something visibly changed in the
-        # world.  return nothing if it's the player's turn but nothing's
-        # changed.
+        # Convoluted logic:
+        #   return a frame if:
+        #     - The mode has just been entered/reentered and nothing has been drawn
+        #     - OR something has visibly changed
+        #   return nothing if:
+        #     - it's the player's turn and we're waiting for input
         #
         # TODO: refactor this.  Maybe use a generator?
         while True:
             try:
+                changed = False
                 events = self.world.tick()
                 if events:
-                    changed=False
                     for event in events:
                         if event.perceptible(self.world.player):
                             message = event.describe(self.world.player)
                             if message:
                                 self.console.add_message(message)
                             changed = True
-                    if changed or not self.rendered:
-                        self.rendered = True
-                        return self.layout.render()
+                if changed or not self.rendered:
+                    self.rendered = True
+                    return self.layout.render()
 
                 if self.world.current_actor == self.world.player:
                     return

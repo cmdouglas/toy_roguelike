@@ -13,6 +13,9 @@ class Mode:
     def on_exit(self):
         pass
 
+    def on_reenter(self):
+        pass
+
     def newframe(self):
         pass
 

@@ -54,3 +54,5 @@ class TerminalUI(application.TerminalApplication):
 
         if not self.modes:
             raise application.StopApplication()
+
+        self.modes[0].on_reenter()
