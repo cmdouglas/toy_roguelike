@@ -1,2 +1,3 @@
 blessed==1.9.5
 wcwidth==0.1.4
+git+git://github.com/cmdouglas/termapp.git#egg=termapp
