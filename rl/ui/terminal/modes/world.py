@@ -108,7 +108,7 @@ class WorldMode(Mode):
     def on_reenter(self):
         self.rendered = False
 
-    def newframe(self):
+    def next_frame(self):
         ##
         # Convoluted logic:
         #   return a frame if:

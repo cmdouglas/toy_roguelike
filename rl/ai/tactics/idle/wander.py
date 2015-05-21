@@ -18,6 +18,9 @@ class WanderTactics(tactics.Tactics):
         self.wait_timer = random.randrange(self.max_wait) + 1
 
     def do_tactics(self, actor, world):
+        if (primitives.can_see(actor, world.player, world) and dice.one_chance_in(3)):
+            raise events.SeeHostileEvent()
+
         if not self.destination:
             self.choose_destination(actor, world)
             self.compute_path(actor, world)

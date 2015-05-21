@@ -24,13 +24,13 @@ class TerminalUI(application.TerminalApplication):
     def on_start(self):
         self.enter_mode(WorldMode())
 
-    def newframe(self):
+    def next_frame(self):
         # this should never happen, since the game would exit when the last
         # mode exits, but handle it anyway.
         if not self.modes:
             raise TerminalUIException("There are no modes to render a frame.")
 
-        return self.modes[0].newframe()
+        return self.modes[0].next_frame()
 
     def handle_keypress(self, key):
         # this should never happen, since the game would exit when the last

@@ -21,7 +21,7 @@ class SingleSelectMenuMode(Mode):
             term.KEY_ENTER: SelectCommand(self)
         }
 
-    def newframe(self):
+    def next_frame(self):
         return self.layout.render()
 
     def handle_keypress(self, key):

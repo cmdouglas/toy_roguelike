@@ -11,7 +11,7 @@ class SleepTactics(tactics.Tactics):
         actor.emote("falls asleep.")
         
     def do_tactics(self, actor, world):
-        if (primitives.can_see(actor, world.player, world) and dice.one_chance_in(3)):
+        if (primitives.can_see(actor, world.player, world) and dice.one_chance_in(5)):
             raise events.SeeHostileEvent()
         
         self.turns_to_sleep -= 1

@@ -16,7 +16,10 @@ class Mode:
     def on_reenter(self):
         pass
 
-    def newframe(self):
+    def changed(self):
+        return False
+
+    def next_frame(self):
         pass
 
     def handle_keypress(self, key):
