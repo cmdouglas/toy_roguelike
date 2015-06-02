@@ -1,5 +1,5 @@
 from rl.ui.terminal.modes import Mode
-from rl.ui.terminal.display.layouts import menumodelayout
+from rl.ui.terminal.modes.menu import layout
 from rl.ui import menu
 from rl.ui.terminal.modes.menu import commands
 
@@ -13,7 +13,7 @@ class SingleSelectMenuMode(Mode):
         self.menu = menu.Menu(items, empty=empty)
         self.exit_on_select = exit_on_select
         self.selected_callback = selected_callback
-        self.layout = menumodelayout.MenuModeLayout(self.menu)
+        self.layout = layout.MenuModeLayout(self.menu)
 
         self.commands = {
             term.KEY_UP: commands.MoveSelectedCommand(self, 1),
