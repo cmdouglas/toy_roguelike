@@ -9,11 +9,11 @@ logger = logging.getLogger('rl')
 
 class SmoothWall(Wall):
     """A wall that updates its glyph based on surrounding tiles"""
-    color = colors.dark_gray
+    color = colors.light_gray
     glyph = u' '
 
     glyph_occluded = u' '
-    glyph_pillar = glyphs.circle
+    glyph_pillar = glyphs.vline
     glyph_vwall = glyphs.vline
     glyph_hwall = glyphs.hline
     glyph_necorner = glyphs.ne
@@ -37,13 +37,7 @@ class SmoothWall(Wall):
     def draw(self):
         if self.should_update:
             # find the player on the board
-            player = None
-            for actor in self.tile.board.actors:
-                if actor.is_player:
-                    player = actor
-                    break
-
-            self.update_glyph(vantage_point=player.tile.pos)
+            self.update_glyph()
             self.should_update = False
 
         return (self.glyph, self.color, self.bgcolor)
@@ -88,23 +82,91 @@ class SmoothWall(Wall):
         else:
             return self.glyph_pillar
 
-    def update_glyph(self, vantage_point=None):
+    def update_glyph(self):
         # logger.debug('Updating Wall at %s', self.tile.pos)
 
-        filled = list(self.adjoining_room_border_tiles().keys())
+        adjoining_tiles = self.adjoining_room_border_tiles()
+        filled = list(adjoining_tiles.keys())
         glyph = self.choose_glyph(filled)
 
-        if glyph == self.glyph_pillar and vantage_point:
-            # there are no (visible) connections to this wall.  Try again and
-            # pretend that the nearest neighbors are visible.
-            nearest = self.nearest_neighbors(vantage_point)
+        if glyph in [self.glyph_cross,
+                     self.glyph_t_east,
+                     self.glyph_t_west,
+                     self.glyph_t_north,
+                     self.glyph_t_south]:
+            # we don't want to give away information here!  maybe the player
+            # has only seen a corner or a side.
+            seen_sides = self.seen_sides()
 
-            filled = list(
-                self.adjoining_room_border_tiles(pretend_seen=nearest).keys()
-            )
-            glyph = self.choose_glyph(filled)
+            glyph = self.occlude_glyph(glyph, seen_sides)
+
 
         self.glyph = glyph
+
+    def occlude_glyph(self, glyph, seen_neighbors):
+        filled = set()
+        seen = set()
+        if glyph == self.glyph_cross:
+            filled.update(['n', 's', 'e', 'w'])
+        elif glyph == self.glyph_t_east:
+            filled.update(['n', 's', 'e'])
+        elif glyph == self.glyph_t_west:
+            filled.update(['n', 's', 'w'])
+        elif glyph == self.glyph_t_north:
+            filled.update(['n', 'e', 'w'])
+        elif glyph == self.glyph_t_south:
+            filled.update(['s', 'e', 'w'])
+
+        for n in seen_neighbors:
+            if n == 'n':
+                seen.update(['n', 'nw', 'ne'])
+            if n == 's':
+                seen.update(['s', 'sw', 'se'])
+            if n == 'e':
+                seen.update(['e', 'ne', 'se'])
+            if n == 'w':
+                seen.update(['w', 'nw', 'sw'])
+            if n == 'ne':
+                seen.update(['n', 'ne', 'e'])
+            if n == 'nw':
+                seen.update(['n', 'nw', 'w'])
+            if n == 'se':
+                seen.update(['s', 'se', 'e'])
+            if n == 'sw':
+                seen.update(['s', 'sw', 'w'])
+
+        return self.choose_glyph(filled.intersection(seen))
+
+    def seen_sides(self):
+        neighbors = self.tile.surrounding(as_dict=True)
+        r = set()
+        for k, v in neighbors.items():
+            if v.has_been_seen:
+                r.add(k)
+        return r
+
+    def adjoining_smoothwalls(self):
+        neighbors = self.tile.surrounding(as_dict=True)
+        r = {}
+        for k, v in neighbors.items():
+            if isinstance(v.obstacle, SmoothWall):
+                r[k] = v.obstacle
+
+        return r
+
+    def adjoining_room_border_tiles(self):
+        room_borders = [
+            door.Door,
+            SmoothWall
+        ]
+        neighbors = self.tile.surrounding(as_dict=True)
+        r = {}
+        for k, v in neighbors.items():
+            # for purposes of drawing tiles, assume unseen tiles are empty.
+            if (v.obstacle and type(v.obstacle) in room_borders):
+                r[k] = v
+
+        return r
 
     def nearest_neighbors(self, vantage_point):
         px, py = vantage_point
@@ -139,33 +201,6 @@ class SmoothWall(Wall):
             if py < y:
                 # vantage point is northwest
                 return ['w', 'nw', 'n']
-
-    def adjoining_smoothwalls(self):
-        neighbors = self.tile.surrounding(as_dict=True)
-        r = {}
-        for k, v in neighbors.items():
-            if isinstance(v.obstacle, SmoothWall):
-                r[k] = v.obstacle
-
-        return r
-
-    def adjoining_room_border_tiles(self, pretend_seen=None):
-        if not pretend_seen:
-            pretend_seen = []
-
-        room_borders = [
-            door.Door,
-            SmoothWall
-        ]
-        neighbors = self.tile.surrounding(as_dict=True)
-        r = {}
-        for k, v in neighbors.items():
-            # for purposes of drawing tiles, assume unseen tiles are empty.
-            if (v.has_been_seen or k in pretend_seen):
-                if (v.obstacle and type(v.obstacle) in room_borders):
-                    r[k] = v
-
-        return r
 
     def hwall(self, dirs):
         """returns true if self should be an hwall according to dirs
