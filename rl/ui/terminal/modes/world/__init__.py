@@ -1,9 +1,9 @@
 import logging
 from rl.ui.terminal.modes import Mode
-from rl.ui.terminal.modes import menu
+from rl.ui.terminal.modes.world import mode_commands
+from rl.ui.terminal.modes.world import player_commands
 from rl.ui.terminal.display.layouts import gamemodelayout
 from rl.ui import console
-from rl.ai import playercommand
 from rl.world import World, GameOver
 from termapp.term import term
 
@@ -32,74 +32,74 @@ class WorldMode(Mode):
 
         self.player_commands = {
             # movement
-            ord('h'): playercommand.MoveOrInteractCommand(self.world, (-1, 0)),
-            term.KEY_LEFT: playercommand.MoveOrInteractCommand(
+            ord('h'): player_commands.MoveOrInteractCommand(self.world, (-1, 0)),
+            term.KEY_LEFT: player_commands.MoveOrInteractCommand(
                 self.world, (-1, 0)
             ),
 
-            ord('j'): playercommand.MoveOrInteractCommand(self.world, (0, 1)),
-            term.KEY_DOWN: playercommand.MoveOrInteractCommand(
+            ord('j'): player_commands.MoveOrInteractCommand(self.world, (0, 1)),
+            term.KEY_DOWN: player_commands.MoveOrInteractCommand(
                 self.world, (0, 1)
             ),
 
-            ord('k'): playercommand.MoveOrInteractCommand(self.world, (0, -1)),
-            term.KEY_UP: playercommand.MoveOrInteractCommand(
+            ord('k'): player_commands.MoveOrInteractCommand(self.world, (0, -1)),
+            term.KEY_UP: player_commands.MoveOrInteractCommand(
                 self.world, (0, -1)
             ),
 
-            ord('l'): playercommand.MoveOrInteractCommand(self.world, (1, 0)),
-            term.KEY_RIGHT: playercommand.MoveOrInteractCommand(
+            ord('l'): player_commands.MoveOrInteractCommand(self.world, (1, 0)),
+            term.KEY_RIGHT: player_commands.MoveOrInteractCommand(
                 self.world, (1, 0)
             ),
 
-            ord('y'): playercommand.MoveOrInteractCommand(
+            ord('y'): player_commands.MoveOrInteractCommand(
                 self.world, (-1, -1)
             ),
-            ord('u'): playercommand.MoveOrInteractCommand(self.world, (1, -1)),
-            ord('b'): playercommand.MoveOrInteractCommand(self.world, (-1, 1)),
-            ord('n'): playercommand.MoveOrInteractCommand(self.world, (1, 1)),
+            ord('u'): player_commands.MoveOrInteractCommand(self.world, (1, -1)),
+            ord('b'): player_commands.MoveOrInteractCommand(self.world, (-1, 1)),
+            ord('n'): player_commands.MoveOrInteractCommand(self.world, (1, 1)),
 
             # travel
-            ord('H'): playercommand.DirectionalTravelCommand(
+            ord('H'): player_commands.DirectionalTravelCommand(
                 self.world, (-1, 0)
             ),
-            ord('J'): playercommand.DirectionalTravelCommand(
+            ord('J'): player_commands.DirectionalTravelCommand(
                 self.world, (0, 1)
             ),
-            ord('K'): playercommand.DirectionalTravelCommand(
+            ord('K'): player_commands.DirectionalTravelCommand(
                 self.world, (0, -1)
             ),
-            ord('L'): playercommand.DirectionalTravelCommand(
+            ord('L'): player_commands.DirectionalTravelCommand(
                 self.world, (1, 0)
             ),
-            ord('Y'): playercommand.DirectionalTravelCommand(
+            ord('Y'): player_commands.DirectionalTravelCommand(
                 self.world, (-1, -1)
             ),
-            ord('U'): playercommand.DirectionalTravelCommand(
+            ord('U'): player_commands.DirectionalTravelCommand(
                 self.world, (1, -1)
             ),
-            ord('B'): playercommand.DirectionalTravelCommand(
+            ord('B'): player_commands.DirectionalTravelCommand(
                 self.world, (-1, 1)
             ),
-            ord('N'): playercommand.DirectionalTravelCommand(
+            ord('N'): player_commands.DirectionalTravelCommand(
                 self.world, (1, 1)
             ),
 
             # wait
-            ord('s'): playercommand.WaitCommand(self.world),
+            ord('s'): player_commands.WaitCommand(self.world),
 
             # inventory management
-            ord('g'): playercommand.GetAllItemsCommand(self.world),
-            ord(','): playercommand.GetAllItemsCommand(self.world),
+            ord('g'): player_commands.GetAllItemsCommand(self.world),
+            ord(','): player_commands.GetAllItemsCommand(self.world),
         }
 
         self.mode_commands = {
-            ord('i'): ViewInventoryCommand(self),
-            ord('a'): SelectItemToUseCommand(self),
-            ord('d'): SelectItemToDropCommand(self),
+            ord('i'): mode_commands.ViewInventoryCommand(self),
+            ord('a'): mode_commands.SelectItemToUseCommand(self),
+            ord('d'): mode_commands.SelectItemToDropCommand(self),
 
             # quit
-            ord('Q'): ExitGameCommand(self)
+            ord('Q'): mode_commands.ExitGameCommand(self)
         }
 
     def on_enter(self):
@@ -157,60 +157,4 @@ class WorldMode(Mode):
             command.process()
 
 
-class GameModeCommand:
-    def __init__(self, mode):
-        self.mode = mode
 
-
-class SelectItemToUseCommand(GameModeCommand):
-    def process(self):
-        player = self.mode.world.player
-
-        def on_select(item):
-            player.intelligence.add_command(
-                playercommand.UseItemCommand(self.mode.world, item)
-            )
-
-        items = self.mode.world.player.inventory
-        self.mode.owner.enter_mode(
-            menu.SingleSelectMenuMode(
-                items.to_dict(),
-                empty="You have no items.",
-                selected_callback=on_select
-            )
-        )
-
-
-class ViewInventoryCommand(GameModeCommand):
-    def process(self):
-        items = self.mode.world.player.inventory
-        self.mode.owner.enter_mode(
-            menu.SingleSelectMenuMode(
-                items.to_dict(),
-                empty="You have no items."
-            )
-        )
-
-
-class SelectItemToDropCommand(GameModeCommand):
-    def process(self):
-        player = self.mode.world.player
-
-        def on_select(item):
-            player.intelligence.add_command(
-                playercommand.DropItemCommand(self.mode.world, item)
-            )
-
-        items = self.mode.world.player.inventory
-        self.mode.owner.enter_mode(
-            menu.SingleSelectMenuMode(
-                items.to_dict(),
-                empty="You have no items.",
-                selected_callback=on_select
-            )
-        )
-
-
-class ExitGameCommand(GameModeCommand):
-    def process(self):
-        self.mode.exit()
