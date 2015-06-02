@@ -6,7 +6,11 @@ from rl.entities.obstacles import door
 
 logger = logging.getLogger('rl')
 
-
+##
+# TODO: most of the logic here is actually UI logic so... maybe this shouldn't
+# be a kind of entity?  Maybe some kind of entity view?  Maybe all color/glyph
+# stuff belongs there as well?
+#
 class SmoothWall(Wall):
     """A wall that updates its glyph based on surrounding tiles"""
     color = colors.light_gray
