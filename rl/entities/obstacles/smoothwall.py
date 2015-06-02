@@ -86,7 +86,7 @@ class SmoothWall(Wall):
         # logger.debug('Updating Wall at %s', self.tile.pos)
 
         adjoining_tiles = self.adjoining_room_border_tiles()
-        filled = list(adjoining_tiles.keys())
+        filled = set(adjoining_tiles.keys())
         glyph = self.choose_glyph(filled)
 
         if glyph in [self.glyph_cross,
@@ -95,47 +95,32 @@ class SmoothWall(Wall):
                      self.glyph_t_north,
                      self.glyph_t_south]:
             # we don't want to give away information here!  maybe the player
-            # has only seen a corner or a side.
+            # has only seen a corner or a side, so choose a glyph based on the
+            # sides that have been seen.
+
             seen_sides = self.seen_sides()
+            seen = set()
+            for s in seen_sides:
+                if s == 'n':
+                    seen.update(['n', 'nw', 'ne'])
+                if s == 's':
+                    seen.update(['s', 'sw', 'se'])
+                if s == 'e':
+                    seen.update(['e', 'ne', 'se'])
+                if s == 'w':
+                    seen.update(['w', 'nw', 'sw'])
+                if s == 'ne':
+                    seen.update(['n', 'ne', 'e'])
+                if s == 'nw':
+                    seen.update(['n', 'nw', 'w'])
+                if s == 'se':
+                    seen.update(['s', 'se', 'e'])
+                if s == 'sw':
+                    seen.update(['s', 'sw', 'w'])
 
-            glyph = self.occlude_glyph(glyph, seen_sides)
-
+            glyph = self.choose_glyph(filled.intersection(seen))
 
         self.glyph = glyph
-
-    def occlude_glyph(self, glyph, seen_neighbors):
-        filled = set()
-        seen = set()
-        if glyph == self.glyph_cross:
-            filled.update(['n', 's', 'e', 'w'])
-        elif glyph == self.glyph_t_east:
-            filled.update(['n', 's', 'e'])
-        elif glyph == self.glyph_t_west:
-            filled.update(['n', 's', 'w'])
-        elif glyph == self.glyph_t_north:
-            filled.update(['n', 'e', 'w'])
-        elif glyph == self.glyph_t_south:
-            filled.update(['s', 'e', 'w'])
-
-        for n in seen_neighbors:
-            if n == 'n':
-                seen.update(['n', 'nw', 'ne'])
-            if n == 's':
-                seen.update(['s', 'sw', 'se'])
-            if n == 'e':
-                seen.update(['e', 'ne', 'se'])
-            if n == 'w':
-                seen.update(['w', 'nw', 'sw'])
-            if n == 'ne':
-                seen.update(['n', 'ne', 'e'])
-            if n == 'nw':
-                seen.update(['n', 'nw', 'w'])
-            if n == 'se':
-                seen.update(['s', 'se', 'e'])
-            if n == 'sw':
-                seen.update(['s', 'sw', 'w'])
-
-        return self.choose_glyph(filled.intersection(seen))
 
     def seen_sides(self):
         neighbors = self.tile.surrounding(as_dict=True)
@@ -167,40 +152,6 @@ class SmoothWall(Wall):
                 r[k] = v
 
         return r
-
-    def nearest_neighbors(self, vantage_point):
-        px, py = vantage_point
-        x, y = self.tile.pos
-
-        if px > x:
-            if py > y:
-                # vantage point is southeast
-                return ['s', 'se', 'e']
-            if py == y:
-                # vantage point is due east
-                return ['se', 'e', 'ne']
-            if py < y:
-                # vantage point is northeast
-                return ['e', 'ne', 'n']
-
-        if px == x:
-            if py > y:
-                # vantage point is due south
-                return ['se', 's', 'sw']
-            if py < y:
-                # vantage point due north
-                return ['nw', 'n', 'ne']
-
-        if px < x:
-            if py > y:
-                # vantage point is southwest
-                return ['s', 'sw', 'w']
-            if py == y:
-                # vantage point is due west
-                return ['sw', 'w', 'nw']
-            if py < y:
-                # vantage point is northwest
-                return ['w', 'nw', 'n']
 
     def hwall(self, dirs):
         """returns true if self should be an hwall according to dirs
