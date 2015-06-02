@@ -1,6 +1,7 @@
 from rl.ui.terminal.modes import Mode
 from rl.ui.terminal.display.layouts import menumodelayout
 from rl.ui import menu
+from rl.ui.terminal.modes.menu import commands
 
 from termapp.term import term
 
@@ -15,10 +16,10 @@ class SingleSelectMenuMode(Mode):
         self.layout = menumodelayout.MenuModeLayout(self.menu)
 
         self.commands = {
-            term.KEY_UP: MoveSelectedCommand(self, 1),
-            term.KEY_DOWN: MoveSelectedCommand(self, -1),
-            term.KEY_ESCAPE: ExitMenuCommand(self),
-            term.KEY_ENTER: SelectCommand(self)
+            term.KEY_UP: commands.MoveSelectedCommand(self, 1),
+            term.KEY_DOWN: commands.MoveSelectedCommand(self, -1),
+            term.KEY_ESCAPE: commands.ExitMenuCommand(self),
+            term.KEY_ENTER: commands.SelectCommand(self)
         }
 
     def next_frame(self):
@@ -33,7 +34,7 @@ class SingleSelectMenuMode(Mode):
             letter = str(key)
             code = ord(letter)
 
-        command = self.commands.get(code, SelectCommand(self, key=letter))
+        command = self.commands.get(code, commands.SelectCommand(self, key=letter))
 
         if not command:
             return
@@ -51,38 +52,3 @@ class SingleSelectMenuMode(Mode):
 
 class MultiSelectMenuMode():
     pass
-
-
-class MenuModeCommand():
-   def __init__(self, mode):
-       self.mode = mode
-
-
-class MoveSelectedCommand(MenuModeCommand):
-    def __init__(self, mode, d, n=1):
-        super().__init__(mode)
-        self.d = d
-        self.n = n
-
-    def process(self, menu):
-        for i in range(self.n):
-            if self.d == 1:
-                menu.move_up()
-            else:
-                menu.move_down()
-
-
-class ExitMenuCommand(MenuModeCommand):
-    def process(self, menu):
-        self.mode.exit()
-
-
-class SelectCommand(MenuModeCommand):
-    def __init__(self, mode, key=None):
-        super().__init__(mode)
-        self.key = key
-
-    def process(self, menu):
-        selected = menu.get_selected(key=self.key)
-        if selected:
-            self.mode.handle_select(selected)

@@ -9,6 +9,7 @@ from termapp.term import term
 
 logger = logging.getLogger('rl')
 
+
 class WorldMode(Mode):
     """
     This mode owns the game world, and processes most of the commands that
@@ -155,6 +156,3 @@ class WorldMode(Mode):
         elif code in self.mode_commands:
             command = self.mode_commands[code]
             command.process()
-
-
-
