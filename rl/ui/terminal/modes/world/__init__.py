@@ -2,7 +2,7 @@ import logging
 from rl.ui.terminal.modes import Mode
 from rl.ui.terminal.modes.world import mode_commands
 from rl.ui.terminal.modes.world import player_commands
-from rl.ui.terminal.display.layouts import gamemodelayout
+from rl.ui.terminal.modes.world import layout
 from rl.ui import console
 from rl.world import World, GameOver
 from termapp.term import term
@@ -28,7 +28,7 @@ class WorldMode(Mode):
             self.world = World()
 
         self.console = console.Console()
-        self.layout = gamemodelayout.GameModeLayout(self.world, self.console)
+        self.layout = layout.WorldModeLayout(self.world, self.console)
         self.rendered = False
 
         self.player_commands = {

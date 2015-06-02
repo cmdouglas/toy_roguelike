@@ -10,69 +10,57 @@ logger = logging.getLogger('rl')
 
 
 class HUDPane(Pane):
-    """A 44x19 box where important player info is shown.
+    """A 46x19 box where important player info is shown.
     example (border not rendered):
-    +--------------------------------------------+
-    |Charlie (Level: 1)                          |
-    |                                            |
-    |Health:  18/20    =======================-- |
-    |Energy:  10/10    ========================= |
-    |                                            |
-    |Str:  8          Equipment 1                |
-    |Mag: 15          Equipment 2                |
-    |Dex: 10          Equipment 3                |
-    |                 Equipment 4                |
-    |Gold: 300        Equipment 5                |
-    |*Poisoned* *Confused*                       |
-    |                                            |
-    |g: A goblin (chasing you)                   |
-    |!: A healing potion                         |
-    |                                            |
-    |                                            |
-    |                                            |
-    |                                            |
-    |                                            |
-    +--------------------------------------------+
+    +----------------------------------------------+
+    |  Charlie (Level: 1)                          |
+    |                                              |
+    |  Health:  18/20    =======================-- |
+    |  Energy:  10/10    ========================= |
+    |                                              |
+    |  Str:  8          Equipment 1                |
+    |  Mag: 15          Equipment 2                |
+    |  Dex: 10          Equipment 3                |
+    |                   Equipment 4                |
+    |  Gold: 300        Equipment 5                |
+    |  *Poisoned* *Confused*                       |
+    |                                              |
+    +----------------------------------------------+
 
     """
 
     min_width = 44
-    min_height = 19
+    min_height = 11
 
     light = colors.cyan
     dark = colors.light_gray
 
     def __init__(self, width, height, world):
-        super(HUDPane, self).__init__(width, height)
+        super().__init__(width, height)
 
         self.world = world
         # character name & level (44x2), located at 0,0
-        self.name_pane = Pane(44, 2)
+        self.name_pane = Pane(46, 2)
         self.subpanes[(0, 0)] = self.name_pane
 
         # stats: (18x8), located at 0,2
-        self.stats_pane = Pane(18, 8)
+        self.stats_pane = Pane(20, 8)
         self.subpanes[(0, 2)] = self.stats_pane
 
-        # health/magic bars: 26x3, located at 18,2
+        # health/magic bars: 26x3, located at 20,2
         self.bars_pane = Pane(26, 3)
-        self.subpanes[(18, 2)] = self.bars_pane
+        self.subpanes[(20, 2)] = self.bars_pane
 
-        # equipment: 26x5, located at 18,5
+        # equipment: 26x5, located at 20,5
         self.equipment_pane = Pane(26, 5)
-        self.subpanes[(18, 5)] = self.equipment_pane
+        self.subpanes[(20, 5)] = self.equipment_pane
 
-        # status: 44x2, located at 0,10
-        self.status_pane = Pane(44, 2)
+        # status: 46x2, located at 0,10
+        self.status_pane = Pane(46, 2)
         self.subpanes[(0, 10)] = self.status_pane
 
-        # entities of interest: 44x(height-12), located at 0,12
-        self.ooi_height = self.height-12
-        self.ooi_pane = Pane(44, self.ooi_height)
-        self.subpanes[(0, 12)] = self.ooi_pane
-
     def draw_name(self):
-        line = FormatString("{name} [cyan:(Level:] {level}[cyan:)]".format(
+        line = FormatString("  {name} [cyan:(Level:] {level}[cyan:)]".format(
             name=self.world.player.name,
             level=self.world.player.level)
         )
@@ -82,14 +70,14 @@ class HUDPane(Pane):
         player = self.world.player
 
         stats = FormatString(
-            "[cyan:Health:] {health:3d}[cyan:/]{max_health}\n"
-            "[cyan:Energy:] {energy:3d}[cyan:/]{max_energy}\n"
+            "  [cyan:Health:] {health:3d}[cyan:/]{max_health}\n"
+            "  [cyan:Energy:] {energy:3d}[cyan:/]{max_energy}\n"
             "\n"
-            "[cyan:Str:] {str}\n"
-            "[cyan:Mag:] {mag}\n"
-            "[cyan:Dex:] {dex}\n"
+            "  [cyan:Str:] {str}\n"
+            "  [cyan:Mag:] {mag}\n"
+            "  [cyan:Dex:] {dex}\n"
             "\n"
-            "[cyan:Gold:] {gold}".format(
+            "  [cyan:Gold:] {gold}".format(
                 health=player.health,
                 energy=player.energy,
                 max_health=player.max_health,
@@ -145,36 +133,7 @@ class HUDPane(Pane):
     def draw_equipment(self):
         pass
 
-    def draw_objects_of_interest(self):
-        hud = HUD()
-        oois = hud.objects_of_interest(self.world)
-        # logger.debug(oois)
 
-        self.ooi_pane.clear()
-
-        self.ooi_pane.set_line(
-            0, FormatString().simple("You can see:", color=colors.cyan)
-        )
-        if not oois:
-            self.ooi_pane.set_line(
-                1, FormatString().simple(
-                    ' Nothing of interest',
-                    color=colors.cyan
-                )
-            )
-
-        for i, ooi in enumerate(oois[:(self.ooi_height-1)]):
-            line = (
-                FormatString().simple(
-                    " {glyphs}".format(glyphs=ooi['glyphs']),
-                    color=ooi['color']
-                ) +
-                FormatString().simple(
-                    " {desc}".format(desc=ooi['description'])
-                )
-            )
-
-            self.ooi_pane.set_line(i+1, line)
 
     def refresh(self):
         self.draw_name()
@@ -182,4 +141,3 @@ class HUDPane(Pane):
         self.draw_bars()
         self.draw_equipment()
         self.draw_status()
-        self.draw_objects_of_interest()
