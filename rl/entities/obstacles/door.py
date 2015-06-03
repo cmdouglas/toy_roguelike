@@ -11,22 +11,23 @@ class Door(entity.Obstacle):
     blocks_vision = True
     is_door = True
     is_open = False
-    description = "The ancient door is solidly closed."
-    name = "ancient door"
+    description = "The heavy wooden door is solidly closed."
+    name = "door"
+    name_plural = "doors"
 
     def open(self):
         self.is_open = True
         self.glyph = glyphs.open_box
         self.blocks_movement = False
         self.blocks_vision = False
-        self.description = "The ancient door stands open."
+        self.description = "The heavy wooden door stands open."
 
     def close(self):
         self.is_open = False
         self.glyph = '+'
         self.blocks_movement = True
         self.blocks_vision = True
-        self.description = "The ancient door is solidly closed."
+        self.description = "The heavy wooden door is solidly closed."
 
     def default_interaction(self, actor):
         return interact.OpenAction(actor, self)

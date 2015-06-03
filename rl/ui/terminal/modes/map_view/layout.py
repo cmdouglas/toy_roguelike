@@ -6,19 +6,17 @@ from termapp.term import term
 from rl.ui.terminal.display.panes import board
 from rl.ui.terminal.display.panes import console
 from rl.ui.terminal.display.panes import hud
-from rl.ui.terminal.display.panes import objects_of_interest
+from rl.ui.terminal.display.panes import examined_object
+from rl.ui import colors
 
 logger = logging.getLogger('rl')
 
 
 class ExamineModeLayout(Layout):
-    def __init__(self, world, console):
+    def __init__(self, mode):
         super().__init__()
-        self.world = world
-        self.console = console
-        self.refresh()
+        self.mode = mode
 
-    def refresh(self):
         console_width = term.width
         console_height = 4
 
@@ -36,12 +34,18 @@ class ExamineModeLayout(Layout):
         examined_object_pos = (viewport_width, hud_height)
         console_pos = (0, viewport_height)
 
-        self.board_pane = board.BoardPane(viewport_width, viewport_height, self.world)
-        self.hud_pane = hud.HUDPane(hud_width, hud_height, self.world)
-        self.examined_object_pane = objects_of_interest.ObjectsOfInterestPane(
-            examined_object_width, examined_object_height, self.world
+        self.board_pane = board.BoardPane(
+            viewport_width,
+            viewport_height,
+            self.mode.world,
+            center=self.mode.cursor_pos,
+            cursor_attr=(None, colors.bright_green, colors.bright_white)
         )
-        self.console_pane = console.ConsolePane(console_width, console_height, self.console)
+        self.hud_pane = hud.HUDPane(hud_width, hud_height, self.mode.world)
+        self.examined_object_pane = examined_object.ObjectDetailsPane(
+            examined_object_width, examined_object_height, self.mode.world
+        )
+        self.console_pane = console.ConsolePane(console_width, console_height, self.mode.console)
 
         self.panes = {
             viewport_pos: self.board_pane,
@@ -51,5 +55,7 @@ class ExamineModeLayout(Layout):
         }
 
     def render(self):
-        self.board_pane.center = self.world.player.tile.pos
+        self.board_pane.center = self.mode.cursor_pos
+        self.board_pane.cursor_pos = self.mode.cursor_pos
+        self.examined_object_pane.pos = self.mode.cursor_pos
         return super().render()

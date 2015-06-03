@@ -92,12 +92,14 @@ class WorldMode(Mode):
             # inventory management
             ord('g'): player_commands.GetAllItemsCommand(self.world),
             ord(','): player_commands.GetAllItemsCommand(self.world),
+
         }
 
         self.mode_commands = {
             ord('i'): mode_commands.ViewInventoryCommand(self),
             ord('a'): mode_commands.SelectItemToUseCommand(self),
             ord('d'): mode_commands.SelectItemToDropCommand(self),
+            ord('x'): mode_commands.ExamineCommand(self),
 
             # quit
             ord('Q'): mode_commands.ExitGameCommand(self)

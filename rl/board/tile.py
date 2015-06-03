@@ -16,6 +16,7 @@ class Tile(object):
         self.has_been_seen = False
         self.visible = False
         self.remembered = ' '
+        self.remembered_desc = ''
         self.entities = {
             'obstacle': None,
             'actor': None,
@@ -174,17 +175,10 @@ class Tile(object):
 
         return glyph
 
-    def draw(self, force_visible=False):
 
-        color = colors.light_gray
-        bgcolor = None
-
-        # debug
-        # self.visible = True
-
+    def get_visible_entity(self, force_visible=False):
+        ent = None
         if self.visible or force_visible:
-            glyph = '.'
-            ent = None
             if self.actor:
                 ent = self.actor
 
@@ -197,10 +191,30 @@ class Tile(object):
             elif self.decorations:
                 ent = self.decorations[0]
 
+        return ent
+
+    def remember_entity(self, ent):
+        if ent:
+            glyph, _, _ = ent.draw()
+            self.remembered = glyph
+            self.remembered_desc = ent.describe()
+        else:
+            self.remembered = '.'
+            self.remembered_desc = ''
+
+    def draw(self, force_visible=False):
+        glyph = ' '
+        color = colors.light_gray
+        bgcolor = None
+
+        if self.visible or force_visible:
+            glyph = '.'
+            ent = self.get_visible_entity()
             if ent:
                 glyph, color, bgcolor = ent.draw()
 
-            self.remembered = glyph
+            self.remember_entity(ent)
+
         else:
             glyph = self.remembered
             color = colors.dark_gray

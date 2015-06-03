@@ -10,3 +10,4 @@ class Wall(Obstacle):
     is_wall = True
     description = 'The rough rock wall is solid and unyielding.'
     name = "rock wall"
+    name_plural = "rock walls"

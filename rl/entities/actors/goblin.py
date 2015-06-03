@@ -5,11 +5,11 @@ from rl.ai.basic import BasicAI
 
 
 class Goblin(Creature):
-    name = u"goblin"
-    name_plural = u"goblins"
+    name = "goblin"
+    name_plural = "goblins"
     interest_level = 10
     color = colors.green
-    glyph = u'g'
+    glyph = 'g'
     sight_radius = 8
     max_health = 10
     can_open_doors = True

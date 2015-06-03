@@ -72,7 +72,7 @@ class Player(Creature):
         m = "%s %s" % (name, message)
         return m
 
-    def describe(self, show_strategy=False):
+    def describe(self, show_strategy=False, num=1):
         return "you"
 
     def die(self):

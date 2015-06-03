@@ -12,7 +12,6 @@ class Board:
         self.width = width
         self.height = height
         self.actors = []
-        self.visible_to_player = set()
 
         self.tiles = [
             [tile.Tile(self, (x, y)) for x in range(self.width)]
@@ -196,3 +195,15 @@ class Board:
                 return True
 
         return False
+
+    def interesting_visible_entities(self, player):
+        interesting_entities = []
+        for pos in player.fov:
+            if self.position_is_valid(pos):
+                ent = self[pos].most_interesting_entity()
+                if ent:
+                    interesting_entities.append(ent)
+
+        #things with the highest interest level go first
+        interesting_entities.sort(key=lambda o: -1*o.interest_level)
+        return interesting_entities

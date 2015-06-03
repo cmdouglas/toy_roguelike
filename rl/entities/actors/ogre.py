@@ -6,6 +6,7 @@ from rl.ai.basic import BasicAI
 
 class Ogre(Creature):
     name = u"ogre"
+    article = "an"
     name_plural = u"ogres"
     interest_level = 18
     color = colors.bright_red

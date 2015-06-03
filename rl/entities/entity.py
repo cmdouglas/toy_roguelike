@@ -11,6 +11,9 @@ class Entity(object):
     can_act = False
     can_be_taken = False
     interest_level = 0
+    name=""
+    article="a"
+    name_plural=""
     description = ""
     tile = None
 
@@ -49,6 +52,18 @@ class Entity(object):
 
     def update_glyph(self):
         pass
+
+    def describe(self, num=1):
+        if num != 1:
+            article = str(num)
+            name = self.name_plural
+        else:
+            article = self.article
+            name = self.name
+
+        r = "{article} {name}".format(article=article, name=name)
+
+        return r
 
 
 class Obstacle(Entity):

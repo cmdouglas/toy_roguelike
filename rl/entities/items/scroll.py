@@ -8,6 +8,8 @@ class Scroll(Item):
     usable = True
     glyph = '?'
     color = colors.bright_white
+    name = "scroll"
+    name_plural = "scrolls"
 
     def use_effect(self, actor):
         pass

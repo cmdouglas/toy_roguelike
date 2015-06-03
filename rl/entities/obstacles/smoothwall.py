@@ -32,6 +32,7 @@ class SmoothWall(Wall):
     should_update = False
     description = 'The smooth stone wall is solid and unyielding.'
     name = "smooth stone wall"
+    name_plural = "smooth stone walls"
 
     def on_first_seen(self):
         self.should_update = True

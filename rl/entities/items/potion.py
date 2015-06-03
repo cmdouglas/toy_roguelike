@@ -9,6 +9,7 @@ class Potion(items.Item):
     usable = True
     glyph = '!'
     name = "potion"
+    name_plural = "potions"
 
     def use_effect(self, actor):
         pass

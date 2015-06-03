@@ -18,7 +18,9 @@ class Creature(Actor):
     queued_actions = []
     events_to_process = None
     inventory = collections.KeyedStackableBag()
+    article = "a"
     name = ""
+    name_plural = ""
     intelligence = None
     sight_radius = 0
     health = 0
@@ -49,20 +51,7 @@ class Creature(Actor):
         self.queued_actions.append(action)
 
     def on_move(self, old_pos, new_pos):
-        old_x, old_y = old_pos
-        new_x, new_y = new_pos
-
-    def add_event(self, event):
-        if self.events_to_process is None:
-            self.events_to_process = []
-
-        self.events_to_process.append(event)
-
-    def get_events(self):
-        if self.events_to_process is None:
-            self.events_to_process = []
-
-        return self.events_to_process
+        pass
 
     def emote(self, message, color=None):
         pass
@@ -73,8 +62,8 @@ class Creature(Actor):
     def idle_emote(self, color=None):
         pass
 
-    def describe(self, show_strategy=True):
-        r = "{name}".format(name=self.name)
+    def describe(self, num=1, show_strategy=True):
+        r = super().describe(num)
         if show_strategy:
             r += " ({strategy})".format(
                 strategy=self.intelligence.strategy.describe()

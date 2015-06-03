@@ -40,7 +40,7 @@ class ObjectsOfInterestPane(Pane):
                     color=ooi['color']
                 ) +
                 FormatString().simple(
-                    " {desc}".format(desc=ooi['description'])
+                    ": {desc}".format(desc=ooi['description'])
                 )
             )
 

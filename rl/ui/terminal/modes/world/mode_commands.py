@@ -1,5 +1,6 @@
 from rl.ui.terminal.modes.world import player_commands
 from rl.ui.terminal.modes import menu
+from rl.ui.terminal.modes import map_view
 
 class WorldModeCommand:
     def __init__(self, mode):
@@ -54,6 +55,9 @@ class SelectItemToDropCommand(WorldModeCommand):
             )
         )
 
+class ExamineCommand(WorldModeCommand):
+    def process(self):
+        self.mode.owner.enter_mode(map_view.ExamineMode(self.mode.world, self.mode.console))
 
 class ExitGameCommand(WorldModeCommand):
     def process(self):
