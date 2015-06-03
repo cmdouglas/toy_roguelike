@@ -29,13 +29,14 @@ class MoveOrInteractCommand(PlayerCommand):
 
         if (board.position_is_valid(new_pos)
            and board[new_pos].blocks_movement()):
+
+            if board[new_pos].actor:
+                other = board[new_pos].actor
+                return interact.AttackAction(player, other)
+
             if board[new_pos].obstacle:
                 ob = board[new_pos].obstacle
                 return ob.default_interaction(player)
-
-            elif board[new_pos].actor:
-                other = board[new_pos].actor
-                return interact.AttackAction(player, other)
 
         else:
             return movement.MovementAction(player, self.d)

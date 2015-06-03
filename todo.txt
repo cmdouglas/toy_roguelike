@@ -1,11 +1,9 @@
 Bugs
- - Make smoothwalls update their glyphs correctly (sort of working)
  - Goblins don't seem to open doors (they should)
 
 Refactoring:
  - implement subscriber/subject for the game console (at least). Try not to make a huge mess.
    - have all actions return an event which knows whether and how to report itself on the console.
- - Travel logic should exist in the command, not in the action
 
 Features:
  Functionality
@@ -15,8 +13,10 @@ Features:
 
  Fun
    - moar content
+     - more monsters
      - weapons/armour
      - spells
+     - materials?
 
    - More than one board (stairs/portals)
 
@@ -24,7 +24,6 @@ Features:
 
  Usability
   - Autoexplore/Autotravel
-  - "look/explore" mode
 
 Pipedreams:
  - Tiles (pyglet?  kivy?)
