@@ -1,6 +1,6 @@
 from rl.ui import colors
 from rl.ui import glyphs
-from rl.entities.entity import Obstacle
+from rl.entities.obstacles import Obstacle
 
 class Wall(Obstacle):
     color = colors.sepia

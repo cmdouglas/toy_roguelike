@@ -61,8 +61,12 @@ class ExamineMode(Mode):
             ord('N'): commands.MoveCursorCommand(self, (8, 8)),
 
             term.KEY_ESCAPE: commands.ExitModeCommand(self),
+            term.KEY_ENTER:  commands.ExitModeCommand(self),
+            ord(' '): commands.ExitModeCommand(self),
+
             term.KEY_TAB: commands.JumpToNextInterestingThingCommand(self),
             term.KEY_BTAB: commands.JumpToPreviousInterestingThingCommand(self)
+
 
         }
 

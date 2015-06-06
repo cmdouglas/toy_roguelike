@@ -10,21 +10,26 @@ class GameOver(Exception):
 
 class World:
     def __init__(self):
+        self.board = None
+        self.player = None
+        self.current_actor = None
+        self.ticks = 0
+
+    def generate(self):
         self.board = generator.Generator().generate()
         self.player = self.board.spawn_player()
-        self.actors = []
         self.current_actor = None
         self.ticks = 0
 
     def tick(self):
         if not self.current_actor:
-            self.actors = sorted(self.board.actors, key=lambda actor: actor.timeout)
-            self.current_actor = self.actors[0]
+            actors = sorted(self.board.actors, key=lambda actor: actor.timeout)
+            self.current_actor = actors[0]
 
         timeout = self.current_actor.timeout
 
         if timeout > 0:
-            for actor in self.actors:
+            for actor in actors:
                 actor.timeout -= timeout
 
         events = self.current_actor.process_turn(self)

@@ -11,8 +11,11 @@ class KeyedStackableBag:
         for k in self.keys:
             self.items[k] = None
 
-    def add(self, item):
+    def add(self, item, force_key=None):
         assert isinstance(item, Stackable)
+
+        if force_key and not self.items.get(force_key):
+            self.items[force_key] = item
 
         # If there's already a stack of this type in the bag, add to it.
         for key, item_ in self.items.items():

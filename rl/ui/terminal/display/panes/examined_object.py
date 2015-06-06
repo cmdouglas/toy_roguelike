@@ -48,7 +48,7 @@ class ObjectDetailsPane(Pane):
             0, FormatString().simple(see, color=colors.cyan)
         )
         if seen:
-            if glyph:
+            if glyph and desc:
                 self.set_line(
                     1, FormatString().simple(
                             "   {glyph}".format(glyph=glyph),

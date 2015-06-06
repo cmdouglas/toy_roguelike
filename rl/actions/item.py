@@ -38,6 +38,7 @@ class DropItemAction(Action):
         return 1000
 
     def do_action(self):
+        pos = self.actor.tile.pos
         item = self.actor.inventory.remove(item=self.item)
-        self.actor.tile.add_item(item)
+        self.actor.tile.board.add_entity(item, pos)
         return [DropItemEvent(self.actor, self.item)]

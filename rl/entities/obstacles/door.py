@@ -1,10 +1,10 @@
-from rl.entities import entity
+from rl.entities.obstacles import Obstacle
 from rl.ui import colors
 from rl.ui import glyphs
 from rl.actions import interact
 
 
-class Door(entity.Obstacle):
+class Door(Obstacle):
     color = colors.sepia
     glyph = '+'
     blocks_movement = True

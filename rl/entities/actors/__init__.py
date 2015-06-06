@@ -1,6 +1,6 @@
-from rl.entities import entity
+from rl.entities import Entity
 
-class Actor(entity.Entity):
+class Actor(Entity):
     blocks_movement = True
     can_act = True
     can_open_doors = False
@@ -12,6 +12,6 @@ class Actor(entity.Entity):
     def process_turn(self, world):
         return False
 
-    def can_see(self, point, board):
+    def can_see(self, point):
         return False
 

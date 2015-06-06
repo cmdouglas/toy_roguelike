@@ -61,20 +61,11 @@ class Player(Creature):
 
         return events
 
-    def can_see(self, point, board=None):
+    def can_see(self, point):
         return point in self.fov
-
-    def emote(self, message, color=None):
-        if not color:
-            color = self.color
-
-        name = "You"
-        m = "%s %s" % (name, message)
-        return m
 
     def describe(self, show_strategy=False, num=1):
         return "you"
 
     def die(self):
-        self.emote("die.", color=colors.dark_red)
         self.is_alive = False

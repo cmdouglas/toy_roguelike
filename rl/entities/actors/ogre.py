@@ -5,12 +5,12 @@ from rl.ai.basic import BasicAI
 
 
 class Ogre(Creature):
-    name = u"ogre"
     article = "an"
-    name_plural = u"ogres"
+    name = u"ogre"
+    name_plural = "ogres"
     interest_level = 18
     color = colors.bright_red
-    glyph = u'O'
+    glyph = 'O'
     sight_radius = 8
     max_health = 25
     can_open_doors = True

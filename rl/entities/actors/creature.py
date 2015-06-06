@@ -11,12 +11,12 @@ logger = logging.getLogger('rl')
 
 
 class Creature(Actor):
-    str = 10
-    dex = 10
-    mag = 10
+    base_str = 0
+    base_dex = 0
+    base_mag = 0
+    level = 0
     timeout = 0
     queued_actions = []
-    events_to_process = None
     inventory = collections.KeyedStackableBag()
     article = "a"
     name = ""
@@ -51,15 +51,6 @@ class Creature(Actor):
         self.queued_actions.append(action)
 
     def on_move(self, old_pos, new_pos):
-        pass
-
-    def emote(self, message, color=None):
-        pass
-
-    def sleep_emote(self, color=None):
-        pass
-
-    def idle_emote(self, color=None):
         pass
 
     def describe(self, num=1, show_strategy=True):
@@ -103,7 +94,8 @@ class Creature(Actor):
     def __str__(self):
         return "%s: (%s)" % (self.__class__, self.timeout)
 
-    def can_see(self, point, board):
+    def can_see(self, point):
+        board = self.tile.board
         x1, y1 = self.tile.pos
         x2, y2 = point
 

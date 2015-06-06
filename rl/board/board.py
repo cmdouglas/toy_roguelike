@@ -163,8 +163,6 @@ class Board:
                 self.actors.append(ent)
             ent.tile = t
 
-            ent.on_spawn()
-
         except(tile.EntityPlacementException):
             raise
 
@@ -176,7 +174,6 @@ class Board:
         ent.tile.remove_entity(ent)
         if ent.can_act:
             self.actors.remove(ent)
-        ent.on_despawn()
         ent.tile = None
 
     def move_entity(self, ent, old_pos, new_pos):

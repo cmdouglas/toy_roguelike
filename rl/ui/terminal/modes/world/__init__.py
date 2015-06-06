@@ -26,6 +26,7 @@ class WorldMode(Mode):
 
         else:
             self.world = World()
+            self.world.generate()
 
         self.console = console.Console()
         self.layout = layout.WorldModeLayout(self.world, self.console)
