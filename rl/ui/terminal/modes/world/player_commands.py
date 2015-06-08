@@ -74,7 +74,7 @@ class DirectionalTravelCommand(PlayerCommand):
 
         # next check for any visible hostiles:
         visible_hostiles = [hostile for hostile in self.world.board.actors
-                        if hostile != player and player.can_see(hostile.tile.pos)]
+                        if hostile != player and player.can_see_point(hostile.tile.pos)]
 
 
         if visible_hostiles:

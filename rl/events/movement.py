@@ -8,7 +8,7 @@ class MoveEvent(Event):
         self.to_pos = to_pos
 
     def perceptible(self, player):
-        return self.actor == player or player.can_see(self.from_pos) or player.can_see(self.to_pos)
+        return self.actor == player or player.can_see_point(self.from_pos) or player.can_see_point(self.to_pos)
 
 
 class WaitEvent(Event):
@@ -18,17 +18,17 @@ class WaitEvent(Event):
 
 class TeleportEvent(MoveEvent):
     def perceptible(self, player):
-        return self.actor == player or player.can_see(self.from_pos) or player.can_see(self.to_pos)
+        return self.actor == player or player.can_see_point(self.from_pos) or player.can_see_point(self.to_pos)
 
     def describe(self, player):
         if self.actor == player:
             return "You teleport."
 
-        elif player.can_see(self.from_pos) and player.can_see(self.to_pos):
+        elif player.can_see_point(self.from_pos) and player.can_see_point(self.to_pos):
             return "The {0} teleports.".format(self.actor.name)
 
-        elif player.can_see(self.from_pos):
+        elif player.can_see_point(self.from_pos):
             return "The {0} vanishes!".format(self.actor.name)
 
-        elif player.can_see(self.to_pos):
+        elif player.can_see_point(self.to_pos):
             return "Suddenly, a {0} appears!".format(self.actor.name)

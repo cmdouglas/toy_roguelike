@@ -8,9 +8,10 @@ logger = logging.getLogger('rl')
 
 
 class Board:
-    def __init__(self, width, height):
+    def __init__(self, width, height, world=None):
         self.width = width
         self.height = height
+        self.world = world
         self.actors = []
 
         self.tiles = [
@@ -19,7 +20,6 @@ class Board:
         ]
 
         self.areas = []
-        self.setup()
 
     def spawn_player(self):
         player = Player()
@@ -30,9 +30,6 @@ class Board:
         self.update_fov(player)
 
         return player
-
-    def setup(self):
-        pass
 
     def update_fov(self, player):
         for row in self.tiles:
@@ -161,10 +158,9 @@ class Board:
             t.add_entity(ent)
             if ent.can_act:
                 self.actors.append(ent)
-            ent.tile = t
 
         except(tile.EntityPlacementException):
-            raise
+            pass
 
     def remove_entity(self, ent):
         if not ent:
@@ -174,7 +170,6 @@ class Board:
         ent.tile.remove_entity(ent)
         if ent.can_act:
             self.actors.remove(ent)
-        ent.tile = None
 
     def move_entity(self, ent, old_pos, new_pos):
         if self.position_is_valid(new_pos):
@@ -186,7 +181,6 @@ class Board:
             if not new_tile.blocks_movement():
                 old_tile.remove_entity(ent)
                 new_tile.add_entity(ent)
-                ent.tile = new_tile
                 ent.on_move(old_pos, new_pos)
 
                 return True

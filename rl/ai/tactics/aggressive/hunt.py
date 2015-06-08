@@ -1,42 +1,39 @@
 import logging
 
 from rl.actions import wait
-from rl.ai.tactics import tactics
+from rl.ai.tactics import PathBlockedException
+from rl.ai.tactics.aggressive import AggressiveTactics
 from rl.ai.utils import search
 from rl.ai import primitives, events
 
 logger = logging.getLogger('rl')
 
 
-class HuntTactics(tactics.Tactics):
-    def __init__(self, target, last_seen):
-        self.pos = last_seen
-        self.target = target
+class HuntTactics(AggressiveTactics):
 
     def describe(self):
-        return "hunting"
+        return "hunting {target}".format(target=self.target.describe())
 
-    def do_tactics(self, actor, world):
+    def do_tactics(self):
         # logger.debug('Hunting tactics: start')
-        board = world.board
 
-        if primitives.can_see(actor, self.target, world):
+        if self.actor.can_see_entity(self.target):
             # logger.debug('Hunting tactics: see target')
             raise events.SeeHostileEvent()
 
-        elif actor.tile.pos == self.pos:
-            # logger.debug('Hunting tactics: found target position, no target')
+        elif self.actor.tile.pos == self.target_last_seen:
+            # logger.debug('Hunting tactics: found target position, no target seen')
             # we've hit where the target was and haven't found him, oh well
             raise events.InterestLostEvent()
 
         else:
             # logger.debug('Hunting tactics: finding path to target position')
             path = search.find_path(
-                board,
-                actor.tile.pos,
-                self.pos,
+                self.board,
+                self.actor.tile.pos,
+                self.target_last_seen,
                 actors_block=False,
-                doors_block=(not actor.can_open_doors),
+                doors_block=(not self.actor.can_open_doors),
                 max_depth=20
             )
 
@@ -44,10 +41,10 @@ class HuntTactics(tactics.Tactics):
                 # logger.debug('Hunting tactics: path found')
                 try:
                     # logger.debug('Hunting tactics: trying to move.')
-                    return self.smart_move(actor, world, path)
-                except tactics.PathBlockedException:
+                    return self.smart_move(path)
+                except PathBlockedException:
                     # logger.debug('Hunting tactics: path blocked')
-                    return wait.WaitAction(actor)
+                    return wait.WaitAction(self.actor)
 
             else:
                 # logger.debug('Hunting tactics: no path found')

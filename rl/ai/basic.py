@@ -1,22 +1,22 @@
+from rl.ai import intelligence
 from rl.ai import events
 from rl.ai.strategies import idle, aggressive
 
 
-class BasicAI(object):
-    def __init__(self, actor):
+class BasicAI(intelligence.Intelligence):
         
-        self.actor = actor
-        self.strategy = idle.IdleStrategy()
-        
-    def get_action(self, world):
+    def get_action(self):
+        if not self.strategy:
+            self.strategy = idle.IdleStrategy(self)
+
         try:
-            return self.strategy.do_strategy(self.actor, world)
+            return self.strategy.do_strategy()
 
         except events.SeeHostileEvent:
-            self.strategy = aggressive.AggressiveStrategy()
+            self.strategy = aggressive.AggressiveStrategy(self)
         
         except events.InterestLostEvent:
-            self.strategy = idle.IdleStrategy()
+            self.strategy = idle.IdleStrategy(self)
 
         except events.StrategyCompleteEvent:
-            self.strategy = idle.IdleStrategy()
+            self.strategy = idle.IdleStrategy(self)

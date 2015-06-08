@@ -10,7 +10,7 @@ class GainHealthEvent(Event):
         self.amount = amount
 
     def perceptible(self, player):
-        return self.actor == player or player.can_see(self.actor.tile.pos)
+        return self.actor == player or player.can_see_point(self.actor.tile.pos)
 
     def describe(self, player):
         if self.actor == player:

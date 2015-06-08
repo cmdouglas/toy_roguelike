@@ -36,7 +36,7 @@ class Creature(Actor):
             action = self.queued_actions.pop(0)
 
         else:
-            action = self.intelligence.get_action(world)
+            action = self.intelligence.get_action()
 
         if not action:
             return None
@@ -94,7 +94,10 @@ class Creature(Actor):
     def __str__(self):
         return "%s: (%s)" % (self.__class__, self.timeout)
 
-    def can_see(self, point):
+    def can_see_entity(self, entity):
+        return self.can_see_point(entity.tile.pos)
+
+    def can_see_point(self, point):
         board = self.tile.board
         x1, y1 = self.tile.pos
         x2, y2 = point

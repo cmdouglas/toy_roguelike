@@ -145,6 +145,8 @@ class Tile(object):
         else:
             self.add_decoration(ent)
 
+        ent.tile = self
+
     def remove_entity(self, ent):
         if ent.can_act and self.actor == ent:
             self.actor = None
@@ -154,6 +156,8 @@ class Tile(object):
             self.remove_item(ent)
         elif ent in self.decorations:
             self.decorations.remove(ent)
+
+        ent.tile = None
 
     def remembered_glyph(self):
         glyph = '.'

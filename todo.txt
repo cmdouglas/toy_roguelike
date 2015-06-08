@@ -4,10 +4,14 @@ Bugs
 Refactoring:
  - implement subscriber/subject for the game console (at least). Try not to make a huge mess.
    - have all actions return an event which knows whether and how to report itself on the console.
+ - I don't like how entities contain lots of info/logic on how to draw themselves to a terminal.  This
+   should maybe live on an EntityView class under UI?  Same for events.
+ - AI needs some tidying up.
+
 
 Features:
  Functionality
-  - Dying/Game Over
+  - Dying/Game over -- kind of works, but it just immediately kills the program. need a post-mortem screen.
   - Maybe some winning condition?
   - Save/Load
 

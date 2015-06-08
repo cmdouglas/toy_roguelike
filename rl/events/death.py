@@ -18,5 +18,5 @@ class DeathEvent(Event):
         if self.actor == player:
             return True
 
-        if player.can_see(self.pos):
+        if player.can_see_point(self.pos):
             return True

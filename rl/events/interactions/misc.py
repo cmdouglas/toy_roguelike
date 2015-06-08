@@ -21,13 +21,13 @@ class OpenEvent(Event):
         if self.opener == player:
             return "You open the {0}".format(self.openee.name)
 
-        if player.can_see(self.opener.tile.pos):
+        if player.can_see_point(self.opener.tile.pos):
             return "The {0} opens the {1}".format(self.opener.name, self.openee.name)
 
         return "The {0} opens.".format(self.openee.name)
 
     def perceptible(self, player):
-        return self.opener is player or player.can_see(self.openee.tile.pos)
+        return self.opener is player or player.can_see_point(self.openee.tile.pos)
 
 
 class CloseEvent(Event):
@@ -39,10 +39,10 @@ class CloseEvent(Event):
         if self.closer == player:
             return "You close the {0}".format(self.closee.name)
 
-        if player.can_see(self.closer.tile.pos):
+        if player.can_see_point(self.closer.tile.pos):
             return "The {0} closes the {1}".format(self.closer.name, self.closee.name)
 
         return "The {0} closes.".format(self.closee.name)
 
     def perceptible(self, player):
-        return self.closer is player or player.can_see(self.closee.tile.pos)
+        return self.closer is player or player.can_see_point(self.closee.tile.pos)

@@ -12,6 +12,6 @@ class Actor(Entity):
     def process_turn(self, world):
         return False
 
-    def can_see(self, point):
+    def can_see_point(self, point):
         return False
 

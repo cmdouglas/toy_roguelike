@@ -7,7 +7,7 @@ class UseItemEvent(Event):
         self.item = item
 
     def perceptible(self, player):
-        return self.actor == player or player.can_see(self.actor.tile.pos)
+        return self.actor == player or player.can_see_point(self.actor.tile.pos)
 
     def describe(self, player):
         if self.actor == player:
@@ -29,7 +29,7 @@ class PickUpItemEvent(Event):
         self.item = item
 
     def perceptible(self, player):
-        return self.actor == player or player.can_see(self.actor.tile.pos)
+        return self.actor == player or player.can_see_point(self.actor.tile.pos)
 
     def describe(self, player):
         if self.actor == player:
@@ -45,7 +45,7 @@ class DropItemEvent(Event):
         self.item = item
 
     def perceptible(self, player):
-        return self.actor == player or player.can_see(self.actor.tile.pos)
+        return self.actor == player or player.can_see_point(self.actor.tile.pos)
 
     def describe(self, player):
         if self.actor == player:

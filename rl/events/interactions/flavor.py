@@ -8,7 +8,7 @@ class CreatureFlavorEvent(Event):
         self.message = message
 
     def perceptible(self, player):
-        return player.can_see(self.actor.tile.pos)
+        return player.can_see_point(self.actor.tile.pos)
 
     def describe(self, player):
         return "The {actor} {acts}".format(

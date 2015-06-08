@@ -1,19 +1,16 @@
 import logging
 from rl.ai import events, primitives
-from rl.ai.tactics import tactics
+from rl.ai.tactics.aggressive import AggressiveTactics
 from rl.actions import interact
 
 logger = logging.getLogger('rl')
 
 
-class MeleeTactics(tactics.Tactics):
-    def __init__(self, target):
-        self.target = target
-
+class MeleeTactics(AggressiveTactics):
     def describe(self):
-        return "fighting %s" % self.target.describe()
+        return "fighting {target}".format(target=self.target.describe())
 
-    def do_tactics(self, actor, world):
+    def do_tactics(self):
         # logger.debug('Melee tactics: start')
         # does my target exist?
         if not self.target:
@@ -23,9 +20,9 @@ class MeleeTactics(tactics.Tactics):
 
         # is my target in range?
         tx, ty = self.target.tile.pos
-        x, y = actor.tile.pos
+        x, y = self.actor.tile.pos
         if (abs(tx - x) > 1 or abs(ty - y) > 1):
-            if primitives.can_see(actor, self.target, world):
+            if self.actor.can_see_entity(self.target):
                 # logger.debug('Melee tactics: target out of range')
                 raise events.TargetOutOfRangeEvent()
 
@@ -36,4 +33,4 @@ class MeleeTactics(tactics.Tactics):
 
         # OK GO
         # logger.debug('Melee tactics: attacking target')
-        return interact.AttackAction(actor, self.target)
+        return interact.AttackAction(self.actor, self.target)

@@ -19,7 +19,7 @@ class AttackEvent(Event):
             )
 
     def perceptible(self, actor):
-        return actor.can_see(self.attacker.tile.pos) or actor.can_see(self.defender.tile.pos)
+        return actor.can_see_point(self.attacker.tile.pos) or actor.can_see_point(self.defender.tile.pos)
 
 
 class HitEvent(Event):
@@ -41,7 +41,7 @@ class HitEvent(Event):
             )
 
     def perceptible(self, actor):
-        return actor.can_see(self.attacker.tile.pos) or actor.can_see(self.defender.tile.pos)
+        return actor.can_see_point(self.attacker.tile.pos) or actor.can_see_point(self.defender.tile.pos)
 
 
 class MissEvent(Event):
@@ -63,5 +63,5 @@ class MissEvent(Event):
             )
 
     def perceptible(self, actor):
-        return actor.can_see(self.attacker.tile.pos) or actor.can_see(self.defender.tile.pos)
+        return actor.can_see_point(self.attacker.tile.pos) or actor.can_see_point(self.defender.tile.pos)
 

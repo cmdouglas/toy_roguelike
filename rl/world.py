@@ -16,7 +16,7 @@ class World:
         self.ticks = 0
 
     def generate(self):
-        self.board = generator.Generator().generate()
+        self.board = generator.Generator().generate(world=self)
         self.player = self.board.spawn_player()
         self.current_actor = None
         self.ticks = 0

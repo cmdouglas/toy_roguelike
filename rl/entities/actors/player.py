@@ -61,7 +61,7 @@ class Player(Creature):
 
         return events
 
-    def can_see(self, point):
+    def can_see_point(self, point):
         return point in self.fov
 
     def describe(self, show_strategy=False, num=1):

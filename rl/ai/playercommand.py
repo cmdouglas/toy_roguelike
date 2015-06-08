@@ -16,7 +16,7 @@ class UserInput():
     def add_command(self, command):
         self.commands.append(command)
 
-    def get_action(self, world):
+    def get_action(self):
         if self.commands:
             return self.commands.pop(0).process(self.player)
 
