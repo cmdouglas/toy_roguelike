@@ -59,6 +59,14 @@ class Tile(object):
 
         return False
 
+    def is_closed_door(self):
+        if (self.obstacle
+            and self.obstacle.is_door
+            and not self.obstacle.is_open):
+            return True
+        else:
+            return False
+
     def blocks_vision(self):
         for k, ent in self.entities.items():
             if type(ent) == list:

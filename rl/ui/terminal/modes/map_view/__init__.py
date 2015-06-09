@@ -77,6 +77,10 @@ class ExamineMode(Mode):
                 self, Direction.southeast, repeat=8
             ),
 
+            # go to point
+            ord('.'): commands.GoToPointCommand(self),
+            ord('g'): commands.GoToPointCommand(self),
+
             term.KEY_ESCAPE: commands.ExitModeCommand(self),
             term.KEY_ENTER:  commands.ExitModeCommand(self),
             ord(' '): commands.ExitModeCommand(self),

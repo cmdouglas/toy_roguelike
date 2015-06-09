@@ -174,6 +174,7 @@ def find_area_path(board, start, end):
 
 def find_path(board, start, end,
               actors_block=False,
+              only_known_points=False,
               doors_block=True,
               max_depth=None):
     
@@ -187,19 +188,23 @@ def find_path(board, start, end,
         
         
         for t in board[point].neighbors():
+
             
-            # not counting an actor on the goal point as blocking.
-            if actors_block and t.pos != end:
-                if not t.obstacle and not t.actor:
-                    x1, y1 = t.pos
-                    x2, y2 = point
-                    moves.append((x1 - x2, y1 - y2))
-            else:
-                obstacle = t.obstacle
-                if obstacle is None or ((not doors_block) and obstacle.is_door):
-                    x1, y1 = t.pos
-                    x2, y2 = point
-                    moves.append((x1 - x2, y1 - y2))
+            if actors_block and t.actor and t.pos != end:
+                continue
+
+            if doors_block and t.is_closed_door():
+                continue
+
+            if only_known_points and not (t.visible or t.has_been_seen):
+                continue
+
+            if t.blocks_movement() and t.obstacle and not t.is_closed_door():
+                continue
+
+            x1, y1 = t.pos
+            x2, y2 = point
+            moves.append((x1 - x2, y1 - y2))
             
         return moves
     

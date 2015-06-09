@@ -61,15 +61,14 @@ class PainterStrategy(object):
 class RandomPainterStrategy(PainterStrategy):
     def __init__(self):
         self.painters = [
-            #shapedroom.RectangularRoomPainter,
-            #shapedroom.CircularRoomPainter,
-            #shapedroom.EllipticalRoomPainter,
+            shapedroom.RectangularRoomPainter,
+            shapedroom.CircularRoomPainter,
+            shapedroom.EllipticalRoomPainter,
             # tunnel.SimpleTunnelPainter(),
-            #tunnel.SnakeyTunnelPainter,
+            tunnel.SnakeyTunnelPainter,
             # greathall.GreatHallPainter,
             # roomcluster.RoomClusterPainter,
             maze.MazePainter,
-
             cave.CavePainter
         ]
 

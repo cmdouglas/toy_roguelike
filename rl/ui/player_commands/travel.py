@@ -1,35 +1,33 @@
+import logging
+
+logger = logging.getLogger('rl')
+
 from rl.ui.player_commands import PlayerCommand
 from rl.actions import movement
+from rl.actions import interact
 
+class TravelCommand(PlayerCommand):
+    def next_move(self):
+        raise NotImplemented
 
-class DirectionalTravelCommand(PlayerCommand):
-    def __init__(self, player, direction, last_surroundings=None):
-        super().__init__(player)
-        self.direction = direction
-        self.last_surroundings = last_surroundings
-
-    def process(self):
-        first_move = self.last_surroundings is None
-
-        if first_move or not self.should_stop_travelling():
-            self.player.intelligence.add_command(
-                DirectionalTravelCommand(self.player, self.direction, self.get_surroundings())
-            )
-            return movement.MovementAction(self.player, self.direction)
-
+    def next_pos(self):
+        x, y = self.player.tile.pos
+        dx, dy = self.next_move()
+        return (x+dx, y+dy)
 
     def should_stop_travelling(self):
         # first check if movement is possible:
-        cx, cy = self.player.tile.pos
-        dx, dy = self.direction
-        new_pos = (cx+dx, cy+dy)
+
         board = self.player.tile.board
 
-        if not board.position_is_valid(new_pos):
+        next_pos = self.next_pos()
+
+        if not board.position_is_valid(next_pos):
             return True
 
-        if board[new_pos].blocks_movement():
-            return True
+        if board[next_pos].blocks_movement():
+            if not board[next_pos].is_closed_door():
+                return True
 
         # next check for any visible hostiles:
         visible_hostiles = [
@@ -42,6 +40,61 @@ class DirectionalTravelCommand(PlayerCommand):
 
         # if the player is standing on an item, stop
         if self.player.tile.items:
+            return True
+
+        return False
+
+class PathTravelCommand(TravelCommand):
+    def __init__(self, player, path, first_move=True):
+        super().__init__(player)
+        self.path = path
+        self.first_move = first_move
+
+    def next_move(self):
+        if self.path:
+            return self.path[0]
+
+    def process(self):
+        if not self.path:
+            return
+
+        if self.first_move or not self.should_stop_travelling():
+            self.player.intelligence.add_command(
+                PathTravelCommand(self.player, self.path, first_move=False)
+            )
+
+            # handle doors
+            board = self.player.tile.board
+            next_tile = board[self.next_pos()]
+            if (next_tile.is_closed_door()):
+                return interact.OpenAction(self.player, next_tile.obstacle)
+
+            move = self.path.pop(0)
+            return movement.MovementAction(self.player, move)
+
+
+class DirectionalTravelCommand(TravelCommand):
+    def __init__(self, player, direction, last_surroundings=None):
+        super().__init__(player)
+        self.direction = direction
+        self.last_surroundings = last_surroundings
+
+    def next_move(self):
+        return self.direction
+
+    def process(self):
+        first_move = self.last_surroundings is None
+
+
+        if first_move or not self.should_stop_travelling():
+            self.player.intelligence.add_command(
+                DirectionalTravelCommand(self.player, self.direction, self.get_surroundings())
+            )
+            return movement.MovementAction(self.player, self.direction)
+
+
+    def should_stop_travelling(self):
+        if super().should_stop_travelling():
             return True
 
         # next check if we've hit a fork in the road
