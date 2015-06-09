@@ -186,7 +186,7 @@ def find_path(board, start, end,
         moves = []
         
         
-        for t in board[point].surrounding():
+        for t in board[point].neighbors():
             
             # not counting an actor on the goal point as blocking.
             if actors_block and t.pos != end:

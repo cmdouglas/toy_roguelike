@@ -5,7 +5,6 @@ from rl.util import geometry
 from rl.util import dice
 from rl.board.rooms import room as room_mod
 from rl.board.generator.painters import painter
-from rl.entities.items import potion
 
 
 class ShapedRoomPainter(painter.Painter):

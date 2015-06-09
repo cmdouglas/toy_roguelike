@@ -2,7 +2,7 @@ import random
 import math
 
 from rl.entities.obstacles.wall import Wall
-from rl.util import tools
+from rl.util import geometry
 from rl.board.generator.painters import painter
 from rl.board.generator import maparea
 
@@ -20,7 +20,7 @@ class MazeCell:
     def border(self):
         b = set()
 
-        neighbors = tools.adjacent(self.point)
+        neighbors = geometry.adjacent(self.point)
         for neighbor in neighbors:
             if self.area.contains_point(neighbor):
                 b.add(neighbor)
@@ -124,12 +124,13 @@ class MazePainter(painter.Painter):
 
         empty_points = self.area.get_empty_points()
 
-        to_fill = random.randrange(
-            int(math.sqrt(len(empty_points))), int(len(empty_points) / 2)
-        )
+        # to_fill = random.randrange(
+        #     int(math.sqrt(len(empty_points))), int(len(empty_points) / 2)
+        # )
+        to_fill = 0
 
         def is_dead_end(point):
-            adjacent = tools.adjacent(point)
+            adjacent = geometry.adjacent(point)
             walls = 0
             for adjacent_point in adjacent:
                 if (self.area.contains_point(adjacent_point)
@@ -139,7 +140,7 @@ class MazePainter(painter.Painter):
             return walls == 3
 
         def free_space_adjacent_dead_end(point):
-            adjacent = tools.adjacent(point)
+            adjacent = geometry.adjacent(point)
             for adjacent_point in adjacent:
                 if (self.area.contains_point(adjacent_point)
                    and not self.board[adjacent_point].obstacle):

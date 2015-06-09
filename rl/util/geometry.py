@@ -1,14 +1,83 @@
 import math
 import logging
+import enum
 
-from rl.util import tools
 
 logger = logging.getLogger('rl')
 
-NORTH = (0, -1)
-SOUTH = (0, 1)
-EAST = (1, 0)
-WEST = (-1, 0)
+
+class Direction(tuple, enum.Enum):
+    north = (0, -1)
+    northeast = (1, -1)
+    east = (1, 0)
+    southeast = (1, 1)
+    south = (0, 1)
+    southwest = (-1, 1)
+    west = (-1, 0)
+    northwest = (-1, -1)
+
+    def adjacent_to(self, other):
+        return (
+            (self.value[0] == other.value[0] and
+                abs(self.value[1] - other.value[1]) <= 1) or
+            (self.value[1] == other.value[1] and
+                abs(self.value[0] - other.value[0]) <= 1)
+        )
+
+    @classmethod
+    def quadrant(cls, direction):
+        return [d for d in cls if direction.adjacent_to(d) or direction == d]
+
+    def h_reflect(self):
+        x, y = self
+        return Direction((-1*x, y))
+
+    def v_reflect(self):
+        x, y = self
+        return Direction((x, -1*y))
+
+    def l_rotate(self):
+        # this is kind of hacky
+        return {
+            Direction.north: Direction.east,
+            Direction.northeast: Direction.southeast,
+            Direction.east: Direction.south,
+            Direction.southeast: Direction.southwest,
+            Direction.south: Direction.west,
+            Direction.southwest: Direction.northwest,
+            Direction.west: Direction.north,
+            Direction.northwest: Direction.northeast
+        }.get(self)
+
+    def r_rotate(self):
+        # this is kind of hacky
+        return {
+            Direction.north: Direction.west,
+            Direction.northeast: Direction.northwest,
+            Direction.east: Direction.north,
+            Direction.southeast: Direction.northeast,
+            Direction.south: Direction.east,
+            Direction.southwest: Direction.southeast,
+            Direction.west: Direction.south,
+            Direction.northwest: Direction.southwest
+        }.get(self)
+
+
+
+def neighbors(point):
+    x, y = point
+
+    for d in Direction:
+        dx, dy = d
+        yield (x + dx, y + dy)
+
+def adjacent(point):
+    x, y = point
+    for d in Direction:
+        dx, dy = d
+        if (dx == 0 or dy == 0):
+            yield (x + dx, y + dy)
+
 
 def line(p1, p2):
     def get_direction(p_from, p_to):
@@ -79,7 +148,7 @@ class Shape(object):
     def find_border(self):
         border = set()
         for point in self._points:
-            for neighbor in tools.neighbors(point):
+            for neighbor in neighbors(point):
                 if neighbor not in self._points:
                     border.add(neighbor)
 
@@ -112,7 +181,7 @@ class Rectangle(Shape):
         return self.width * self.height
 
     def grow(self, direction):
-        if direction == NORTH:
+        if direction == Direction.north:
             old_x, old_y = self.ul
             self.ul = (old_x, old_y - 1)
             new_x, new_y = self.ul
@@ -120,7 +189,7 @@ class Rectangle(Shape):
             new_midy = new_y + int(self.height/2)
             self.midpoint = (self.midpoint[0], new_midy)
 
-        elif direction == WEST:
+        elif direction == Direction.west:
             old_x, old_y = self.ul
             self.ul = (old_x - 1, old_y)
             new_x, new_y = self.ul
@@ -128,13 +197,13 @@ class Rectangle(Shape):
             new_midx = new_x + int(self.width/2)
             self.midpoint = (new_midx, self.midpoint[1])
 
-        elif direction == SOUTH:
+        elif direction == Direction.south:
             self.height += 1
             x, y = self.ul
             new_midy = y + int(self.height/2)
             self.midpoint = (self.midpoint[0], new_midy)
 
-        elif direction == EAST:
+        elif direction == Direction.east:
             self.width += 1
             x, y = self.ul
             new_midx = x + int(self.width/2)
@@ -154,29 +223,30 @@ class Rectangle(Shape):
     def edge(self, direction):
         """points on the border along the <direction> edge"""
         points = set()
-        if direction == NORTH:
+        if direction == Direction.north:
             ul_x, y = self.ul
             for x in range(ul_x, ul_x + self.width):
                 points.add((x, y - 1))
 
-        elif direction == SOUTH:
+        elif direction == Direction.south:
             ll_x, ul_y = self.ul
             y = ul_y + self.height - 1
             for x in range(ll_x, ll_x + self.width):
                 points.add((x, y + 1))
 
-        elif direction == EAST:
+        elif direction == Direction.east:
             ul_x, ul_y = self.ul
             x = ul_x + self.width - 1
             for y in range(ul_y, ul_y + self.height):
                 points.add((x + 1, y))
 
-        elif direction == WEST:
+        elif direction == Direction.west:
             x, ul_y = self.ul
             for y in range(ul_y, ul_y + self.height):
                 points.add((x-1, y))
 
         return points
+
 
 class Circle(Shape):
     radius = 0

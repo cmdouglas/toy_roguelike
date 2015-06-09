@@ -70,7 +70,7 @@ class Board:
         points = []
 
         def _add_empty_neighbors(p, d):
-            candidates = self[p].surrounding()
+            candidates = self[p].neighbors()
             for candidate in candidates:
                 if (not candidate.blocks_movement() and
                    candidate.pos not in points):

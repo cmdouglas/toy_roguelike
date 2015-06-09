@@ -1,4 +1,4 @@
-from rl.ui.terminal.modes.world import player_commands
+from rl.ui.player_commands import item as item_commands
 from rl.ui.terminal.modes import menu
 from rl.ui.terminal.modes import map_view
 
@@ -13,7 +13,7 @@ class SelectItemToUseCommand(WorldModeCommand):
 
         def on_select(item):
             player.intelligence.add_command(
-                player_commands.UseItemCommand(self.mode.world, item)
+                item_commands.UseItemCommand(player, item)
             )
 
         items = self.mode.world.player.inventory
@@ -43,7 +43,7 @@ class SelectItemToDropCommand(WorldModeCommand):
 
         def on_select(item):
             player.intelligence.add_command(
-                player_commands.DropItemCommand(self.mode.world, item)
+                item_commands.DropItemCommand(player, item)
             )
 
         items = self.mode.world.player.inventory

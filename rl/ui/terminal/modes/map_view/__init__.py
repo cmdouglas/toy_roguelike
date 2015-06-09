@@ -1,4 +1,5 @@
 import logging
+from rl.util.geometry import Direction
 from rl.ui.terminal.modes import Mode
 from rl.ui.terminal.modes.map_view import commands
 from rl.ui.terminal.modes.map_view import layout
@@ -33,32 +34,48 @@ class ExamineMode(Mode):
 
         self.commands = {
             # movement
-            ord('h'): commands.MoveCursorCommand(self, (-1, 0)),
-            term.KEY_LEFT: commands.MoveCursorCommand(self, (-1, 0)),
+            ord('h'): commands.MoveCursorCommand(self, Direction.west),
+            term.KEY_LEFT: commands.MoveCursorCommand(self, Direction.west),
 
-            ord('j'): commands.MoveCursorCommand(self, (0, 1)),
-            term.KEY_DOWN: commands.MoveCursorCommand(self, (0, 1)),
+            ord('j'): commands.MoveCursorCommand(self, Direction.south),
+            term.KEY_DOWN: commands.MoveCursorCommand(self, Direction.south),
 
-            ord('k'): commands.MoveCursorCommand(self, (0, -1)),
-            term.KEY_UP: commands.MoveCursorCommand(self, (0, -1)),
+            ord('k'): commands.MoveCursorCommand(self, Direction.north),
+            term.KEY_UP: commands.MoveCursorCommand(self, Direction.north),
 
-            ord('l'): commands.MoveCursorCommand(self, (1, 0)),
-            term.KEY_RIGHT: commands.MoveCursorCommand(self, (1, 0)),
+            ord('l'): commands.MoveCursorCommand(self, Direction.east),
+            term.KEY_RIGHT: commands.MoveCursorCommand(self, Direction.east),
 
-            ord('y'): commands.MoveCursorCommand(self, (-1, -1)),
-            ord('u'): commands.MoveCursorCommand(self, (1, -1)),
-            ord('b'): commands.MoveCursorCommand(self, (-1, 1)),
-            ord('n'): commands.MoveCursorCommand(self, (1, 1)),
+            ord('y'): commands.MoveCursorCommand(self, Direction.northwest),
+            ord('u'): commands.MoveCursorCommand(self, Direction.northeast),
+            ord('b'): commands.MoveCursorCommand(self, Direction.southwest),
+            ord('n'): commands.MoveCursorCommand(self, Direction.southeast),
 
             # Move cursor lots
-            ord('H'): commands.MoveCursorCommand(self, (-8, 0)),
-            ord('J'): commands.MoveCursorCommand(self, (0, 8)),
-            ord('K'): commands.MoveCursorCommand(self, (0, -8)),
-            ord('L'): commands.MoveCursorCommand(self, (8, 0)),
-            ord('Y'): commands.MoveCursorCommand(self, (-8, -8)),
-            ord('U'): commands.MoveCursorCommand(self, (8, -8)),
-            ord('B'): commands.MoveCursorCommand(self, (-8, 8)),
-            ord('N'): commands.MoveCursorCommand(self, (8, 8)),
+            ord('H'): commands.MoveCursorCommand(
+                self, Direction.west, repeat=8
+            ),
+            ord('J'): commands.MoveCursorCommand(
+                self, Direction.south, repeat=8
+            ),
+            ord('K'): commands.MoveCursorCommand(
+                self, Direction.north, repeat=8
+            ),
+            ord('L'): commands.MoveCursorCommand(
+                self, Direction.east, repeat=8
+            ),
+            ord('Y'): commands.MoveCursorCommand(
+                self, Direction.northwest, repeat=8
+            ),
+            ord('U'): commands.MoveCursorCommand(
+                self, Direction.northeast, repeat=8
+            ),
+            ord('B'): commands.MoveCursorCommand(
+                self, Direction.southwest, repeat=8
+            ),
+            ord('N'): commands.MoveCursorCommand(
+                self, Direction.southeast, repeat=8
+            ),
 
             term.KEY_ESCAPE: commands.ExitModeCommand(self),
             term.KEY_ENTER:  commands.ExitModeCommand(self),
@@ -66,8 +83,6 @@ class ExamineMode(Mode):
 
             term.KEY_TAB: commands.JumpToNextInterestingThingCommand(self),
             term.KEY_BTAB: commands.JumpToPreviousInterestingThingCommand(self)
-
-
         }
 
     def previous_interesting_thing(self):

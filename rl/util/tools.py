@@ -36,28 +36,3 @@ def stepdown(v, thres1, thres2, cap):
         v = cap
         
     return v
-
-def neighbors(point):
-    x, y = point
-    return [
-        (x-1, y-1),
-        (x-1, y),
-        (x-1, y+1),
-        (x, y+1),
-        (x+1, y+1),
-        (x+1, y),
-        (x+1, y-1),
-        (x, y-1)
-    ]
-
-def adjacent(point):
-    x, y = point
-    return [
-        (x, y -1),
-        (x, y+1),
-        (x+1, y),
-        (x-1, y)
-    ]
-        
-        
-    

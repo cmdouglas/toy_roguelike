@@ -1,6 +1,7 @@
 import logging
 from rl.ui import colors
 from rl.ui import glyphs
+from rl.util.geometry import Direction
 from rl.entities.obstacles.wall import Wall
 from rl.entities.obstacles import door
 
@@ -106,29 +107,14 @@ class SmoothWall(Wall):
             seen_sides = self.seen_sides()
             seen = set()
             for s in seen_sides:
-                if s == 'n':
-                    seen.update(['n', 'nw', 'ne'])
-                if s == 's':
-                    seen.update(['s', 'sw', 'se'])
-                if s == 'e':
-                    seen.update(['e', 'ne', 'se'])
-                if s == 'w':
-                    seen.update(['w', 'nw', 'sw'])
-                if s == 'ne':
-                    seen.update(['n', 'ne', 'e'])
-                if s == 'nw':
-                    seen.update(['n', 'nw', 'w'])
-                if s == 'se':
-                    seen.update(['s', 'se', 'e'])
-                if s == 'sw':
-                    seen.update(['s', 'sw', 'w'])
+                seen.update(Direction.quadrant(s))
 
             glyph = self.choose_glyph(filled.intersection(seen))
 
         self.glyph = glyph
 
     def seen_sides(self):
-        neighbors = self.tile.surrounding(as_dict=True)
+        neighbors = self.tile.neighbors(as_dict=True)
         r = set()
         for k, v in neighbors.items():
             if v.has_been_seen:
@@ -136,7 +122,7 @@ class SmoothWall(Wall):
         return r
 
     def adjoining_smoothwalls(self):
-        neighbors = self.tile.surrounding(as_dict=True)
+        neighbors = self.tile.neighbors(as_dict=True)
         r = {}
         for k, v in neighbors.items():
             if isinstance(v.obstacle, SmoothWall):
@@ -149,7 +135,7 @@ class SmoothWall(Wall):
             door.Door,
             SmoothWall
         ]
-        neighbors = self.tile.surrounding(as_dict=True)
+        neighbors = self.tile.neighbors(as_dict=True)
         r = {}
         for k, v in neighbors.items():
             # for purposes of drawing tiles, assume unseen tiles are empty.
@@ -175,14 +161,20 @@ class SmoothWall(Wall):
 
         patterns = [
             {
-                'empty': ['n', 's'],
-                'filled': ['e'],
-                'transformations': [self.h_reflect]
+                'empty': [Direction.north, Direction.south],
+                'filled': [Direction.east],
+                'transformations': [Direction.h_reflect]
             },
             {
-                'empty': ['s'],
-                'filled': ['e', 'w', 'nw', 'n', 'ne'],
-                'transformations': [self.v_reflect]
+                'empty': [Direction.south],
+                'filled': [
+                    Direction.east,
+                    Direction.west,
+                    Direction.northwest,
+                    Direction.northeast,
+                    Direction.north,
+                ],
+                'transformations': [Direction.v_reflect]
             }
         ]
 
@@ -197,7 +189,7 @@ class SmoothWall(Wall):
         returns true if self should be a vwall according to dirs
 
         vwall is a rotation of hwall"""
-        return self.hwall(self.l_rotate(dirs))
+        return self.hwall([dir.l_rotate() for dir in dirs])
 
     def t_north(self, dirs):
         """returns true if self should be a north t-junction according to dirs
@@ -212,13 +204,24 @@ class SmoothWall(Wall):
         """
         patterns = [
             {
-                'empty': ['nw', 's'],
-                'filled': ['n', 'e', 'w'],
-                'transformations': [self.h_reflect]
+                'empty': [Direction.northwest, Direction.south],
+                'filled': [
+                    Direction.north,
+                    Direction.east,
+                    Direction.west
+                ],
+                'transformations': [Direction.h_reflect]
             },
             {
-                'empty': ['ne', 'nw'],
-                'filled': ['n', 'e', 'w', 'sw', 's', 'se'],
+                'empty': [Direction.northeast, Direction.northwest],
+                'filled': [
+                    Direction.north,
+                    Direction.east,
+                    Direction.west,
+                    Direction.southwest,
+                    Direction.southeast,
+                    Direction.south
+                ],
                 'transformations': []
             }
         ]
@@ -233,19 +236,19 @@ class SmoothWall(Wall):
         """returns true if self should be a south t-junction according to dirs
 
         this is a v-reflection of the t-north case"""
-        return self.t_north(self.v_reflect(dirs))
+        return self.t_north([dir.v_reflect() for dir in dirs])
 
     def t_east(self, dirs):
         """returns true if self should be an east t-junction according to dirs
 
         this is a r-rotation of the t-north case"""
-        return self.t_north(self.l_rotate(dirs))
+        return self.t_north([dir.r_rotate() for dir in dirs])
 
     def t_west(self, dirs):
         """returns true if self should be an east t-junction according to dirs
 
         this is a r-rotation of the t-north case"""
-        return self.t_north(self.r_rotate(dirs))
+        return self.t_north([dir.l_rotate() for dir in dirs])
 
     def necorner(self, dirs):
         """returns true if self should be a northeast corner according to dirs
@@ -259,13 +262,13 @@ class SmoothWall(Wall):
         """
         patterns = [
             {
-                'empty': ['n', 'e'],
-                'filled': ['s', 'w'],
+                'empty': [Direction.north, Direction.east],
+                'filled': [Direction.south, Direction.west],
                 'transformations': []
             },
             {
-                'empty': ['sw'],
-                'filled': ['w', 'nw', 'n', 'ne', 'e', 'se', 's'],
+                'empty': [Direction.southwest],
+                'filled': [d for d in Direction if d != Direction.southwest],
                 'transformations': []
             }
         ]
@@ -280,19 +283,19 @@ class SmoothWall(Wall):
         """returns true if self should be a northwest corner according to dirs
 
         nwcorner is an l-rotation of necorner"""
-        return self.necorner(self.r_rotate(dirs))
+        return self.necorner([dir.l_rotate() for dir in dirs])
 
     def secorner(self, dirs):
         """returns true if self should be a southeast corner according to dirs
 
         secorner is an r-rotation of necorner"""
-        return self.necorner(self.l_rotate(dirs))
+        return self.necorner([dir.r_rotate() for dir in dirs])
 
     def swcorner(self, dirs):
         """returns true if self should be a southwest corner according to dirs
 
         swcorner is 2 r-rotations of necorner"""
-        return self.necorner(self.l_rotate(self.l_rotate(dirs)))
+        return self.necorner([dir.r_rotate().r_rotate() for dir in dirs])
 
     def cross(self, dirs):
         """returns true if self should be a cross according to dirs
@@ -306,9 +309,14 @@ class SmoothWall(Wall):
         """
         patterns = [
             {
-                'empty': ['nw', 'se'],
-                'filled': ['n', 'e', 's', 'w'],
-                'transformations': [self.l_rotate]
+                'empty': [Direction.northwest, Direction.southeast],
+                'filled': [
+                    Direction.north,
+                    Direction.south,
+                    Direction.east,
+                    Direction.west
+                ],
+                'transformations': [Direction.l_rotate]
             }
         ]
 
@@ -335,66 +343,10 @@ class SmoothWall(Wall):
         for t in pattern['transformations'] + [None]:
             tdirs = dirs
             if t:
-                tdirs = t(dirs)
+                tdirs = [t(dir) for dir in dirs]
 
             if (contains_all(tdirs, pattern['filled']) and
                contains_none(tdirs, pattern['empty'])):
                 return True
 
         return False
-
-    def h_reflect(self, dirs):
-        dirtrans = {
-            'n': 'n',
-            'ne': 'nw',
-            'e': 'w',
-            'se': 'sw',
-            's': 's',
-            'sw': 'se',
-            'w': 'e',
-            'nw': 'ne'
-        }
-
-        return [dirtrans[d] for d in dirs]
-
-    def v_reflect(self, dirs):
-        dirtrans = {
-            'n': 's',
-            'ne': 'se',
-            'e': 'e',
-            'se': 'ne',
-            's': 'n',
-            'sw': 'nw',
-            'w': 'w',
-            'nw': 'sw'
-        }
-
-        return [dirtrans[d] for d in dirs]
-
-    def l_rotate(self, dirs):
-        dirtrans = {
-            'n': 'w',
-            'ne': 'nw',
-            'e': 'n',
-            'se': 'ne',
-            's': 'e',
-            'sw': 'se',
-            'w': 's',
-            'nw': 'sw'
-        }
-
-        return [dirtrans[d] for d in dirs]
-
-    def r_rotate(self, dirs):
-        dirtrans = {
-            'n': 'e',
-            'ne': 'se',
-            'e': 's',
-            'se': 'sw',
-            's': 'w',
-            'sw': 'nw',
-            'w': 'n',
-            'nw': 'ne'
-        }
-
-        return [dirtrans[d] for d in dirs]

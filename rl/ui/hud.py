@@ -23,7 +23,7 @@ class HUD(object):
         r = []
         for ob in interesting_objects_condensed:
             count = c[ob.__class__]
-            description = ob.describe()
+            description = ob.describe(num=count)
 
             glyph = ob.glyph
             color = ob.color

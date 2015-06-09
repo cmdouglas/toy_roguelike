@@ -4,7 +4,6 @@ actions."""
 import logging
 
 
-
 logger = logging.getLogger('rl')
 
 
@@ -18,5 +17,4 @@ class UserInput():
 
     def get_action(self):
         if self.commands:
-            return self.commands.pop(0).process(self.player)
-
+            return self.commands.pop(0).process()

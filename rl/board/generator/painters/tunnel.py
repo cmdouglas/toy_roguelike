@@ -1,7 +1,7 @@
 import random
 
 from rl.entities.obstacles import wall
-from rl.util import dice, tools
+from rl.util import dice, geometry
 from rl.board.generator.painters import painter
 
 
@@ -59,7 +59,7 @@ class SnakeyTunnelPainter(TunnelPainter):
         points.append(self.area.connections[-1]['point'])
         for point in points:
             costs[point] = 400*base_cost
-            for n in tools.neighbors(point):
+            for n in geometry.neighbors(point):
                 costs[n] = 100*base_cost
 
         segments = []
@@ -73,6 +73,6 @@ class SnakeyTunnelPainter(TunnelPainter):
             for p in dug:
                 # try and keep adacent tunnels from being dug
                 costs[p] = 400*base_cost
-                for p in tools.neighbors(p):
+                for p in geometry.neighbors(p):
                     costs[p] = 100*base_cost
 

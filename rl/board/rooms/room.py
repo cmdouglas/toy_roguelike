@@ -1,4 +1,4 @@
-from rl.util import tools
+from rl.util import geometry
 
 class Room(object):
     walls = []
@@ -17,7 +17,7 @@ class Room(object):
         if not pos in self.walls:
             return False
 
-        n, s, e, w = tools.adjacent(pos)
+        n, e, s, w = geometry.adjacent(pos)
 
         return (n in self.walls and s in self.walls) or (e in self.walls and w in self.walls)
 
@@ -29,7 +29,7 @@ class Room(object):
 
     def doorstep(self, position):
         """returns the position immediately outside the room, and next to the supplied position"""
-        for p in tools.adjacent(position):
+        for p in geometry.adjacent(position):
             if p in self.interior:
                 continue
 

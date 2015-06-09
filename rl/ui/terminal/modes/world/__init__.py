@@ -1,7 +1,10 @@
 import logging
 from rl.ui.terminal.modes import Mode
+from rl.util.geometry import Direction
+from rl.ui import player_commands
+from rl.ui.player_commands import item as item_commands
+from rl.ui.player_commands import travel as travel_commands
 from rl.ui.terminal.modes.world import mode_commands
-from rl.ui.terminal.modes.world import player_commands
 from rl.ui.terminal.modes.world import layout
 from rl.ui import console
 from rl.world import World, GameOver
@@ -34,65 +37,80 @@ class WorldMode(Mode):
 
         self.player_commands = {
             # movement
-            ord('h'): player_commands.MoveOrInteractCommand(self.world, (-1, 0)),
+            ord('h'): player_commands.MoveOrInteractCommand(
+                self.world.player, Direction.west
+            ),
             term.KEY_LEFT: player_commands.MoveOrInteractCommand(
-                self.world, (-1, 0)
+                self.world.player, Direction.west
             ),
 
-            ord('j'): player_commands.MoveOrInteractCommand(self.world, (0, 1)),
+            ord('j'): player_commands.MoveOrInteractCommand(
+                self.world.player, Direction.south
+            ),
             term.KEY_DOWN: player_commands.MoveOrInteractCommand(
-                self.world, (0, 1)
+                self.world.player, Direction.south
             ),
 
-            ord('k'): player_commands.MoveOrInteractCommand(self.world, (0, -1)),
+            ord('k'): player_commands.MoveOrInteractCommand(
+                self.world.player, Direction.north
+            ),
             term.KEY_UP: player_commands.MoveOrInteractCommand(
-                self.world, (0, -1)
+                self.world.player, Direction.north
             ),
 
-            ord('l'): player_commands.MoveOrInteractCommand(self.world, (1, 0)),
+            ord('l'): player_commands.MoveOrInteractCommand(
+                self.world.player, Direction.east
+            ),
             term.KEY_RIGHT: player_commands.MoveOrInteractCommand(
-                self.world, (1, 0)
+                self.world.player, Direction.east
             ),
 
             ord('y'): player_commands.MoveOrInteractCommand(
-                self.world, (-1, -1)
+                self.world.player, Direction.northwest
             ),
-            ord('u'): player_commands.MoveOrInteractCommand(self.world, (1, -1)),
-            ord('b'): player_commands.MoveOrInteractCommand(self.world, (-1, 1)),
-            ord('n'): player_commands.MoveOrInteractCommand(self.world, (1, 1)),
+            ord('u'): player_commands.MoveOrInteractCommand(
+                self.world.player, Direction.northeast)
+            ,
+            ord('b'): player_commands.MoveOrInteractCommand(
+                self.world.player, Direction.southwest
+            ),
+            ord('n'): player_commands.MoveOrInteractCommand(
+                self.world.player, Direction.southeast
+            ),
 
             # travel
-            ord('H'): player_commands.DirectionalTravelCommand(
-                self.world, (-1, 0)
+            ord('H'): travel_commands.DirectionalTravelCommand(
+                self.world.player, Direction.west
             ),
-            ord('J'): player_commands.DirectionalTravelCommand(
-                self.world, (0, 1)
+            ord('J'): travel_commands.DirectionalTravelCommand(
+                self.world.player, Direction.south
             ),
-            ord('K'): player_commands.DirectionalTravelCommand(
-                self.world, (0, -1)
+            ord('K'): travel_commands.DirectionalTravelCommand(
+                self.world.player, Direction.north
             ),
-            ord('L'): player_commands.DirectionalTravelCommand(
-                self.world, (1, 0)
+            ord('L'): travel_commands.DirectionalTravelCommand(
+                self.world.player, Direction.east
             ),
-            ord('Y'): player_commands.DirectionalTravelCommand(
-                self.world, (-1, -1)
+            ord('Y'): travel_commands.DirectionalTravelCommand(
+                self.world, Direction.northwest
             ),
-            ord('U'): player_commands.DirectionalTravelCommand(
-                self.world, (1, -1)
+            ord('U'): travel_commands.DirectionalTravelCommand(
+                self.world.player, Direction.northeast
             ),
-            ord('B'): player_commands.DirectionalTravelCommand(
-                self.world, (-1, 1)
+            ord('B'): travel_commands.DirectionalTravelCommand(
+                self.world.player, Direction.southwest
             ),
-            ord('N'): player_commands.DirectionalTravelCommand(
-                self.world, (1, 1)
+            ord('N'): travel_commands.DirectionalTravelCommand(
+                self.world.player, Direction.southeast
             ),
 
             # wait
-            ord('s'): player_commands.WaitCommand(self.world),
+            ord('s'): player_commands.WaitCommand(self.world.player),
+            ord('.'): player_commands.WaitCommand(self.world.player),
 
             # inventory management
-            ord('g'): player_commands.GetAllItemsCommand(self.world),
-            ord(','): player_commands.GetAllItemsCommand(self.world),
+            ord('g'): item_commands.GetAllItemsCommand(self.world.player),
+            ord(','): item_commands.GetAllItemsCommand(self.world.player),
 
         }
 

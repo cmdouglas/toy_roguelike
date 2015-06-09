@@ -7,15 +7,15 @@ class AttackEvent(Event):
 
     def describe(self, player):
         if player == self.attacker:
-            return "You attack the {defender}.".format(defender=self.defender.describe())
+            return "You attack the {defender}.".format(defender=self.defender.name)
 
         elif player == self.defender:
-            return "The {attacker} attacks you.".format(attacker=self.attacker.describe())
+            return "The {attacker} attacks you.".format(attacker=self.attacker.name)
 
         else:
             return "The {attacker} attacks the {defender).".format(
-                attacker=self.attacker.describe(),
-                defender=self.defender.describe()
+                attacker=self.attacker.name,
+                defender=self.defender.name
             )
 
     def perceptible(self, actor):
@@ -29,15 +29,15 @@ class HitEvent(Event):
 
     def describe(self, player):
         if player == self.attacker:
-            return "You hit the {defender}.".format(defender=self.defender.describe())
+            return "You hit the {defender}.".format(defender=self.defender.name)
 
         elif player == self.defender:
-            return "The {attacker} hits you.".format(attacker=self.attacker.describe())
+            return "The {attacker} hits you.".format(attacker=self.attacker.name)
 
         else:
             return "The {attacker} hits the {defender).".format(
-                attacker=self.attacker.describe(),
-                defender=self.defender.describe()
+                attacker=self.attacker.name,
+                defender=self.defender.name
             )
 
     def perceptible(self, actor):
@@ -51,15 +51,15 @@ class MissEvent(Event):
 
     def describe(self, player):
         if player == self.attacker:
-            return "You miss the {defender}.".format(defender=self.defender.describe())
+            return "You miss the {defender}.".format(defender=self.defender.name)
 
         elif player == self.defender:
-            return "The {attacker} misses you.".format(attacker=self.attacker.describe())
+            return "The {attacker} misses you.".format(attacker=self.attacker.name)
 
         else:
             return "The {attacker} misses the {defender).".format(
-                attacker=self.attacker.describe(),
-                defender=self.defender.describe()
+                attacker=self.attacker.name,
+                defender=self.defender.name
             )
 
     def perceptible(self, actor):

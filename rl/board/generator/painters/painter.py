@@ -2,7 +2,7 @@ import random
 import math
 
 from rl.ai.utils import search
-from rl.util import tools
+from rl.util import geometry
 from rl.board import tile
 
 class Painter(object):
@@ -145,7 +145,7 @@ class Painter(object):
             point = node.data['point']
             moves = []
 
-            for p in tools.adjacent(point):
+            for p in geometry.adjacent(point):
                 if self.area.contains_point(p) and p not in blocked:
                     moves.append(p)
 
@@ -215,7 +215,7 @@ class Painter(object):
                     processed.add(point)
                     if point in points and (point == start or is_connected(point)):
                         connected.add(point)
-                        to_process.extend(tools.adjacent(point))
+                        to_process.extend(geometry.adjacent(point))
 
         return connected
 

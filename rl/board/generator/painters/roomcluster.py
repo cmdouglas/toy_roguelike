@@ -11,7 +11,7 @@
 #     somehow.
 import random
 
-from rl.util import dice, tools, geometry
+from rl.util import dice, geometry
 from rl.board.generator.painters import painter
 from rl.board.generator import maparea
 from rl.entities.obstacles import wall, smoothwall, door
@@ -55,7 +55,7 @@ class RoomBubbleField:
             seeds = random.sample(points, self.num_bubbles)
             borders = set()
             for seed in seeds:
-                borders = borders.union(set(tools.neighbors(seed)))
+                borders = borders.union(set(geometry.neighbors(seed)))
 
             ok = True
             for seed in seeds:

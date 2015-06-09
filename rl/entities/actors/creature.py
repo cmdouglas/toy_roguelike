@@ -55,7 +55,7 @@ class Creature(Actor):
 
     def describe(self, num=1, show_strategy=True):
         r = super().describe(num)
-        if show_strategy:
+        if show_strategy and num == 1 and self.intelligence and self.intelligence.strategy:
             r += " ({strategy})".format(
                 strategy=self.intelligence.strategy.describe()
             )
@@ -117,7 +117,7 @@ class Creature(Actor):
             if not board.position_is_valid(p):
                 return False
 
-            if board[p].blocks_vision:
+            if board[p].blocks_vision():
                 return False
 
         return True

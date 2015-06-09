@@ -1,4 +1,4 @@
-from rl import config
+
 
 # boxes
 open_box = u'\u25A1'

@@ -33,6 +33,6 @@ class Door(Obstacle):
         return interact.OpenAction(actor, self)
 
     def on_first_seen(self):
-        surrounding_obstacles = [t.obstacle for t in self.tile.surrounding() if t.obstacle]
+        surrounding_obstacles = [t.obstacle for t in self.tile.neighbors() if t.obstacle]
         for obstacle in surrounding_obstacles:
             obstacle.should_update = True

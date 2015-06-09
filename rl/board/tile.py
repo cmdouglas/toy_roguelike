@@ -1,6 +1,7 @@
 import logging
 
 from rl.ui import colors
+from rl.util import geometry
 
 logger = logging.getLogger('rl')
 
@@ -226,37 +227,6 @@ class Tile(object):
 
         return (glyph, color, bgcolor)
 
-    def surrounding(self, as_dict=False):
-        """returns up to 8 surrounding tiles, fewer if called from an
-        edge or corner"""
-        x, y = self.pos
-
-        neighbors = [
-            (x, y-1),    # north
-            (x+1, y-1),  # northeast
-            (x+1, y),    # east
-            (x+1, y+1),  # southeast
-            (x, y+1),    # south
-            (x-1, y+1),  # southwest
-            (x-1, y),    # west
-            (x-1, y-1),  # northwest
-        ]
-
-        if as_dict:
-            r = {}
-            dirs = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
-            for i, neighbor in enumerate(neighbors):
-                d = dirs[i]
-                if self.board.position_is_valid(neighbor):
-                    r[d] = self.board[neighbor]
-
-            return r
-
-        return [
-            self.board[neighbor] for neighbor in neighbors
-            if self.board.position_is_valid(neighbor)
-        ]
-
     def on_first_seen(self):
         if self.actor:
             self.actor.on_first_seen()
@@ -270,29 +240,41 @@ class Tile(object):
         for decoration in self.decorations:
             decoration.on_first_seen()
 
-    def adjacent(self, as_dict=False):
-        """returns the 4 adjacent tiles, fewer if called from an edge or
-        corner"""
+    def neighbors(self, as_dict=False):
         x, y = self.pos
 
-        neighbors = [
-            (x, y-1),   # north
-            (x+1, y),   # east
-            (x, y+1),   # south
-            (x-1, y),   # west
-        ]
+        neighboring_tiles = []
+        neighboring_tiles_dict = {}
+        for d in geometry.Direction:
+            dx, dy = d
+            point = (x+dx, y+dy)
+            if self.board.position_is_valid(point):
+                neighboring_tiles.append(self.board[point])
+                neighboring_tiles_dict[d] = self.board[point]
 
         if as_dict:
-            r = {}
-            dirs = ['n', 'e', 's', 'w']
-            for i, neighbor in enumerate(neighbors):
-                d = dirs[i]
-                if self.board.position_is_valid(neighbor):
-                    r[d] = self.board[neighbor]
+            return neighboring_tiles_dict
 
-            return r
+        else:
+            return neighboring_tiles
 
-        return [
-            self.board[neighbor] for neighbor in neighbors
-            if self.board.position_is_valid(neighbor)
-        ]
+    def adjacent(self, as_dict=False):
+        x, y = self.pos
+
+        neighboring_tiles = []
+        neighboring_tiles_dict = {}
+        for d in geometry.Direction:
+            dx, dy = d
+            if (dx != 0 and dy != 0):
+                continue
+
+            point = (x+dx, y+dy)
+            if self.board.position_is_valid(point):
+                neighboring_tiles.append(self.board[point])
+                neighboring_tiles_dict[d] = self.board[point]
+
+        if as_dict:
+            return neighboring_tiles_dict
+
+        else:
+            return neighboring_tiles
