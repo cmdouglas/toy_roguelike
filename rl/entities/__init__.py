@@ -1,37 +1,26 @@
 from rl.ui import colors
 
 class Entity(object):
+    article="a"
+    name = ""
+    name_plural = ""
+
     color = colors.light_gray
     bgcolor = None
     glyph = ' '
+
     blocks_movement = False
     blocks_vision = False
     can_act = False
     can_be_taken = False
+
     interest_level = 0
-    article="a"
-    name = ""
-    name_plural = ""
+
     description = ""
     tile = None
 
-    def save(self):
-        return {
-            'id': id(self),
-            'type': self.__class__.__name__,
-            'pos': self.pos
-        }
-
-    @classmethod
-    def restore(cls, data, board=None, restorer=None):
-        instance = cls()
-        if board and data['pos']:
-            board.add_entity(instance, data['pos'])
-
-        if restorer:
-            restorer.restored.append(data['id'])
-
-        return instance
+    def persist_fields(self):
+        return []
 
     def move(self, dxdy):
         dx, dy = dxdy

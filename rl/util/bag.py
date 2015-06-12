@@ -60,11 +60,18 @@ class KeyedStackableBag:
         return d
 
     @classmethod
+    def from_dict(cls, d):
+        bag = cls()
+        for k in sorted(d.keys()):
+            bag.items[k] = d[k]
+        return bag
+
+    @classmethod
     def from_list(cls, l):
         bag = cls()
         for item in l[:len(bag.keys)]:
             bag.add(item)
-
+        return bag
 
 class BagFullException(Exception):
     pass

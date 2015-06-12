@@ -28,26 +28,31 @@ def xp_table():
 
 
 class Player(Creature):
+    color=colors.bright_white
+    glyph='@'
+
+    base_str = 10
+    base_mag = 10
+    base_dex = 10
+    base_max_health = 25
+    base_max_energy = 15
+    sight_radius = 10
+
     is_player = True
     def __init__(self):
-        self.color = colors.bright_white
-        self.glyph = u'@'
-        self.sight_radius = 10
+        super().__init__()
         self.name = u"Charlie"
         self.level = 1
-        self.health = 20
-        self.max_health = 20
-        self.energy = 10
-        self.max_energy = 10
-        self.str = 8
-        self.mag = 15
-        self.dex = 10
         self.gold = 300
-        self.is_alive = True
         self.intelligence = playercommand.UserInput(self)
         self.fov = set()
 
         self.inventory.add(potion.HealingPotion(num=3))
+
+    def persist_fields(self):
+        fields = super().persist_fields()
+        fields.extend(['name', 'gold'])
+        return fields
 
     def on_move(self, dx, dy):
         self.tile.board.update_fov(self)

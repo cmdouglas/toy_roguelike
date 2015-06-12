@@ -42,7 +42,6 @@ class SmoothWall(Wall):
 
     def draw(self):
         if self.should_update:
-            # find the player on the board
             self.update_glyph()
             self.should_update = False
 

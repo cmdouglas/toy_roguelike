@@ -11,11 +11,11 @@ class Ogre(Creature):
     interest_level = 18
     color = colors.bright_red
     glyph = 'O'
+    base_str = 8
     sight_radius = 8
-    max_health = 25
+    base_max_health = 25
     can_open_doors = True
 
     def __init__(self):
-        self.health = self.max_health
+        super().__init__()
         self.intelligence = BasicAI(self)
-        self.str = 10

@@ -11,11 +11,12 @@ class Goblin(Creature):
     color = colors.green
     glyph = 'g'
     sight_radius = 8
-    max_health = 10
+    base_str = 4
+    base_max_health = 10
     can_open_doors = True
 
     def __init__(self):
-        self.health = self.max_health
+        super().__init__()
         self.intelligence = BasicAI(self)
-        self.str = 4
+
 

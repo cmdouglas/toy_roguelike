@@ -2,7 +2,7 @@ import logging
 
 from rl.entities.actors import Actor
 from rl.ui import colors
-from rl.util import dice, tools, collections, geometry
+from rl.util import dice, tools, bag, geometry
 
 from rl.events.interactions.combat import AttackEvent, HitEvent
 from rl.events.death import DeathEvent
@@ -14,26 +14,54 @@ class Creature(Actor):
     base_str = 0
     base_dex = 0
     base_mag = 0
+    base_max_health=0
+    base_max_energy=0
+    sight_radius = 0
+
+    health = 0
+    energy = 0
     level = 0
     timeout = 0
-    queued_actions = []
-    inventory = collections.KeyedStackableBag()
-    article = "a"
-    name = ""
-    name_plural = ""
+    inventory = bag.KeyedStackableBag()
+
     intelligence = None
-    sight_radius = 0
-    health = 0
-    max_health=0
+
+    def __init__(self):
+        self.health = self.max_health
+        self.energy = self.max_energy
+
+    @property
+    def str(self):
+        return self.base_str
+
+    @property
+    def dex(self):
+        return self.base_dex
+
+    @property
+    def mag(self):
+        return self.base_mag
+
+    @property
+    def max_health(self):
+        return self.base_max_health
+
+    @property
+    def max_energy(self):
+        return self.base_max_energy
+
+    def persist_fields(self):
+        fields = super().persist_fields()
+        fields.extend([
+            'health', 'energy', 'level', 'timeout', 'inventory', 'intelligence'
+        ])
+
 
     def process_turn(self, world):
         if not self.intelligence:
             raise Exception("{me} has no intelligence to control it.".format(
                 me=repr(self)
             ))
-
-        if self.queued_actions:
-            action = self.queued_actions.pop(0)
 
         else:
             action = self.intelligence.get_action()
@@ -46,9 +74,6 @@ class Creature(Actor):
             self.timeout += action.calculate_cost()
 
         return event
-
-    def queue_action(self, action):
-        self.queued_actions.append(action)
 
     def on_move(self, old_pos, new_pos):
         pass

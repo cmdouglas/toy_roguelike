@@ -2,18 +2,33 @@ Bugs
  - Goblins don't seem to open doors (they should)
 
 Refactoring:
- - implement subscriber/subject for the game console (at least). Try not to make a huge mess.
-   - have all actions return an event which knows whether and how to report itself on the console.
- - I don't like how entities contain lots of info/logic on how to draw themselves to a terminal.  This
-   should maybe live on an EntityView class under UI?  Same for events.
- - AI needs some tidying up.
+ - move a* search out of the ai module -- it's used in other places too
+ - the logic in ui.hud can be moved into ui.terminal.display
+ - separation of world logic and display logic:
+   - info about glyphs/colors can be moved out of entities and into some sort of entityview class in
+     ui.terminal.display
+   - event descriptions can go there too, or into an external data file.  yaml?
+   - maybe some entity info too?
+   - this means i can get rid of ui.colors and ui.glyphs, or move them under terminal where they belong
+ - doors:  they're obstacles that block vision/movement sometimes and sometimes not and so there's tons of special case
+   code in, like, pathfinding and when to recalculate fov and it's really annoying.  how do i door
+ - make the game logic have its own rng separate from the ui rng, so like making a tile choose its color randomly
+   won't advance the one used for level generation or whatever
+
 
 
 Features:
  Functionality
   - Dying/Game over -- kind of works, but it just immediately kills the program. need a post-mortem screen.
+    - what will this actually entail?
+      - if the player has died:
+         - display death message and pause the screen until <enter> or <space> recieved
+         - display post mortem stuff/score/inventory/whatever
   - Maybe some winning condition?
   - Save/Load
+    - pickling is easy, but not great for sharing save files or supporting old versions
+    - json:
+      -
 
  Fun
    - moar content
@@ -25,9 +40,6 @@ Features:
    - More than one board (stairs/portals)
 
    - themed areas
-
- Usability
-  - Autoexplore/Autotravel
 
 Pipedreams:
  - Tiles (pyglet?  kivy?)

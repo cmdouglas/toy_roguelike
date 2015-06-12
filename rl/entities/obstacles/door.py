@@ -15,6 +15,12 @@ class Door(Obstacle):
     name = "door"
     name_plural = "doors"
 
+    def persist_fields(self):
+        fields = super().persist_fields()
+        fields.extend([
+            'is_open'
+        ])
+
     def open(self):
         self.is_open = True
         self.glyph = glyphs.open_box

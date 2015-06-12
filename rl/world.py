@@ -1,3 +1,5 @@
+import shelve
+
 from rl.board.generator import generator
 
 from rl.events.death import DeathEvent
@@ -22,6 +24,7 @@ class World:
         self.ticks = 0
 
     def tick(self):
+        actors = []
         if not self.current_actor:
             actors = sorted(self.board.actors, key=lambda actor: actor.timeout)
             self.current_actor = actors[0]

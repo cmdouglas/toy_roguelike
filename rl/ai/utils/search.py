@@ -189,7 +189,7 @@ def find_path(board, start, end,
         
         for t in board[point].neighbors():
 
-            
+
             if actors_block and t.actor and t.pos != end:
                 continue
 

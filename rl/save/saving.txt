@@ -1,0 +1,34 @@
+# mockup
+{
+    "seed": "asdfasdfasdf",
+    "world": {
+        "entities": {
+            id1: {
+                class: rl.entities.creatures.Goblin
+                pos: (x, y)
+                inventory {}
+                intelligence: {
+                    class: rl.ai.BasicAI
+                    strategy: {
+                        class: rl.ai.strategies.aggressive.AggressiveStrategy,
+                        target: {
+                            'entity'
+                            'id': idxx
+                        }
+                        tactics {
+                            ...
+                        }
+                    }
+                }
+            }
+
+            ...
+
+            "board" {
+                "areas" []
+                "tiles" []
+            }
+            "events" []
+        }
+    }
+}
