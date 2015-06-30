@@ -186,7 +186,8 @@ class WorldMode(Mode):
             command.process()
 
     def game_over(self):
+        logger.debug('game over called!')
         def _do_game_over():
             self.exit()
 
-        self.confirm(_do_game_over())
+        self.confirm(_do_game_over)

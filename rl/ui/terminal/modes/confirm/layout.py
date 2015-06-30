@@ -13,5 +13,9 @@ class BasicConfirmLayout(WorldModeLayout):
 
         console_width = term.width
         console_height = 4
+        viewport_height = min(((term.height - console_height) - 1, 80))
+
+        console_pos = (0, viewport_height)
 
         self.console_pane = ConfirmConsolePane(console_width, console_height, console)
+        self.panes[console_pos] = self.console_pane
