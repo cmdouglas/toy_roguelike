@@ -1,5 +1,6 @@
 from termapp.formatstring import FormatString
 from termapp.layout import Pane
+from rl.ui import colors
 
 
 class ConsolePane(Pane):
@@ -24,3 +25,21 @@ class ConsolePane(Pane):
 
         for i, line in enumerate(lines):
             self.set_line(i, FormatString().simple(line['message'], color=line['color']))
+
+
+class ConfirmConsolePane(ConsolePane):
+    """
+    Like a console pane, but askes for --MORE--, or maybe Continue? (Y/N)
+    """
+
+    def __init__(self, width, height, console, prompt='--MORE--'):
+        super().__init__(width, height, console)
+        self.prompt = prompt
+
+    def refresh(self):
+        lines = self.console.get_last_lines(num_lines=self.height - 1)
+
+        for i, line in enumerate(lines):
+            self.set_line(i, FormatString().simple(line['message'], color=line['color']))
+
+        self.set_line(self.height - 1, FormatString().simple(self.prompt, color=colors.bright_white))

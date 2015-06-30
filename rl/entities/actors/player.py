@@ -44,6 +44,7 @@ class Player(Creature):
         self.name = u"Charlie"
         self.level = 1
         self.gold = 300
+        self.is_alive = True
         self.intelligence = playercommand.UserInput(self)
         self.fov = set()
 

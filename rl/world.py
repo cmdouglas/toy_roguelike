@@ -49,8 +49,7 @@ class World:
         if type(event) == DeathEvent:
             actor = event.actor
             if actor == self.player:
-                raise GameOver()
-
+                pass
             else:
                 self.board.remove_entity(actor)
 

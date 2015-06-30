@@ -16,6 +16,7 @@ class MoveSelectedCommand(MenuModeCommand):
                 menu.move_up()
             else:
                 menu.move_down()
+        self.mode.changed = True
 
 
 class ExitMenuCommand(MenuModeCommand):
@@ -32,3 +33,4 @@ class SelectCommand(MenuModeCommand):
         selected = menu.get_selected(key=self.key)
         if selected:
             self.mode.handle_select(selected)
+        self.mode.changed = True

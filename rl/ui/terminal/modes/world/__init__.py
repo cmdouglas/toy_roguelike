@@ -6,6 +6,7 @@ from rl.ui.player_commands import item as item_commands
 from rl.ui.player_commands import travel as travel_commands
 from rl.ui.terminal.modes.world import mode_commands
 from rl.ui.terminal.modes.world import layout
+from rl.ui.terminal.modes.confirm import SimpleConfirmMode
 from rl.ui import console
 from rl.world import World, GameOver
 from termapp.term import term
@@ -141,25 +142,31 @@ class WorldMode(Mode):
         #
         # TODO: refactor this.  Maybe use a generator?
         while True:
-            try:
-                changed = False
-                events = self.world.tick()
-                if events:
-                    for event in events:
-                        if event.perceptible(self.world.player):
-                            message = event.describe(self.world.player)
-                            if message:
-                                self.console.add_message(message)
-                            changed = True
-                if changed or not self.rendered:
-                    self.rendered = True
-                    return self.layout.render()
+            changed = False
+            # is the player dead?  make the player confirm and then exit if so.
+            if not self.world.player.is_alive:
+                self.game_over()
 
-                if self.world.current_actor == self.world.player:
-                    return
+            events = self.world.tick()
+            if events:
+                for event in events:
+                    if event.perceptible(self.world.player):
+                        message = event.describe(self.world.player)
+                        if message:
+                            self.console.add_message(message)
+                        changed = True
+            if changed or not self.rendered:
+                self.rendered = True
+                return self.layout.render()
 
-            except(GameOver):
-                self.exit()
+            if self.world.current_actor == self.world.player:
+                return
+
+
+    def confirm(self, callback, prompt="--MORE--"):
+        self.owner.enter_mode(SimpleConfirmMode(
+            self.world, self.console, prompt, callback
+        ))
 
     def handle_keypress(self, key):
         if key.is_sequence:
@@ -177,3 +184,9 @@ class WorldMode(Mode):
         elif code in self.mode_commands:
             command = self.mode_commands[code]
             command.process()
+
+    def game_over(self):
+        def _do_game_over():
+            self.exit()
+
+        self.confirm(_do_game_over())

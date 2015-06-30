@@ -14,6 +14,7 @@ class SingleSelectMenuMode(Mode):
         self.exit_on_select = exit_on_select
         self.selected_callback = selected_callback
         self.layout = layout.MenuModeLayout(self.menu)
+        self.changed = True
 
         self.commands = {
             term.KEY_UP: commands.MoveSelectedCommand(self, 1),
@@ -23,7 +24,9 @@ class SingleSelectMenuMode(Mode):
         }
 
     def next_frame(self):
-        return self.layout.render()
+        if self.changed:
+            self.changed = False
+            return self.layout.render()
 
     def handle_keypress(self, key):
         if key.is_sequence:
