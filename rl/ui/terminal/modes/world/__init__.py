@@ -93,7 +93,7 @@ class WorldMode(Mode):
                 self.world.player, Direction.east
             ),
             ord('Y'): travel_commands.DirectionalTravelCommand(
-                self.world, Direction.northwest
+                self.world.player, Direction.northwest
             ),
             ord('U'): travel_commands.DirectionalTravelCommand(
                 self.world.player, Direction.northeast
