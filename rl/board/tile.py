@@ -222,7 +222,7 @@ class Tile(object):
 
         if self.visible or force_visible:
             glyph = '.'
-            ent = self.get_visible_entity()
+            ent = self.get_visible_entity(force_visible=force_visible)
             if ent:
                 glyph, color, bgcolor = ent.draw()
 

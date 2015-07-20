@@ -9,6 +9,8 @@ from rl.board.generator.maparea import MapArea, LEFT, RIGHT
 from rl.board.board import Board
 from rl.util.geometry import Direction
 
+from termapp.formatstring import FormatString
+
 width = 20
 height = 20
 painter_type = RoomClusterPainter
@@ -32,8 +34,26 @@ def main():
     painter = painter_type(board, area)
 
     painter.paint()
+    for row in board.tiles:
+        for tile in row:
+            tile.visible = True
+            tile.has_been_seen = True
+            tile.on_first_seen()
 
-    print(painter.dumps())
+    out = []
+    for tilerow in board.tiles:
+        s = []
+        for tile in tilerow:
+            char, color, bgcolor = tile.draw()
+            c = FormatString().simple(char, color, bgcolor)
+            s.append(c)
+        out.append(FormatString.join("", s))
+
+
+
+
+
+    print(FormatString.join("\n", out))
 
 if __name__ == '__main__':
     main()

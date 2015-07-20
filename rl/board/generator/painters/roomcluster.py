@@ -13,6 +13,7 @@ import random
 
 from rl.util import dice, geometry
 from rl.board.generator.painters import painter
+from rl.board.rooms import room
 from rl.board.generator import maparea
 from rl.entities.obstacles import wall, smoothwall, door
 
@@ -249,7 +250,16 @@ class RoomClusterPainter(painter.Painter):
         rooms = []
 
         for bubble in field.bubbles:
-            pass
+            rooms.append(ClusterableRoom(room.Room(bubble.rect)))
+            for point in bubble.rect.points:
+                self.board.remove_entity(self.board[point].obstacle)
+
+            for point in bubble.rect.border:
+                self.board.remove_entity(self.board[point].obstacle)
+                self.board.add_entity(smoothwall.SmoothWall(), point)
+
+
+
 
 
 
