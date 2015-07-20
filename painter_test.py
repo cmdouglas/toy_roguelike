@@ -5,8 +5,9 @@ from rl.board.generator.painters.tunnel import SnakeyTunnelPainter, SimpleTunnel
 from rl.board.generator.painters.roomcluster import RoomClusterPainter
 
 from rl.util.partition import Partition
-from rl.board.generator.maparea import MapArea, LEFT, RIGHT, TOP, BOTTOM
+from rl.board.generator.maparea import MapArea, LEFT, RIGHT
 from rl.board.board import Board
+from rl.util.geometry import Direction
 
 width = 20
 height = 20

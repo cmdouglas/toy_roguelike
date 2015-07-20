@@ -124,11 +124,10 @@ class MazePainter(painter.Painter):
 
         empty_points = self.area.get_empty_points()
 
-        # to_fill = random.randrange(
-        #     int(math.sqrt(len(empty_points))), int(len(empty_points) / 2)
-        # )
-        to_fill = 0
-
+        to_fill = random.randrange(
+            int(math.sqrt(len(empty_points))), int(len(empty_points) / 2)
+        )
+        
         def is_dead_end(point):
             adjacent = geometry.adjacent(point)
             walls = 0

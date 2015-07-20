@@ -136,15 +136,15 @@ class RoomBubble:
         self.rect = geometry.Rectangle(pos, 1, 1)
         self.field = field
         self.can_expand = {
-            geometry.NORTH: True,
-            geometry.SOUTH: True,
-            geometry.EAST: True,
-            geometry.WEST: True
+            geometry.Direction.north: True,
+            geometry.Direction.south: True,
+            geometry.Direction.east: True,
+            geometry.Direction.west: True
         }
 
     def determine_axis_to_expand(self):
-        north_south = [geometry.NORTH, geometry.SOUTH]
-        east_west = [geometry.EAST, geometry.WEST]
+        north_south = [geometry.Direction.north, geometry.Direction.south]
+        east_west = [geometry.Direction.east, geometry.Direction.west]
 
         def other_axis(axis):
             if axis == north_south:

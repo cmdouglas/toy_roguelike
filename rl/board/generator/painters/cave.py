@@ -94,6 +94,7 @@ class CavePainter(painter.Painter):
         # 5.  Connect to the area entrances
         empty_points = self.area.get_empty_points()
         if not empty_points:
+            self.clear()
             return self.paint()
 
         point = random.choice(empty_points)
