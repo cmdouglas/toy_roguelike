@@ -62,7 +62,14 @@ class Direction(tuple, enum.Enum):
             Direction.northwest: Direction.southwest
         }.get(self)
 
+def sort_by_distance(points, target):
+    def distance_to_target(point):
+        x1, y1 = point
+        x2, y2 = target
 
+        return math.sqrt(abs(x2-x1)**2 + abs(y2-y1)**2)
+
+    return sorted(points, key=distance_to_target)
 
 def neighbors(point):
     x, y = point
@@ -77,7 +84,6 @@ def adjacent(point):
         dx, dy = d
         if (dx == 0 or dy == 0):
             yield (x + dx, y + dy)
-
 
 def line(p1, p2):
     def get_direction(p_from, p_to):
@@ -95,7 +101,6 @@ def line(p1, p2):
         dy = int(round(dy / distance))
 
         return (dx, dy)
-
 
     x1, y1 = p1
     x2, y2 = p2

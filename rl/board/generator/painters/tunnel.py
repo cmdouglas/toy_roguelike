@@ -74,5 +74,6 @@ class SnakeyTunnelPainter(TunnelPainter):
                 # try and keep adacent tunnels from being dug
                 costs[p] = 400*base_cost
                 for p in geometry.neighbors(p):
-                    costs[p] = 100*base_cost
+                    if p not in dug:
+                        costs[p] = 100*base_cost
 

@@ -5,7 +5,7 @@ from rl.board.generator.painters.tunnel import SnakeyTunnelPainter, SimpleTunnel
 from rl.board.generator.painters.roomcluster import RoomClusterPainter
 
 from rl.util.partition import Partition
-from rl.board.generator.maparea import MapArea, LEFT, RIGHT
+from rl.board.generator.maparea import MapArea, LEFT, RIGHT, TOP, BOTTOM
 from rl.board.board import Board
 from rl.util.geometry import Direction
 
@@ -14,6 +14,10 @@ from termapp.formatstring import FormatString
 width = 20
 height = 20
 painter_type = RoomClusterPainter
+#painter_type = SnakeyTunnelPainter
+
+def tile_is_empty(tile):
+    return tile.obstacle is None
 
 def main():
     partition = Partition((0, 0), width, height)
@@ -27,6 +31,11 @@ def main():
         },
         {
             'area': None,
+            'point': (random.randrange(1, width), 0),
+            'side': TOP
+        },
+        {
+            'area': None,
             'point': (width-1, random.randrange(1, height)),
             'side': RIGHT
         }
@@ -36,9 +45,16 @@ def main():
     painter.paint()
     for row in board.tiles:
         for tile in row:
-            tile.visible = True
-            tile.has_been_seen = True
-            tile.on_first_seen()
+            if tile_is_empty(tile):
+                tile.visible = True
+                tile.has_been_seen = True
+                tile.on_first_seen()
+            for n in tile.neighbors():
+                if tile_is_empty(n):
+                    tile.visible = True
+                    tile.has_been_seen = True
+                    tile.on_first_seen()
+
 
     out = []
     for tilerow in board.tiles:
