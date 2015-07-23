@@ -67,7 +67,7 @@ class RandomPainterStrategy(PainterStrategy):
             # tunnel.SimpleTunnelPainter(),
             tunnel.SnakeyTunnelPainter,
             # greathall.GreatHallPainter,
-            # roomcluster.RoomClusterPainter,
+            roomcluster.RoomClusterPainter,
             maze.MazePainter,
             cave.CavePainter
         ]

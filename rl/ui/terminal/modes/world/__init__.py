@@ -5,6 +5,7 @@ from rl.ui import player_commands
 from rl.ui.player_commands import item as item_commands
 from rl.ui.player_commands import travel as travel_commands
 from rl.ui.terminal.modes.world import mode_commands
+from rl.ui import debug_commands
 from rl.ui.terminal.modes.world import layout
 from rl.ui.terminal.modes.confirm import SimpleConfirmMode
 from rl.ui import console
@@ -122,7 +123,10 @@ class WorldMode(Mode):
             ord('x'): mode_commands.ExamineCommand(self),
 
             # quit
-            ord('Q'): mode_commands.ExitGameCommand(self)
+            ord('Q'): mode_commands.ExitGameCommand(self),
+
+            # debug
+            ord('M'): debug_commands.RevealMapCommand(self)
         }
 
     def on_enter(self):
@@ -191,3 +195,6 @@ class WorldMode(Mode):
             self.exit()
 
         self.confirm(_do_game_over)
+
+    def force_redraw(self):
+        self.rendered = False

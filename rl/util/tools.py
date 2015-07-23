@@ -25,14 +25,12 @@ def clamp(v, maxval, minval=0):
         
     return v
     
-def stepdown(v, thres1, thres2, cap):
-    if v > thres1:
-        v = thres1 + (v - thres1)/2
+def stepdown(value, *thresholds):
+    for threshold in thresholds[:-1]:
+        if value > threshold:
+            value = threshold + (value - threshold) / 2
+
+    if value > thresholds[-1]:
+        value = thresholds[-1]
         
-    if v > thres2:
-        v = thres2 + (v-thres2)/2
-        
-    if v > cap:
-        v = cap
-        
-    return v
+    return value
