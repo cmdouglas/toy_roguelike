@@ -1,8 +1,8 @@
 Bugs
  - Goblins don't seem to open doors (they should)
+   - actually, they do when they're chasing you, but not when they're idle?
 
 Refactoring:
- - move a* search out of the ai module -- it's used in other places too
  - the logic in ui.hud can be moved into ui.terminal.display
  - separation of world logic and display logic:
    - info about glyphs/colors can be moved out of entities and into some sort of entityview class in
@@ -15,8 +15,6 @@ Refactoring:
  - make the game logic have its own rng separate from the ui rng, so like making a tile choose its color randomly
    won't advance the one used for level generation or whatever
 
-
-
 Features:
  Functionality
   - Dying/Game over -- kind of works, but it just immediately kills the program. need a post-mortem screen.
@@ -28,7 +26,10 @@ Features:
   - Save/Load
     - pickling is easy, but not great for sharing save files or supporting old versions
     - json:
-      -
+      - ???
+  - projectiles/targeting mode/shooting things/pew pew
+  - more than one map
+  - xp, levelling, skills, ~progression~
 
  Fun
    - moar content

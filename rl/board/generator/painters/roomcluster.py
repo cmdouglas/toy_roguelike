@@ -28,9 +28,10 @@ class RoomCluster:
 
     def find_outside_zones(self):
         points = self.painter.area.get_all_points()
-        def is_connected(point):
+
+        def is_connected(p):
             for room in self.rooms:
-                if point in room.all_points():
+                if p in room.all_points():
                     return False
 
             return True
@@ -59,6 +60,7 @@ class RoomCluster:
 
     def find_reachable_rooms(self, room):
         reachable_rooms = [room]
+
         def _recursive_room_search(room):
             found = False
             for adjacency in room.adjacent:
@@ -178,14 +180,10 @@ class RoomCluster:
                         if path_found:
                             break
 
-
-
-
     def connect(self):
         # first connect the rooms within each subcluster
         for subcluster in self.disconnected_subclusters:
             self.connect_within_subcluster(subcluster)
-
 
         # if there are more than one subcluster, connect them with a corridor
         if len(self.disconnected_subclusters) >= 2:
@@ -194,6 +192,7 @@ class RoomCluster:
 
         # finally, connect each area connection to a room
         self.connect_to_access_points()
+
 
 class ClusterableRoom(Room):
     def __init__(self, shape):
@@ -236,7 +235,6 @@ class ClusterableRoom(Room):
         if connection_set:
             self.potential_outside_connections.append((outside_zone, connection_set))
 
-
     def find_adjacency(self, other):
         adjacency = None
         for adjacency in self.adjacent:
@@ -247,7 +245,7 @@ class ClusterableRoom(Room):
         other_door_candidates = set(other.door_candidates())
 
         adjacency_points = my_door_candidates.intersection(other_door_candidates)
-        if (adjacency_points):
+        if adjacency_points:
             adjacency = {
                 'room': other,
                 'points': adjacency_points
