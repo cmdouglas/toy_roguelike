@@ -4,10 +4,10 @@ from rl.entities.obstacles import smoothwall, wall, door
 from rl.util import geometry
 from rl.util import dice
 from rl.board.rooms import room as room_mod
-from rl.board.generator.painters import painter
+from rl.board.generator.painters import Painter
 
 
-class ShapedRoomPainter(painter.Painter):
+class ShapedRoomPainter(Painter):
     def get_bounding_box(self):
         area_left, area_top = self.area.ul_pos
 

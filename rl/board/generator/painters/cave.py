@@ -2,12 +2,12 @@ import random
 
 from rl.entities.obstacles import wall
 from rl.util import tools
-from rl.board.generator.painters import painter
+from rl.board.generator.painters import Painter
 from rl.board.generator import maparea
 from rl.entities.actors import goblin
 
 
-class CavePainter(painter.Painter):
+class CavePainter(Painter):
     tags = ['natural', 'underground']
     
     def area_meets_requirements(self):

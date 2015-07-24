@@ -2,7 +2,7 @@ import random
 
 from rl.util import dice, geometry, tools
 from rl.util.bubble import BubbleField
-from rl.board.generator.painters import painter
+from rl.board.generator.painters import Painter
 from rl.board.rooms.room import Room
 from rl.entities.obstacles import wall, smoothwall, door
 
@@ -257,7 +257,7 @@ class ClusterableRoom(Room):
         return adjacency
 
 
-class RoomClusterPainter(painter.Painter):
+class RoomClusterPainter(Painter):
     def paint(self):
         num_bubbles = dice.d(2, 3) + 1
 

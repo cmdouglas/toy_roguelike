@@ -1,10 +1,10 @@
 from rl.board import tile
 from rl.board.generator import maparea
-from rl.board.generator.painters import painter
+from rl.board.generator.painters import Painter
 from rl.entities.obstacles import wall
 
 
-class GreatHallPainter(painter.Painter):
+class GreatHallPainter(Painter):
     def paint(self):
         left, top = self.area.ul_pos
         width = self.area.width - 4

@@ -2,10 +2,10 @@ import random
 
 from rl.entities.obstacles import wall
 from rl.util import dice, geometry
-from rl.board.generator.painters import painter
+from rl.board.generator.painters import Painter
 
 
-class TunnelPainter(painter.Painter):
+class TunnelPainter(Painter):
     def area_meets_requirements(self):
         # no dead end tunnels
         return len(self.area.connections) >= 2

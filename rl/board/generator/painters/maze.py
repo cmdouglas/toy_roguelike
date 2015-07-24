@@ -3,7 +3,7 @@ import math
 
 from rl.entities.obstacles.wall import Wall
 from rl.util import geometry
-from rl.board.generator.painters import painter
+from rl.board.generator.painters import Painter
 from rl.board.generator import maparea
 
 
@@ -82,7 +82,7 @@ class MazeCellGrid:
         return ((x, y), cell)
 
 
-class MazePainter(painter.Painter):
+class MazePainter(Painter):
     def paint(self):
         self.fill(Wall)
 
