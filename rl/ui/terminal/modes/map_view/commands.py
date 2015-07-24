@@ -1,5 +1,6 @@
 from rl.ui.player_commands import travel
-from rl.ai.utils import search
+from rl.util import search
+
 
 class MapViewCommand:
     def __init__(self, mode):

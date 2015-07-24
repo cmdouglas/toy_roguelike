@@ -1,9 +1,9 @@
 import random
 import math
 
-from rl.ai.utils import search
-from rl.util import geometry
+from rl.util import geometry, search
 from rl.board import tile
+
 
 class Painter(object):
     

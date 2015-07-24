@@ -44,7 +44,6 @@ class SingleSelectMenuMode(Mode):
 
         command.process(self.menu)
 
-
     def handle_select(self, item):
         if self.exit_on_select:
             self.exit()

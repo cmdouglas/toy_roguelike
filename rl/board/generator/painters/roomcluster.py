@@ -1,8 +1,3 @@
-##
-# Still to do:
-#
-# Connect separated groups with tunnels, connect cluster to the access points.
-
 import random
 
 from rl.util import dice, geometry, tools

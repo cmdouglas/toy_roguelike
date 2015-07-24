@@ -1,6 +1,7 @@
 import math
 
-from rl.ai.utils import search
+from rl.util import search
+
 
 def move_towards(actor1, actor2, world):
     board = world.board

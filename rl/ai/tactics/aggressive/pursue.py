@@ -3,7 +3,7 @@ import logging
 from rl.actions import wait
 from rl.ai.tactics import PathBlockedException
 from rl.ai.tactics.aggressive import AggressiveTactics
-from rl.ai.utils import search
+from rl.util import search
 from rl.ai import events
 
 logger = logging.getLogger('rl')

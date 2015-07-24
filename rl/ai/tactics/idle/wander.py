@@ -2,10 +2,9 @@ import random
 import logging
 
 from rl.actions import wait
-from rl.ai import primitives, events
+from rl.ai import events
 from rl.ai.tactics import Tactics, PathBlockedException
-from rl.ai.utils import search
-from rl.util import dice
+from rl.util import dice, search
 
 logger = logging.getLogger('rl')
 
