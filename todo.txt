@@ -1,6 +1,3 @@
-Bugs
- - Goblins don't seem to open doors (they should)
-   - actually, they do when they're chasing you, but not when they're idle?
 
 Refactoring:
  - the logic in ui.hud can be moved into ui.terminal.display

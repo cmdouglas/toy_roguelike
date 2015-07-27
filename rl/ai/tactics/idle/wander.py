@@ -88,7 +88,8 @@ class WanderTactics(Tactics):
             self.board,
             self.actor.tile.pos,
             self.destination,
-            actors_block=False
+            actors_block=False,
+            doors_block=not self.actor.can_open_doors
         )
 
         if not path_found:
