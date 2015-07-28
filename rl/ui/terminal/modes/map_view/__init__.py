@@ -1,5 +1,6 @@
 import logging
 from rl.util.geometry import Direction
+from rl.ui import tools as ui_tools
 from rl.ui.terminal.modes import Mode
 from rl.ui.terminal.modes.map_view import commands
 from rl.ui.terminal.modes.map_view import layout
@@ -19,9 +20,7 @@ class ExamineMode(Mode):
 
         self.world = world
         self.console = console
-        self.interesting_things = self.world.board.interesting_visible_entities(
-            self.world.player
-        )
+        self.interesting_things = ui_tools.interesting_entities(self.world)
         self.current_ooi = 0
 
         if self.interesting_things:

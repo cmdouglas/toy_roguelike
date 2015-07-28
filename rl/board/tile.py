@@ -49,11 +49,26 @@ class Tile(object):
     def decorations(self):
         return self.entities['decorations']
 
+    @property
+    def all_entities(self):
+        if self.actor:
+            yield self.actor
+
+        if self.obstacle:
+            yield self.obstacle
+
+        for item in self.items:
+            yield item
+
+        for decoration in self.decorations:
+            yield decoration
+
+
     def blocks_movement(self):
-        if (self.obstacle and self.obstacle.blocks_movement):
+        if self.obstacle and self.obstacle.blocks_movement:
             return True
 
-        if (self.actor and self.actor.blocks_movement):
+        if self.actor and self.actor.blocks_movement:
 
             return True
 
@@ -68,12 +83,8 @@ class Tile(object):
             return False
 
     def blocks_vision(self):
-        for k, ent in self.entities.items():
-            if type(ent) == list:
-                for o in ent:
-                    if o and o.blocks_vision:
-                        return True
-            elif ent and ent.blocks_vision:
+        for ent in self.all_entities:
+            if ent.blocks_vision:
                 return True
 
         return False
@@ -118,32 +129,6 @@ class Tile(object):
         if ent not in self.decorations:
             self.decorations.append(ent)
 
-    def most_interesting_entity(self):
-        most_interesting = None
-        interest_level = 0
-
-        ent = self.actor
-        if ent and ent.interest_level > interest_level:
-            most_interesting = ent
-            interest_level = ent.interest_level
-
-        ent = self.obstacle
-        if ent and ent.interest_level > interest_level:
-            most_interesting = ent
-            interest_level = ent.interest_level
-
-        for ent in self.items:
-            if ent and ent.interest_level > interest_level:
-                most_interesting = ent
-                interest_level = ent.interest_level
-
-        for ent in self.decorations:
-            if ent and ent.interest_level > interest_level:
-                most_interesting = ent
-                interest_level = ent.interest_level
-
-        return most_interesting
-
     def add_entity(self, ent):
         if ent.can_act:
             self.add_actor(ent)
@@ -170,39 +155,18 @@ class Tile(object):
 
     def remembered_glyph(self):
         glyph = '.'
-        ent = None
-        if self.actor:
-            ent = self.actor
-
-        elif self.obstacle:
-            ent = self.obstacle
-
-        elif self.items:
-            ent = self.items[0]
-
-        elif self.decorations:
-            ent = self.decorations[0]
-
-        if ent:
-            glyph = ent.glyph
+        ents = list(self.all_entities)
+        if ents:
+            glyph = ents[0].glyph
 
         return glyph
-
 
     def get_visible_entity(self, force_visible=False):
         ent = None
         if self.visible or force_visible:
-            if self.actor:
-                ent = self.actor
-
-            elif self.obstacle:
-                ent = self.obstacle
-
-            elif self.items:
-                ent = self.items[0]
-
-            elif self.decorations:
-                ent = self.decorations[0]
+            ents = list(self.all_entities)
+            if ents:
+                ent = ents[0]
 
         return ent
 
@@ -216,7 +180,6 @@ class Tile(object):
             self.remembered_desc = ''
 
     def draw(self, force_visible=False):
-        glyph = ' '
         color = colors.light_gray
         bgcolor = None
 
@@ -236,17 +199,8 @@ class Tile(object):
         return (glyph, color, bgcolor)
 
     def on_first_seen(self):
-        if self.actor:
-            self.actor.on_first_seen()
-
-        if self.obstacle:
-            self.obstacle.on_first_seen()
-
-        for item in self.items:
-            item.on_first_seen()
-
-        for decoration in self.decorations:
-            decoration.on_first_seen()
+        for ent in self.all_entities:
+            ent.on_first_seen()
 
     def neighbors(self, as_dict=False):
         x, y = self.pos

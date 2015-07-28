@@ -3,7 +3,7 @@ import logging
 from termapp.layout import Pane
 from termapp.formatstring import FormatString
 
-from rl.ui.hud import HUD
+from rl.util.tools import clamp
 from rl.ui import colors
 
 logger = logging.getLogger('rl')
@@ -91,49 +91,31 @@ class HUDPane(Pane):
 
         self.stats_pane.set_string(stats)
 
+    @staticmethod
+    def status_bar(value, max_value,
+                   full_color=colors.light_green, full_char='=',
+                   empty_color=colors.red, empty_char='-',
+                   bar_length=25):
+
+        value = clamp(value, max_value)
+
+        full = int(round((float(value)/max_value) * bar_length))
+        empty = bar_length - full
+
+        return (FormatString().simple(full_char*full, color=full_color) +
+                FormatString().simple(empty_char*empty, color=empty_color))
+
     def draw_bars(self):
-        hud = HUD()
         player = self.world.player
 
-        # health
-        health_bar = hud.status_bar(player.health, player.max_health)
-
-        hline = (
-            FormatString().simple(
-                "="*health_bar['full'],
-                color=health_bar['colors']['full']
-            ) +
-            FormatString().simple(
-                "-"*health_bar['empty'],
-                color=health_bar['colors']['empty']
-            )
-        )
-
-        self.bars_pane.set_line(0, hline)
-
-        # energy
-        energy_bar = hud.status_bar(player.energy, player.max_energy)
-
-        eline = (
-            FormatString().simple(
-                "="*energy_bar['full'],
-                color=energy_bar['colors']['full']
-            ) +
-            FormatString().simple(
-                "-"*energy_bar['empty'],
-                color=energy_bar['colors']['empty']
-            )
-        )
-
-        self.bars_pane.set_line(1, eline)
+        self.bars_pane.set_line(0, HUDPane.status_bar(player.health, player.max_health))
+        self.bars_pane.set_line(1, HUDPane.status_bar(player.energy, player.max_energy))
 
     def draw_status(self):
         pass
 
     def draw_equipment(self):
         pass
-
-
 
     def refresh(self):
         self.draw_name()

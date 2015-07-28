@@ -1,10 +1,14 @@
 import logging
 
+from collections import Counter
+
 from termapp.layout import Pane
 from termapp.formatstring import FormatString
 
-from rl.ui.hud import HUD
+from rl.util.mixins.stackable import Stackable
 from rl.ui import colors
+from rl.ui import tools as ui_tools
+
 
 logger = logging.getLogger('rl')
 
@@ -15,8 +19,8 @@ class ObjectsOfInterestPane(Pane):
         self.world = world
 
     def draw_objects_of_interest(self):
-        hud = HUD()
-        oois = hud.objects_of_interest(self.world)
+        oois = ui_tools.entities_by_type(ui_tools.interesting_entities(self.world))
+        oois.sort(key=lambda l: l[0].interest_level, reverse=True)
         # logger.debug(oois)
 
         self.clear()
@@ -33,16 +37,23 @@ class ObjectsOfInterestPane(Pane):
                 )
             )
 
-        for i, ooi in enumerate(oois[:(self.height-1)]):
-            line = (
-                FormatString().simple(
-                    "   {glyphs}".format(glyphs=ooi['glyphs']),
-                    color=ooi['color']
-                ) +
-                FormatString().simple(
-                    ": {desc}".format(desc=ooi['description'])
-                )
-            )
+        for i, ents in enumerate(oois[:(self.height-1)]):
+            if isinstance(ents[0], Stackable):
+                count = sum([ent.stack_size for ent in ents])
+            else:
+                count = len(ents)
+
+            description = ents[0].describe(num=count)
+            glyphs = []
+            for ent in ents[:5]:
+                glyph, color, bgcolor = ent.draw()
+                glyphs.append(FormatString().simple(
+                    glyph, color=color, bgcolor=bgcolor
+                ))
+
+            line = (FormatString("  ") +
+                    FormatString().join("", glyphs) +
+                    FormatString(": {desc}".format(desc=description)))
 
             self.set_line(i+1, line)
 

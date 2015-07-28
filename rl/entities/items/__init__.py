@@ -14,10 +14,13 @@ class Item(Entity, Stackable):
         fields.extend(['stack_size'])
 
     def describe(self, num=0):
-        if self.stack_size == 1:
+        if num == 0:
+            num=self.stack_size
+
+        if num == 1:
             return "{article} {name}".format(article=self.article, name=self.name)
         else:
-            return "{num} {name_plural}".format(num=self.stack_size, name_plural=self.name_plural)
+            return "{num} {name_plural}".format(num=num, name_plural=self.name_plural)
 
     def describe_use(self, third_person=False):
         return ""

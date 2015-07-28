@@ -4,7 +4,6 @@ import logging
 from termapp.layout import Pane
 from termapp.formatstring import FormatString
 
-from rl.ui.hud import HUD
 from rl.ui import colors
 
 logger = logging.getLogger('rl')
