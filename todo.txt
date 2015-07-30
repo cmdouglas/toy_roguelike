@@ -6,7 +6,7 @@ Refactoring:
    - event descriptions can go there too, or into an external data file.  yaml?
    - maybe some entity info too?
    - this means i can get rid of ui.colors and ui.glyphs, or move them under terminal where they belong
-   
+
 Features:
  UI
   - windowed menus
