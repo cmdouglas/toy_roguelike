@@ -12,9 +12,9 @@ class BubbleField:
     target_areas = [4, 6, 6, 10, 10, 12, 20, 20, 30, 30, 40]
     target_ratios = [1/2, 2/3, 2/3, 3/4, 3/4, 1]
 
-    def __init__(self, area, blocked, num_bubbles):
+    def __init__(self, region, blocked, num_bubbles):
         self.num_bubbles = num_bubbles
-        self.area = area
+        self.region = region
         self.blocked = blocked
         self.bubbles = []
         self.create_bubbles()
@@ -28,8 +28,8 @@ class BubbleField:
                 continue_expanding = continue_expanding or something_expanded
 
     def create_bubbles(self):
-        ul_x, ul_y = self.area.ul_pos
-        center = (int(ul_x + self.area.width/2), int(ul_y + self.area.height/2))
+        ul_x, ul_y = self.region.ul_pos
+        center = (int(ul_x + self.region.width/2), int(ul_y + self.region.height/2))
         cx, cy = center
 
         points = set()

@@ -1,4 +1,5 @@
 import math
+from ordered_set import OrderedSet
 import logging
 import enum
 
@@ -86,7 +87,7 @@ def adjacent(point):
             yield (x + dx, y + dy)
 
 def line(p1, p2):
-    def get_direction(p_from, p_to):
+    def _direction(p_from, p_to):
         x1, y1 = p_from
         x2, y2 = p_to
 
@@ -100,17 +101,13 @@ def line(p1, p2):
         dx = int(round(dx / distance))
         dy = int(round(dy / distance))
 
-        return (dx, dy)
-
-    x1, y1 = p1
-    x2, y2 = p2
+        return dx, dy
 
     p  = p1
     points = [p]
     while p != p2:
-        direction = get_direction(p, p2)
+        dx, dy = _direction(p, p2)
         x, y = p
-        dx, dy = direction
 
         p = (x + dx, y + dy)
         points.append(p)
@@ -120,29 +117,40 @@ def line(p1, p2):
 
 class Shape(object):
     def __init__(self):
-        self._points = []
-        self._border = []
+        self._points = OrderedSet()
+        self._outline = OrderedSet()
+        self._border = OrderedSet()
+
         self.dirty = True
         self.midpoint = (0, 0)
 
+    def refresh(self):
+        self.find_points()
+        self.find_outline()
+        self.find_border()
+
+        self.dirty = False
+
+    @property
+    def outline(self):
+        """The points outside the shape that are adjacent to it"""
+        if self.dirty:
+            self.refresh()
+
+        return self._outline
+
     @property
     def border(self):
+        """the points inside the shape along the border"""
         if self.dirty:
-            self._points = []
-            self._border = []
-            self.find_points()
-            self.find_border()
-            self.dirty = False
+            self.refresh()
 
         return self._border
 
     @property
     def points(self):
         if self.dirty:
-            self._points = []
-            self._points = []
-            self.find_points()
-            self.find_border()
+            self.refresh()
             self.dirty = False
 
         return self._points
@@ -150,14 +158,20 @@ class Shape(object):
     def find_points(self):
         raise NotImplementedError()
 
-    def find_border(self):
-        border = set()
+    def find_outline(self):
+        self._outline = OrderedSet()
         for point in self._points:
             for neighbor in neighbors(point):
                 if neighbor not in self._points:
-                    border.add(neighbor)
+                    self._outline.add(neighbor)
 
-        self._border = list(border)
+
+    def find_border(self):
+        self._border = OrderedSet()
+        for point in self._points:
+            for neighbor in neighbors(point):
+                if neighbor in self._border:
+                    self._border.add(point)
 
 
 class Rectangle(Shape):
@@ -176,11 +190,11 @@ class Rectangle(Shape):
 
     def find_points(self):
         startx, starty = self.ul
-        midx, midy = self.midpoint
+        self._points = OrderedSet()
 
         for x in range(int(startx), int(startx)+self.width):
             for y in range(int(starty), int(starty)+self.height):
-                self._points.append((int(x), int(y)))
+                self._points.add((int(x), int(y)))
 
     def area(self):
         return self.width * self.height
@@ -272,11 +286,12 @@ class Circle(Shape):
 
     def find_points(self):
         midx, midy = self.midpoint
+        self._points = OrderedSet()
 
         for x in range(-1*self.radius, self.radius+1):
             for y in range(-1*self.radius, self.radius+1):
                 if self.contains_point((int(x), int(y))):
-                    self._points.append((int(x+midx), int(y+midy)))
+                    self._points.add((int(x+midx), int(y+midy)))
 
     def contains_point(self, p):
         x, y = p
@@ -303,11 +318,12 @@ class Ellipse(Shape):
 
     def find_points(self):
         midx, midy = self.midpoint
+        self._points = OrderedSet()
 
         for x in range(-1*self.rx, self.rx+1):
             for y in range(-1*self.ry, self.ry+1):
                 if self.contains_point((int(x+midx), int(y+midy))):
-                    self._points.append((int(x+midx), int(y+midy)))
+                    self._points.add((int(x+midx), int(y+midy)))
 
     def contains_point(self, p):
         x, y = p
@@ -319,3 +335,4 @@ class Ellipse(Shape):
         v = vx + vy
 
         return v <= 1.0
+

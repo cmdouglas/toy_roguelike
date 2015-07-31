@@ -6,7 +6,7 @@ from rl.board.board import Board
 class TestPartition(object):
 
     def test_find_neighbors_horizontal(self):
-        b = Board(2, 1)
+        b = Board(6, 3)
         """
             checks if these partitions can find each other:
             +-+-+
@@ -14,12 +14,13 @@ class TestPartition(object):
             +-+-+
         """
 
-        p1 = partition.Partition((0,0), 1, 1)
-        p2 = partition.Partition((1, 0), 1, 1)
+        p1 = partition.Partition((0,0), 3, 3)
+        p2 = partition.Partition((3, 0), 3, 3)
         a1 = maparea.MapArea(p1, b)
         a2 = maparea.MapArea(p2, b)
 
         areas = [a1, a2]
+
 
         for area in areas:
             area.find_neighbors(areas)
@@ -27,8 +28,8 @@ class TestPartition(object):
         assert a1 in [a['neighbor'] for a in a2.adjacent]
         assert a2 in [a['neighbor'] for a in a1.adjacent]
 
-        assert a1.adjacent[0]['points'][0] == (0, 0)
-        assert a2.adjacent[0]['points'][0] == (1, 0)
+        assert a1.adjacent[0]['points'][0] == (2, 1)
+        assert a2.adjacent[0]['points'][0] == (3, 1)
 
         assert len(a1.adjacent) == 1
         assert len(a2.adjacent) == 1
@@ -124,4 +125,3 @@ class TestPartition(object):
 
             elif a['neighbor'] == a5:
                 assert a['points'] == [(3, 0)]
-
