@@ -27,7 +27,7 @@ class RoomCluster:
         return points
 
     def find_outside_zones(self):
-        points = self.painter.area.get_all_points()
+        points = self.painter.region.shape.points
 
         def is_connected(p):
             for room in self.rooms:
@@ -36,8 +36,7 @@ class RoomCluster:
 
             return True
 
-        for connection in self.painter.area.connections:
-            point = connection['point']
+        for point in self.painter.region.connections.keys():
             zone = None
             for zone_ in self.outside_zones:
                 if point in zone_:
@@ -158,7 +157,7 @@ class RoomCluster:
                         return
 
     def connect_to_access_points(self):
-        for access_point in [c['point'] for c in self.painter.area.connections]:
+        for access_point in self.painter.region.connections.keys():
             path_found = False
             for zone in self.outside_zones:
                 if access_point in zone:
@@ -190,7 +189,7 @@ class RoomCluster:
             for cluster1, cluster2 in tools.pairwise(self.disconnected_subclusters):
                 self.connect_subclusters(cluster1, cluster2)
 
-        # finally, connect each area connection to a room
+        # finally, connect each region connection to a room
         self.connect_to_access_points()
 
 
@@ -259,17 +258,16 @@ class RoomClusterPainter(Painter):
     def paint(self):
         num_bubbles = dice.d(2, 3) + 1
 
-        blocked = set(self.area.border())
-        for connection in self.area.connections:
-            point = connection['point']
+        blocked = set(self.region.shape.border)
+        for point in self.region.connections.keys():
             blocked.add(point)
             blocked.update(geometry.neighbors(point))
 
-        field = BubbleField(self.area, blocked, num_bubbles)
+        field = BubbleField(self.region, blocked, num_bubbles)
         field.expand_bubbles()
 
         self.fill(wall.Wall)
-        for access_point in [c['point'] for c in self.area.connections]:
+        for access_point in self.region.connections.keys():
             self.board.remove_entity(self.board[access_point].obstacle)
 
         rooms = []

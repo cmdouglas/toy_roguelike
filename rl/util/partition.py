@@ -2,6 +2,7 @@
 
 """
 from rl.util.tools import flatten
+from rl.util.geometry import Rectangle
 import random
 
 
@@ -17,6 +18,12 @@ class Partition(object):
         
     def __repr__(self):
         return "Partition(%s, %s, %s)" % (self.ul_pos, self.width, self.height)
+
+    def to_rectangle(self):
+        x0, y0 = self.ul_pos
+        midpoint = (int(x0 + self.width/2), int(y0 + self.height/2))
+        return Rectangle(midpoint, self.width, self.height)
+
     
     def subpartition_regular_grid(self, partition_width, partition_height):
         assert self.width % partition_width == 0

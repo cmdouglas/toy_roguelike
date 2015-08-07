@@ -19,12 +19,12 @@ class Board:
             for y in range(self.height)
         ]
 
-        self.areas = []
+        self.regions = []
 
     def spawn_player(self):
         player = Player()
-        area = random.choice(self.areas)
-        pos = random.choice(area.get_empty_points())
+        region = random.choice(self.regions)
+        pos = random.choice(region.empty_points())
         self.add_entity(player, pos)
 
         self.update_fov(player)
@@ -59,10 +59,10 @@ class Board:
         x, y = pos
         return 0 <= x < self.width and 0 <= y < self.height
 
-    def area_containing_point(self, pos):
-        for area in self.areas:
-            if area.contains_point(pos):
-                return area
+    def region_containing_point(self, point):
+        for region in self.regions:
+            if point in region.shape.points:
+                return region
 
         return None
 

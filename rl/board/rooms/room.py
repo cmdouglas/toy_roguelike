@@ -6,8 +6,8 @@ class Room(object):
     doors = []
 
     def __init__(self, shape):
-        self.interior = shape.points
-        self.walls = shape.border
+        self.interior = set(shape.points)
+        self.walls = set(shape.outline)
 
     def place_door(self, pos):
         self.walls.remove(pos)
@@ -25,7 +25,7 @@ class Room(object):
         return [point for point in self.walls if self.door_allowed(point)]
 
     def all_points(self):
-        return self.walls + self.interior + self.doors
+        return self.walls.union(self.interior).union(self.doors)
 
     def doorstep(self, position):
         """returns the position immediately outside the room, and next to the supplied position"""

@@ -3,15 +3,14 @@ import random
 from rl.entities.obstacles import wall
 from rl.util import tools
 from rl.board.generator.painters import Painter
-from rl.board.generator import maparea
-from rl.entities.actors import goblin
 
 
 class CavePainter(Painter):
     tags = ['natural', 'underground']
-    
-    def area_meets_requirements(self):
-        return self.area.width >= 10 and self.area.height >= 10
+
+    @classmethod
+    def region_meets_requirements(cls, region):
+        return region.shape.width >= 10 and region.shape.height >= 10
     
     def paint(self):
         def r(point, distance):
@@ -22,8 +21,8 @@ class CavePainter(Painter):
             for x_offset in offsets:
                 for y_offset in offsets:
                     p = (x + x_offset, y+y_offset)
-                    if (self.area.contains_point(p)):
-                            points.append(p)
+                    if p in self.region.shape.points:
+                        points.append(p)
         
             return points
             
@@ -40,10 +39,10 @@ class CavePainter(Painter):
                     
             return num_walls
                 
-        points = [p for p in self.area.get_all_points()]
+        points = [p for p in self.region.shape.points]
         
-        # 1. randomly fill area with wall tiles
-        border = self.get_border()
+        # 1. randomly fill region with wall tiles
+        border = self.region.shape.border
         
         for point in points:
             if point in border and not self.board[point].obstacle:
@@ -91,23 +90,15 @@ class CavePainter(Painter):
 
                 self.smart_draw_corridor(p1, p2, [])
                         
-        # 5.  Connect to the area entrances
-        empty_points = self.area.get_empty_points()
+        # 5.  Connect to the region entrances
+        empty_points = self.region.empty_points()
         if not empty_points:
             self.clear()
             return self.paint()
 
         point = random.choice(empty_points)
         
-        for c in self.area.connections:
-            #print "connecting point %s to %s" % (rectangle_center, pos)
-            border_point = c['point']
-            
-            if c['side'] in [maparea.TOP, maparea.BOTTOM]:
-                end_dir = "vertical"
-            else:
-                end_dir = 'horizontal'
-            
-            self.draw_corridor(point, border_point, end_dir=end_dir)
-        
-        
+        for access_point in self.region.connections:
+            if self.board[access_point].obstacle:
+                self.board.remove_entity(self.board[access_point].obstacle)
+            self.smart_draw_corridor(access_point, point)

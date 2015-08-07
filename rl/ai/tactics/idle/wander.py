@@ -79,9 +79,9 @@ class WanderTactics(Tactics):
             return random.choice(points)
 
     def choose_destination(self):
-        actors_area = self.board.area_containing_point(self.actor.tile.pos)
-        area = random.choice(actors_area.connections)['area']
-        self.destination = random.choice(area.get_empty_points())
+        actors_region = self.board.region_containing_point(self.actor.tile.pos)
+        region, connections = random.choice(list(actors_region.connections.values()))
+        self.destination = random.choice(region.empty_points())
 
     def compute_path(self):
         path_found = self.path = search.find_path(

@@ -30,8 +30,8 @@ class TeleportationScroll(Scroll):
 
     def use_effect(self, actor):
         board = actor.tile.board
-        area = random.choice(board.areas)
-        new_pos = random.choice(area.get_empty_points())
+        region = random.choice(board.regions)
+        new_pos = random.choice(region.get_empty_points())
         old_pos = actor.tile.pos
 
         board.move_entity(actor, old_pos, new_pos)

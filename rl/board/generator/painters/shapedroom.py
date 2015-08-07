@@ -9,13 +9,13 @@ from rl.board.generator.painters import Painter
 
 class ShapedRoomPainter(Painter):
     def get_bounding_box(self):
-        area_left, area_top = self.area.ul_pos
+        region_left, region_top = self.region.shape.ul
 
-        area_left += 3
-        area_top += 3
+        region_left += 3
+        region_top += 3
                 
-        width = self.area.width - 6
-        height = self.area.height - 6
+        width = self.region.shape.width - 6
+        height = self.region.shape.height - 6
         
         rectangle_width = random.randrange(int(width / 2), width)
         rectangle_height = random.randrange(int(height / 2), height)
@@ -30,13 +30,19 @@ class ShapedRoomPainter(Painter):
             vertical_offset = random.randrange(height - rectangle_height)
         
         rectangle_center = (
-            area_left + horizontal_offset + rectangle_width / 2,
-            area_top + vertical_offset + rectangle_height / 2)
+            region_left + horizontal_offset + rectangle_width / 2,
+            region_top + vertical_offset + rectangle_height / 2)
             
         return (rectangle_center, rectangle_width, rectangle_height)
-        
-    def area_meets_requirements(self):
-        return self.area.width > 10 and self.area.height > 10
+
+    @classmethod
+    def region_meets_requirements(cls, region):
+        #TODO: make this check unnecessary
+        if not isinstance(region.shape, geometry.Rectangle):
+            return False
+
+        return region.shape.width >= 10 and region.shape.height >= 10
+
 
 class RectangularRoomPainter(ShapedRoomPainter):
     def paint(self):
@@ -69,8 +75,8 @@ class RectangularRoomPainter(ShapedRoomPainter):
             self.board.add_entity(door.Door(), pos)
 
         # draw corridors
-        connections = [c['point'] for c in self.area.connections]
-        blocked = set(room.all_points() + self.get_border())
+        connections = list(self.region.connections.keys())
+        blocked = set(room.all_points()).union(set(self.region.shape.border))
         blocked -= set(connections)
 
         connected_doorsteps = []
@@ -119,8 +125,8 @@ class CircularRoomPainter(ShapedRoomPainter):
             self.board.add_entity(door.Door(), pos)
 
         # draw corridors
-        connections = [c['point'] for c in self.area.connections]
-        blocked = set(room.all_points() + self.get_border())
+        connections = list(self.region.connections.keys())
+        blocked = set(room.all_points()).union(set(self.region.shape.border))
         blocked -= set(connections)
 
         connected_doorsteps = []
@@ -170,8 +176,8 @@ class EllipticalRoomPainter(ShapedRoomPainter):
             self.board.add_entity(door.Door(), pos)
 
         # draw corridors
-        connections = [c['point'] for c in self.area.connections]
-        blocked = set(room.all_points() + self.get_border())
+        connections = list(self.region.connections.keys())
+        blocked = set(room.all_points()).union(set(self.region.shape.border))
         blocked -= set(connections)
 
         connected_doorsteps = []

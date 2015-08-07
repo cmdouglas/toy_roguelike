@@ -1,16 +1,15 @@
-
 import random
 
 from rl.util import dice
 from rl.util import partition
-from rl.board import board
-from rl.board.generator import maparea
+from rl.board.board import Board
+from rl.board.region import MapRegion
+from rl.board import region
 from rl.board.generator.painters import shapedroom
 from rl.board.generator.painters import tunnel
 from rl.board.generator.painters import cave
 from rl.board.generator.painters import maze
 from rl.board.generator.painters import roomcluster
-
 from rl.entities.actors.goblin import Goblin
 from rl.entities.actors.ogre import Ogre
 from rl.entities.items.potion import HealingPotion
@@ -28,26 +27,27 @@ class RegularGridPartitionStrategy(PartitionStrategy):
     def partition(self, board, partition_width, partition_height):
         part = partition.Partition((0, 0), board.width, board.height)
 
-        ps = part.subpartition_regular_grid(partition_width, partition_height)
+        rectangles = [p.to_rectangle for p in
+                      part.subpartition_regular_grid(partition_width, partition_height)]
 
-        areas = [maparea.MapArea(p, board) for p in ps]
-        for area in areas:
-            area.find_neighbors(areas)
+        regions = [MapRegion(rect, board) for rect in rectangles]
+        for region in regions:
+            region.find_neighbors(regions)
 
-        return areas
+        return regions
 
 
 class BSPPartitionStrategy(object):
     def partition(self, board, min_width, min_height):
         part = partition.Partition((0, 0), board.width, board.height)
 
-        ps = part.subpartition_bsp(min_width, min_height)
+        rectangles = [p.to_rectangle() for p in part.subpartition_bsp(min_width, min_height)]
 
-        areas = [maparea.MapArea(p, board) for p in ps]
-        for area in areas:
-            area.find_neighbors(areas)
+        regions = [MapRegion(rect, board) for rect in rectangles]
+        for region in regions:
+            region.find_neighbors(regions)
 
-        return areas
+        return regions
 
 
 class ConnectionStrategy(object):
@@ -73,62 +73,59 @@ class RandomPainterStrategy(PainterStrategy):
         ]
 
     def paint(self, board):
-        areas = board.areas
+        for region in board.regions:
+            painters = [p for p in self.painters if p.region_meets_requirements(region)]
 
-        for area in areas:
-            painters = [p(board, area) for p in self.painters]
-            painters = [p for p in painters if p.area_meets_requirements()]
-
-            painter = random.choice(painters)
+            painter = random.choice(painters)(board, region)
 
             painter.paint()
 
 
 class SimpleWebConnectionStrategy(ConnectionStrategy):
-    def connect(self, areas):
-        unconnected = areas[:]
+    def connect(self, regions):
+        unconnected = regions[:]
         frontier = []
 
-        # pick a random area
+        # pick a random region
         start = random.choice(unconnected)
         unconnected.remove(start)
 
         # connect to each neighbor
-        for area in [a['neighbor'] for a in start.adjacent]:
-            start.connect_to(area)
-            unconnected.remove(area)
-            frontier.append(area)
+        for region in start.connectible_neighbors():
+            start.connect_to(region)
+            unconnected.remove(region)
+            frontier.append(region)
 
         while len(unconnected) > 0:
             # print unconnected
 
             changed = False
-            for area in frontier[:]:
-                frontier.remove(area)
-                neighbors = [a['neighbor'] for a in area.adjacent]
+            for region in frontier[:]:
+                frontier.remove(region)
+                neighbors = region.connectible_neighbors()
                 unconnected_neighbors = [n for n in neighbors
                                          if n in unconnected]
 
                 # maybe connect to a random neighbor just for kicks
                 if dice.one_chance_in(3):
-                    area.connect_to(random.choice(neighbors))
+                    region.connect_to(random.choice(neighbors))
 
                 # but always connect to an unconnected neighbor, if one exists.
                 if unconnected_neighbors:
                     changed = True
                     n = random.choice(unconnected_neighbors)
-                    area.connect_to(n)
+                    region.connect_to(n)
                     unconnected.remove(n)
                     frontier.append(n)
 
             if not changed and unconnected:
                 start = random.choice(unconnected)
                 unconnected.remove(start)
-                for area in [a['neighbor'] for a in start.adjacent]:
-                    start.connect_to(area)
-                    if area in unconnected:
-                        unconnected.remove(area)
-                        frontier.append(area)
+                for region in start.connectible_neighbors():
+                    start.connect_to(region)
+                    if region in unconnected:
+                        unconnected.remove(region)
+                        frontier.append(region)
 
 
 class Generator(object):
@@ -138,31 +135,31 @@ class Generator(object):
         self.painter_strategy = RandomPainterStrategy()
 
     def generate(self, width=80, height=80, world=None):
-        b = board.Board(width, height, world)
-        b.areas = self.partition_strategy.partition(b, 12, 12)
-        self.connection_strategy.connect(b.areas)
+        b = Board(width, height, world)
+        b.regions = self.partition_strategy.partition(b, 12, 12)
+        self.connection_strategy.connect(b.regions)
         self.painter_strategy.paint(b)
 
         for i in range(20):
-            area = random.choice(b.areas)
-            point = random.choice(area.get_empty_points())
+            region = random.choice(b.regions)
+            point = random.choice(region.empty_points())
 
             b.add_entity(Goblin(), point)
 
         for i in range(5):
-            area = random.choice(b.areas)
-            point = random.choice(area.get_empty_points())
+            region = random.choice(b.regions)
+            point = random.choice(region.empty_points())
 
             b.add_entity(HealingPotion(), point)
 
         for i in range(5):
-            area = random.choice(b.areas)
-            point = random.choice(area.get_empty_points())
+            region = random.choice(b.regions)
+            point = random.choice(region.empty_points())
 
             b.add_entity(TeleportationScroll(), point)
 
-        area = random.choice(b.areas)
-        point = random.choice(area.get_empty_points())
+        region = random.choice(b.regions)
+        point = random.choice(region.empty_points())
         b.add_entity(Ogre(), point)
 
         return b

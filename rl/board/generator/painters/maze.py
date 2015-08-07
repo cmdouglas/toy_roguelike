@@ -1,17 +1,18 @@
+
 import random
 import math
 
 from rl.entities.obstacles.wall import Wall
 from rl.util import geometry
 from rl.board.generator.painters import Painter
-from rl.board.generator import maparea
+from rl.board import region
 
 
 class MazeCell:
-    def __init__(self, point, board, area):
+    def __init__(self, point, board, region):
         self.point = point
         self.board = board
-        self.area = area
+        self.region = region
         self.walls = self.border()
         self.visited = False
 
@@ -22,7 +23,7 @@ class MazeCell:
 
         neighbors = geometry.adjacent(self.point)
         for neighbor in neighbors:
-            if self.area.contains_point(neighbor):
+            if neighbor in self.region.shape.points:
                 b.add(neighbor)
 
         return b
@@ -34,19 +35,19 @@ class MazeCell:
 
 
 class MazeCellGrid:
-    def __init__(self, board, area):
+    def __init__(self, board, region):
         self.board = board
-        self.area = area
+        self.region = region
 
         self.rows = []
-        ul_x, ul_y = self.area.ul_pos
+        ul_x, ul_y = self.region.shape.ul
         x, y = ul_x + 1, ul_y + 1
 
-        while y < ul_y + self.area.height - 1:
+        while y < ul_y + self.region.shape.height - 1:
             row = []
             x = ul_x + 1
-            while x < ul_x + self.area.width - 1:
-                row.append(MazeCell((x, y), self.board, self.area))
+            while x < ul_x + self.region.shape.width - 1:
+                row.append(MazeCell((x, y), self.board, self.region))
                 x += 2
             self.rows.append(row)
             y += 2
@@ -83,10 +84,15 @@ class MazeCellGrid:
 
 
 class MazePainter(Painter):
+    @classmethod
+    def region_meets_requirements(cls, region):
+        #TODO allow for non-rectangular regions
+        return isinstance(region.shape, geometry.Rectangle)
+
     def paint(self):
         self.fill(Wall)
 
-        cellgrid = MazeCellGrid(self.board, self.area)
+        cellgrid = MazeCellGrid(self.board, self.region)
         pos, start = cellgrid.random_cell()
         stack = [(pos, start)]
 
@@ -99,64 +105,26 @@ class MazePainter(Painter):
                 walls = cell.border().intersection(neighbor.border())
                 for wall in walls:
                     cell.remove_wall(wall)
-                neighbor.remove_wall(wall)
+                    neighbor.remove_wall(wall)
 
                 stack.append((pos, neighbor))
 
             else:
                 stack.pop()
 
-        for connection in self.area.connections:
-            x, y = connection['point']
-            points = [(x, y)]
+        for connection in self.region.connections:
+            nearest = geometry.sort_by_distance(self.region.empty_points(), connection)[0]
+            self.smart_draw_corridor(nearest, connection)
 
-            if connection['side'] == maparea.TOP:
-                points.append((x, y+1))
-            elif connection['side'] == maparea.BOTTOM:
-                points.append((x, y-1))
-            elif connection['side'] == maparea.LEFT:
-                points.append((x+1, y))
-            elif connection['side'] == maparea.RIGHT:
-                points.append((x-1, y))
-
-            for point in points:
-                self.board.remove_entity(self.board[point].obstacle)
-
-        empty_points = self.area.get_empty_points()
+        empty_points = self.region.empty_points()
 
         to_fill = random.randrange(
             int(math.sqrt(len(empty_points))), int(len(empty_points) / 2)
         )
         
-        def is_dead_end(point):
-            adjacent = geometry.adjacent(point)
-            walls = 0
-            for adjacent_point in adjacent:
-                if (self.area.contains_point(adjacent_point)
-                   and self.board[adjacent_point].obstacle):
-                    walls += 1
-
-            return walls == 3
-
-        def free_space_adjacent_dead_end(point):
-            adjacent = geometry.adjacent(point)
-            for adjacent_point in adjacent:
-                if (self.area.contains_point(adjacent_point)
-                   and not self.board[adjacent_point].obstacle):
-                    return adjacent_point
-
-        dead_ends = [
-            point for point in self.area.get_empty_points()
-            if is_dead_end(point)
-        ]
-        for _ in range(to_fill):
-            if not dead_ends:
-                break
-            dead_end = random.choice(dead_ends)
-            dead_ends.remove(dead_end)
-            self.board.add_entity(Wall(), dead_end)
-
-            new_dead_end = free_space_adjacent_dead_end(dead_end)
-
-            if new_dead_end and is_dead_end(new_dead_end):
-                dead_ends.append(new_dead_end)
+        # TODO: do something interesting with dead ends -- there needs to be a good reason to explore!
+        # maybe choose one of the following (with appropriate weights):
+        #   place an item or monster in the dead end
+        #   connect the dead end to a neighbor, creating a loop
+        #   fill it in
+        #   do nothing

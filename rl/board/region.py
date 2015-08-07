@@ -17,9 +17,14 @@ class MapRegion:
     @property
     def ul_pos(self):
         if isinstance(self.shape, geometry.Rectangle):
-            return self.shape.ul_pos
+            return self.shape.ul
         else:
             raise NotImplementedError()
+
+    def empty_points(self):
+        return [point for point in self.shape.points
+                if self.board[point].actor is None
+                and self.board[point].obstacle is None]
 
     def find_neighbors(self, regions):
         for region in regions:
@@ -31,10 +36,16 @@ class MapRegion:
 
             self.find_adjacency(region)
 
+    def connectible_neighbors(self):
+        return [n for n in self.adjacent
+                if len(self.connection_candidates(n)) > 0]
+
     def find_adjacency(self, region):
         adjacency = {}
         for point in self.shape.border & region.shape.outline:
             for neighbor in geometry.adjacent(point):
+                if not neighbor in region.shape.points:
+                    continue
                 if not adjacency.get(point):
                     adjacency[point] = [neighbor]
                 else:
@@ -81,14 +92,14 @@ class MapRegion:
 
     def is_viable_connection_point(self, point):
         # points not on the border are right out
-        if not point in self.shape.inner_border:
+        if not point in self.shape.border:
             return False
 
         north, east, south, west = geometry.adjacent(point)
 
         # points on corners are undesirable
-        if not ((east in self.shape.inner_border and west in self.shape.inner_border) or
-                (north in self.shape.inner_border and south in self.shape.inner_border)):
+        if not ((east in self.shape.border and west in self.shape.border) or
+                (north in self.shape.border and south in self.shape.border)):
             return False
 
         # we also don't want points next to other connections

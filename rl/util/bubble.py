@@ -29,7 +29,7 @@ class BubbleField:
 
     def create_bubbles(self):
         ul_x, ul_y = self.region.ul_pos
-        center = (int(ul_x + self.region.width/2), int(ul_y + self.region.height/2))
+        center = (int(ul_x + self.region.shape.width/2), int(ul_y + self.region.shape.height/2))
         cx, cy = center
 
         points = set()
@@ -71,7 +71,7 @@ class BubbleField:
                 if bubble is origin_bubble:
                     continue
 
-                if point in bubble.rect.border:
+                if point in bubble.rect.outline:
                     bubbles_affected.add(bubble)
 
         push_ok = True
@@ -91,7 +91,7 @@ class BubbleField:
                 if bubble is origin_bubble:
                     continue
 
-                if point in bubble.rect.border:
+                if point in bubble.rect.outline:
                     bubbles_affected.add(bubble)
 
         push_ok = True
@@ -106,7 +106,7 @@ class BubbleField:
         for bubble_ in self.bubbles:
             if bubble_ is bubble:
                 continue
-            all_boundaries = all_boundaries.union(set(bubble_.rect.border))
+            all_boundaries = all_boundaries.union(set(bubble_.rect.outline))
 
         edge = bubble.rect.edge(direction)
         for point in edge:

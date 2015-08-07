@@ -170,7 +170,7 @@ class Shape(object):
         self._border = OrderedSet()
         for point in self._points:
             for neighbor in neighbors(point):
-                if neighbor in self._border:
+                if neighbor not in self._points:
                     self._border.add(point)
 
 

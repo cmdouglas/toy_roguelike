@@ -95,7 +95,6 @@ class SearchNode(object):
         # are equal
         return self.id(self) < other.id(other)
     
-        
 
 class AStarSearch(object):
     """An A* search. Initialization requires:
@@ -163,14 +162,6 @@ class AStarSearch(object):
                 visited[new.id(new)] = new
 
         return None
-        
-    
-def find_area_path(board, start, end):
-    def possible_moves(node):
-        area = node.data['area']
-        
-        for c in area.connections:
-            pass
 
 def find_path(board, start, end,
               actors_block=False,
