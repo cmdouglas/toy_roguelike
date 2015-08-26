@@ -121,6 +121,8 @@ class DirectionalTravelCommand(TravelCommand):
         new = self.new_surrounding_dirs()
 
         for d in new:
+            if d not in last_surroundings.keys() or d not in current_surroundings.keys():
+                continue
             if last_surroundings[d] != current_surroundings[d]:
                 return True
 

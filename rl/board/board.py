@@ -39,7 +39,7 @@ class Board:
         visible_points = self.get_visible_points(
             player.tile.pos, player.sight_radius
         )
-        player.fov = set(visible_points)
+        player.fov = set([point for point in visible_points if self.position_is_valid(point)])
 
         for point in visible_points:
             if self.position_is_valid(point):

@@ -64,7 +64,6 @@ class RandomPainterStrategy(PainterStrategy):
             shapedroom.RectangularRoomPainter,
             shapedroom.CircularRoomPainter,
             shapedroom.EllipticalRoomPainter,
-            # tunnel.SimpleTunnelPainter(),
             tunnel.SnakeyTunnelPainter,
             # greathall.GreatHallPainter,
             roomcluster.RoomClusterPainter,
