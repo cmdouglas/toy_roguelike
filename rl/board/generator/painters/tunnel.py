@@ -22,7 +22,7 @@ class SnakeyTunnelPainter(TunnelPainter):
             costs[point] = base_cost
 
         for point in border:
-            costs[point] = 100*base_cost
+            costs[point] = 10*base_cost
 
         random.shuffle(connections)
 
@@ -41,9 +41,9 @@ class SnakeyTunnelPainter(TunnelPainter):
         path = [path_start] + inflection_points + [path_end]
 
         for point in path:
-            costs[point] = 400*base_cost
+            costs[point] = 40*base_cost
             for n in geometry.neighbors(point):
-                costs[n] = 100*base_cost
+                costs[n] = 10*base_cost
 
         segments = []
         
@@ -55,10 +55,10 @@ class SnakeyTunnelPainter(TunnelPainter):
             start, end = segment
             dug = self.smart_draw_corridor(start, end, costs=costs)
             for p in dug:
-                costs[p] = 400*base_cost
+                costs[p] = 10*base_cost
                 for p in geometry.neighbors(p):
                     if p not in dug:
-                        costs[p] = 100*base_cost
+                        costs[p] = 10*base_cost
 
         #connect any extra access points to the path
         for start in extra_connections:
@@ -66,7 +66,7 @@ class SnakeyTunnelPainter(TunnelPainter):
             dug = self.smart_draw_corridor(start, end, costs=costs)
             for p in dug:
                 # try and keep adacent tunnels from being dug
-                costs[p] = 400*base_cost
+                costs[p] = 10*base_cost
                 for p in geometry.neighbors(p):
                     if p not in dug:
-                        costs[p] = 100*base_cost
+                        costs[p] = 10*base_cost

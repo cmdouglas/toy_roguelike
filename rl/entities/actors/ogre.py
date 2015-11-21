@@ -1,6 +1,6 @@
-import random
+from rl.save import rl_types
 from rl.ui import colors
-from rl.entities.actors.creature import Creature
+from rl.entities.actors.creature import Creature, dump_creature, load_creature
 from rl.ai.basic import BasicAI
 
 
@@ -19,3 +19,15 @@ class Ogre(Creature):
     def __init__(self):
         super().__init__()
         self.intelligence = BasicAI(self)
+
+
+@rl_types.dumper(Ogre, 'ogre', 1)
+def _dump_ogre(ogre):
+    return dump_creature(ogre)
+
+
+@rl_types.loader('ogre', 1)
+def _load_goblin(data, version):
+    ogre = Ogre()
+    load_creature(data, ogre)
+    return ogre

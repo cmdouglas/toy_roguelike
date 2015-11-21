@@ -1,6 +1,6 @@
 import logging
 
-from rl.entities.actors import Actor
+from rl.entities.actors import Actor, dump_actor, load_actor
 from rl.ui import colors
 from rl.util import dice, tools, bag, geometry
 
@@ -147,3 +147,30 @@ class Creature(Actor):
 
         return True
 
+
+def dump_creature(creature):
+    data = dump_actor(creature)
+    data.update(dict(
+        health=creature.health,
+        energy=creature.energy,
+        level=creature.level,
+        timeout=creature.timeout,
+        inventory=creature.inventory.to_dict(),
+        intelligence=creature.intelligence
+
+    ))
+
+    return data
+
+
+def load_creature(data, creature):
+
+    load_actor(data, creature)
+
+    creature.health = data['health']
+    creature.energy = data['energy']
+    creature.level = data['level']
+    creature.timeout = data['timeout']
+    creature.inventory = bag.KeyedStackableBag().from_dict(data['inventory'])
+    creature.intelligence = data['intelligence']
+    creature.intelligence.actor = creature

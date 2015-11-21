@@ -1,6 +1,6 @@
-import random
 from rl.ui import colors
-from rl.entities.actors.creature import Creature
+from rl.save import rl_types
+from rl.entities.actors.creature import Creature, dump_creature, load_creature
 from rl.ai.basic import BasicAI
 
 
@@ -20,3 +20,13 @@ class Goblin(Creature):
         self.intelligence = BasicAI(self)
 
 
+@rl_types.dumper(Goblin, 'goblin', 1)
+def _dump_goblin(goblin):
+    return dump_creature(goblin)
+
+
+@rl_types.loader('goblin', 1)
+def _load_goblin(data, version):
+    goblin = Goblin()
+    load_creature(data, goblin)
+    return goblin

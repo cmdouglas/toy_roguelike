@@ -1,6 +1,13 @@
+class StackTooLargeException(Exception):
+    pass
+
+
 class Stackable:
     stack_size = 1
     max_stack_size = None
+
+    def __init__(self, num=1):
+        self.stack_size = num
 
     def merge_with_stack(self, other):
         assert type(other) == type(self)
@@ -27,5 +34,15 @@ class Stackable:
         return self.stack_size <= 0
 
 
-class StackTooLargeException(Exception):
-    pass
+def dump_stackable(stackable):
+    return dict(
+        stack_size=stackable.stack_size,
+        max_stack_size=stackable.max_stack_size
+    )
+
+
+def load_stackable(data, stackable):
+    stackable.stack_size = data['stack_size']
+    stackable.max_stack_size = data['max_stack_size']
+
+

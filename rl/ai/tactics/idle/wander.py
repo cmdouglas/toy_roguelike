@@ -5,6 +5,7 @@ from rl.actions import wait
 from rl.ai import events
 from rl.ai.tactics import Tactics, PathBlockedException
 from rl.util import dice, search
+from rl.save import rl_types
 
 logger = logging.getLogger('rl')
 
@@ -107,3 +108,24 @@ class WanderTactics(Tactics):
 
     def describe(self):
         return "wandering"
+
+
+@rl_types.dumper(WanderTactics, 'wander_tactics', 1)
+def _dump_wander_tactics(wander_tactics):
+    return dict(
+        destination=wander_tactics.destination,
+        path=wander_tactics.path,
+        max_wait=wander_tactics.max_wait,
+        wait_timer=wander_tactics.wait_timer
+    )
+
+
+@rl_types.loader('wander_tactics', 1)
+def load_wander_tactics(data, version):
+    wander_tactics = WanderTactics()
+    wander_tactics.destination = data['destination']
+    wander_tactics.path = data['path']
+    wander_tactics.max_wait = data['max_wait']
+    wander_tactics.wait_timer = data['wait_timer']
+
+    return wander_tactics

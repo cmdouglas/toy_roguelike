@@ -3,6 +3,8 @@ from ordered_set import OrderedSet
 import logging
 import enum
 
+from rl.save import rl_types
+
 
 logger = logging.getLogger('rl')
 
@@ -63,6 +65,7 @@ class Direction(tuple, enum.Enum):
             Direction.northwest: Direction.southwest
         }.get(self)
 
+
 def sort_by_distance(points, target):
     def distance_to_target(point):
         x1, y1 = point
@@ -72,6 +75,7 @@ def sort_by_distance(points, target):
 
     return sorted(points, key=distance_to_target)
 
+
 def neighbors(point):
     x, y = point
 
@@ -79,12 +83,14 @@ def neighbors(point):
         dx, dy = d
         yield (x + dx, y + dy)
 
+
 def adjacent(point):
     x, y = point
     for d in Direction:
         dx, dy = d
         if (dx == 0 or dy == 0):
             yield (x + dx, y + dy)
+
 
 def line(p1, p2):
     def _direction(p_from, p_to):
@@ -267,6 +273,20 @@ class Rectangle(Shape):
         return points
 
 
+@rl_types.dumper(Rectangle, 'rectangle', 1)
+def _dump_rectangle(rect):
+    return dict(
+        midpoint=rect.midpoint,
+        width=rect.width,
+        height=rect.height
+    )
+
+
+@rl_types.loader('rectangle', 1)
+def _load_rectangle(data, version):
+    return Rectangle(data['midpoint'], data['width'], data['height'])
+
+
 class Circle(Shape):
     radius = 0
 
@@ -296,6 +316,19 @@ class Circle(Shape):
     def contains_point(self, p):
         x, y = p
         return (x+0.5)**2 + (y+0.5)**2 <= self.radius**2
+
+
+@rl_types.dumper(Circle, 'circle', 1)
+def _dump_circle(circle):
+    return dict(
+        midpoint=circle.midpoint,
+        radius=circle.radius
+    )
+
+
+@rl_types.loader('circle', 1)
+def _load_circle(data, version):
+    return Circle(data['midpoint'], data['radius'])
 
 
 class Ellipse(Shape):
@@ -336,3 +369,15 @@ class Ellipse(Shape):
 
         return v <= 1.0
 
+
+@rl_types.dumper(Ellipse, 'ellipse', 1)
+def _dump_ellipse(ellipse):
+    return dict(
+        midpoint=ellipse.midpoint,
+        r1=ellipse.r1,
+        r2=ellipse.r2
+    )
+
+@rl_types.loader('ellipse', 1)
+def _load_ellipse(data, version):
+    return Ellipse(data['midpoint'], data['r1'], data['r2'])

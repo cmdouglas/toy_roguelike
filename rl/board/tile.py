@@ -2,6 +2,7 @@ import logging
 
 from rl.ui import colors
 from rl.util import geometry
+from rl.save import rl_types
 
 logger = logging.getLogger('rl')
 
@@ -11,7 +12,7 @@ class EntityPlacementException(Exception):
 
 
 class Tile(object):
-    def __init__(self, board, pos):
+    def __init__(self, board=None, pos=None):
         self.pos = pos
         self.board = board
         self.has_been_seen = False
@@ -240,3 +241,27 @@ class Tile(object):
 
         else:
             return neighboring_tiles
+
+
+@rl_types.dumper(Tile, 'tile', 1)
+def _dump_tile(tile):
+    return dict(
+        has_been_seen=tile.has_been_seen,
+        visible=tile.visible,
+        remembered=tile.remembered,
+        remembered_desc=tile.remembered_desc,
+        entities=tile.entities
+    )
+
+
+@rl_types.loader('tile', 1)
+def _load_tile(data, version):
+    t = Tile()
+    t.has_been_seen = data['has_been_seen']
+    t.visible = data['visible']
+    t.remembered = data['remembered']
+    t.remembered_desc = data['remembered_desc']
+    t.entities = data['entities']
+    for ent in t.all_entities:
+        ent.tile = t
+    return t

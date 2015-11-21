@@ -2,7 +2,7 @@ import random
 
 from rl.board.generator.painters.roomcluster import RoomClusterPainter
 from rl.util.partition import Partition
-from rl.board.region import MapArea, LEFT, RIGHT, TOP
+from rl.board.region import MapRegion
 from rl.board.board import Board
 from termapp.formatstring import FormatString
 

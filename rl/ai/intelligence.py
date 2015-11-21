@@ -1,5 +1,5 @@
 class Intelligence:
-    def __init__(self, actor):
+    def __init__(self, actor=None):
         self.actor = actor
         self._strategy = None
 
@@ -21,3 +21,12 @@ class Intelligence:
             self._strategy.intelligence = None
 
         self._strategy = strategy
+
+def dump_intelligence(intelligence):
+    return dict(
+        strategy=intelligence._strategy
+    )
+
+def load_intelligence(data, intelligence):
+    intelligence.strategy = data['strategy']
+

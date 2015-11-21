@@ -2,6 +2,7 @@ from rl.entities.obstacles import Obstacle
 from rl.ui import colors
 from rl.ui import glyphs
 from rl.actions import interact
+from rl.save import rl_types
 
 
 class Door(Obstacle):
@@ -42,3 +43,20 @@ class Door(Obstacle):
         surrounding_obstacles = [t.obstacle for t in self.tile.neighbors() if t.obstacle]
         for obstacle in surrounding_obstacles:
             obstacle.should_update = True
+
+
+@rl_types.dumper(Door, 'door', 1)
+def _dump_door(door):
+    return dict(
+        is_open=door.is_open
+    )
+
+@rl_types.loader('door', 1)
+def _load_door(data, version):
+    door = Door()
+    if data['is_open']:
+        door.open()
+    else:
+        door.close()
+
+    return door

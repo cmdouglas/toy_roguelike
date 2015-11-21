@@ -1,9 +1,10 @@
-from rl.ai import intelligence
+from rl.ai.intelligence import Intelligence, dump_intelligence, load_intelligence
 from rl.ai import events
 from rl.ai.strategies import idle, aggressive
+from rl.save import rl_types
 
 
-class BasicAI(intelligence.Intelligence):
+class BasicAI(Intelligence):
         
     def get_action(self):
         if not self.strategy:
@@ -20,3 +21,16 @@ class BasicAI(intelligence.Intelligence):
 
         except events.StrategyCompleteEvent:
             self.strategy = idle.IdleStrategy(self)
+
+
+@rl_types.dumper(BasicAI, 'basic_ai', 1)
+def _dump_basic_ai(basic_ai):
+    return dump_intelligence(basic_ai)
+
+
+@rl_types.loader('basic_ai', 1)
+def _load_basic_ai(data, version):
+    basic_ai = BasicAI()
+    load_intelligence(data, basic_ai)
+
+    return basic_ai

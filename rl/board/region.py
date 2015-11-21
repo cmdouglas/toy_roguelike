@@ -1,6 +1,7 @@
 import random
 
 from rl.util import geometry
+from rl.save import rl_types
 
 
 class MapRegionConnectionException(Exception):
@@ -8,7 +9,7 @@ class MapRegionConnectionException(Exception):
 
 
 class MapRegion:
-    def __init__(self, shape, board):
+    def __init__(self, shape=None, board=None):
         self.shape = shape
         self.board = board
         self.adjacent = {}
@@ -108,3 +109,34 @@ class MapRegion:
                 return False
 
         return True
+
+
+@rl_types.dumper(MapRegion, 'map_region', 1)
+def _dump_region(region):
+    data = dict(
+        _save_id=id(region),
+        shape=region.shape,
+    )
+    adjacent = {}
+    for neighbor, adjacencies in region.adjacent.items():
+        adjacent[id(neighbor)] = adjacencies
+
+    data['adjacent'] = adjacent
+
+    connections = {}
+    for point, connection in region.connections.items():
+        other_region, other_point = connection
+        connections[point] = (id(other_region), other_point)
+
+    data['connections'] = connections
+
+    return data
+
+
+@rl_types.loader('map_region', 1)
+def _load_region(data, version):
+    region = MapRegion()
+    region.shape = data['shape']
+
+    region.loaded_data = data
+    return region

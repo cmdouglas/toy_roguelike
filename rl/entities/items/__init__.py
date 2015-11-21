@@ -1,5 +1,5 @@
 from rl.entities import Entity
-from rl.util.mixins.stackable import Stackable
+from rl.util.mixins.stackable import Stackable, dump_stackable, load_stackable
 
 
 class Item(Entity, Stackable):
@@ -27,3 +27,11 @@ class Item(Entity, Stackable):
 
     def __str__(self):
         return self.describe()
+
+
+def dump_item(item):
+    return dump_stackable(item)
+
+
+def load_item(data, item):
+    load_stackable(data, item)

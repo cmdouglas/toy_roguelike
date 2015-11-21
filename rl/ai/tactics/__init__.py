@@ -8,7 +8,7 @@ class PathBlockedException(Exception):
 
 
 class Tactics(object):
-    def __init__(self, strategy):
+    def __init__(self, strategy=None):
         self.strategy = strategy
 
     @property
@@ -59,3 +59,5 @@ class Tactics(object):
 
     def describe(self):
         return ""
+
+

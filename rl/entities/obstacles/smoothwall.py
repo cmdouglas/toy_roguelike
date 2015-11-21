@@ -4,6 +4,7 @@ from rl.ui import glyphs
 from rl.util.geometry import Direction
 from rl.entities.obstacles.wall import Wall
 from rl.entities.obstacles import door
+from rl.save import rl_types
 
 logger = logging.getLogger('rl')
 
@@ -349,3 +350,17 @@ class SmoothWall(Wall):
                 return True
 
         return False
+
+
+@rl_types.dumper(SmoothWall, 'smoothwall', 1)
+def _dump_smoothwall(smoothwall):
+    return dict(
+        glyph=smoothwall.glyph
+    )
+
+
+@rl_types.loader('smoothwall', 1)
+def _load_smoothwall(data, version):
+    wall = SmoothWall()
+    wall.glyph = data['glyph']
+    return wall

@@ -1,9 +1,9 @@
-import shelve
 
 from rl.board.generator import generator
 
 from rl.events.death import DeathEvent
 from rl.events.interactions.misc import OpenEvent, CloseEvent
+from rl.save import rl_types
 
 
 class GameOver(Exception):
@@ -57,4 +57,19 @@ class World:
         if type(event) in [OpenEvent, CloseEvent] and event.perceptible(self.player):
             self.board.update_fov(self.player)
 
+# serialization
+@rl_types.dumper(World, 'world', 1)
+def _dump_world(world):
+    return dict (
+        board=world.board,
+        ticks=world.ticks
+    )
 
+@rl_types.loader('world', 1)
+def _load_world(data, version):
+    w = World()
+    w.board = data['board']
+    w.board.world = w
+    w.ticks = data['ticks']
+    w.player = w.board.find_player()
+    return w

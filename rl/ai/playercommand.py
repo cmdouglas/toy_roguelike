@@ -2,15 +2,16 @@
 actions."""
 
 import logging
+from rl.save import rl_types
 
 
 logger = logging.getLogger('rl')
 
 
 class UserInput():
-    def __init__(self, player):
+    def __init__(self, actor=None):
         self.commands = []
-        self.player = player
+        self.actor = actor
 
     def add_command(self, command):
         self.commands.append(command)
@@ -18,3 +19,12 @@ class UserInput():
     def get_action(self):
         if self.commands:
             return self.commands.pop(0).process()
+
+
+@rl_types.dumper(UserInput, 'user_input', 1)
+def _dump_user_input(user_input):
+    return ""
+
+@rl_types.loader('user_input', 1)
+def _load_user_input(data, version):
+    return UserInput()

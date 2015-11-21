@@ -6,6 +6,8 @@ from rl.board import tile
 
 logger = logging.getLogger('rl')
 
+from rl.save import rl_types
+
 
 class Board:
     def __init__(self, width, height, world=None):
@@ -14,12 +16,18 @@ class Board:
         self.world = world
         self.actors = []
 
-        self.tiles = [
+        self.rows = [
             [tile.Tile(self, (x, y)) for x in range(self.width)]
             for y in range(self.height)
         ]
 
         self.regions = []
+
+    @property
+    def tiles(self):
+        for row in self.rows:
+            for tile in row:
+                yield tile
 
     def spawn_player(self):
         player = Player()
@@ -31,10 +39,14 @@ class Board:
 
         return player
 
+    def find_player(self):
+        for actor in self.actors:
+            if isinstance(actor, Player):
+                return actor
+
     def update_fov(self, player):
-        for row in self.tiles:
-            for tile_ in row:
-                tile_.visible = False
+        for tile in self.tiles:
+            tile.visible = False
 
         visible_points = self.get_visible_points(
             player.tile.pos, player.sight_radius
@@ -53,7 +65,8 @@ class Board:
 
     def __getitem__(self, pos):
         x, y = pos
-        return self.tiles[int(y)][int(x)]
+        return self.rows[int(y)][int(x)]
+
 
     def position_is_valid(self, pos):
         x, y = pos
@@ -186,3 +199,61 @@ class Board:
                 return True
 
         return False
+
+    def entities(self):
+        for tile in self.tiles:
+            for entity in tile.entities:
+                yield entity
+
+
+@rl_types.dumper(Board, 'board', version=1)
+def _dump_board(board):
+    data = dict(
+        width=board.width,
+        height=board.height,
+        regions=board.regions,
+        tiles={tile.pos: tile for tile in board.tiles}
+    )
+
+    return data
+
+
+@rl_types.loader('board', 1)
+def _load_board(data, version):
+    board = Board(data['width'], data['height'])
+    for pos, tile in data['tiles'].items():
+        x, y = pos
+        board.rows[int(y)][int(x)] = tile
+        tile.board = board
+        tile.pos = pos
+        if tile.actor:
+            board.actors.append(tile.actor)
+
+    board.regions = data['regions']
+    # reconnect the regions
+    regions_by_id = {region.loaded_data['_save_id']: region for region in data['regions']}
+    for region in board.regions:
+        region.board = board
+        adjacent = {}
+        for neighbor_id, adjacency in region.loaded_data['adjacent'].items():
+            adjacent[regions_by_id[neighbor_id]] = adjacency
+
+        region.adjacent = adjacent
+
+        connections = {}
+        for point, connection in region.loaded_data['connections'].items():
+            other_region_id, other_point = connection
+            connections[point] = (regions_by_id[other_region_id], other_point)
+
+        region.connections = connections
+
+    #FIXME these should be restored elsewhere?
+    from rl.ai.basic import BasicAI
+    from rl.ai.strategies.aggressive import AggressiveStrategy
+    actors_by_id = {actor._save_id: actor for actor in board.actors}
+
+    for actor in board.actors:
+        if isinstance(actor.intelligence, BasicAI) and isinstance(actor.intelligence.strategy, AggressiveStrategy):
+            actor.intelligence.strategy.target = actors_by_id.get(actor.intelligence.strategy.target)
+
+    return board

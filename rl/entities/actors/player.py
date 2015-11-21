@@ -1,10 +1,12 @@
 import math
+from rl.save import rl_types
 from rl.ui import colors
 from rl.util import dice
 
-from rl.entities.actors.creature import Creature
+from rl.entities.actors.creature import Creature, dump_creature, load_creature
 from rl.entities.items import potion
 from rl.ai import playercommand
+
 
 def xp_table():
     def round_significant(n, s=2):
@@ -75,3 +77,24 @@ class Player(Creature):
 
     def die(self):
         self.is_alive = False
+
+
+@rl_types.dumper(Player, 'player', 1)
+def _dump_player(player):
+    data = dump_creature(player)
+    data.update(dict(
+        name=player.name,
+        gold=player.gold,
+        is_alive=player.is_alive
+    ))
+    return data
+
+
+@rl_types.loader('player', 1)
+def _load_player(data, version):
+    player = Player()
+    load_creature(data, player)
+    player.name = data['name']
+    player.gold = data['gold']
+    player.is_alive = data['is_alive']
+    return player

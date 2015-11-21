@@ -15,3 +15,11 @@ class Actor(Entity):
     def can_see_point(self, point):
         return False
 
+
+def dump_actor(actor):
+    return dict(
+        _save_id=id(actor)
+    )
+
+def load_actor(data, actor):
+    actor._save_id = data['_save_id']

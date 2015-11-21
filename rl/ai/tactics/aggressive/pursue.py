@@ -5,6 +5,7 @@ from rl.ai.tactics import PathBlockedException
 from rl.ai.tactics.aggressive import AggressiveTactics
 from rl.util import search
 from rl.ai import events
+from rl.save import rl_types
 
 logger = logging.getLogger('rl')
 
@@ -53,3 +54,13 @@ class PursueTactics(AggressiveTactics):
             else:
                 # logger.debug('Pursue tactics: no path found')
                 return wait.WaitAction(self.actor)
+
+
+@rl_types.dumper(PursueTactics, 'pursue_tactics', 1)
+def _dump_pursue_tactics(pursue_tactics):
+    return ""
+
+
+@rl_types.loader('pursue_tactics', 1)
+def load_pursue_tactics(data, version):
+    return PursueTactics()
