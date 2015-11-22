@@ -49,7 +49,7 @@ class BoardPane(Pane):
             ul_y = c_y - int(self.height / 2)
 
         # for each tile in the area rendered, render the tile and add it
-        for y, row in enumerate(board.tiles[ul_y:(ul_y + self.height)]):
+        for y, row in enumerate(board.rows[ul_y:(ul_y + self.height)]):
             line = FormatString()
             run = []
             fmt = Format()

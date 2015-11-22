@@ -11,7 +11,7 @@ logger = logging.getLogger('rl')
 
 
 class WanderTactics(Tactics):
-    def __init__(self, strategy):
+    def __init__(self, strategy=None):
         super().__init__(strategy)
         self.destination = None
         self.path = None

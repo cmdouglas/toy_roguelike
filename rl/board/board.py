@@ -2,11 +2,11 @@ import logging
 import random
 
 from rl.entities.actors.player import Player
-from rl.board import tile
+from rl.board.tile import Tile, EntityPlacementException
+from rl.save import rl_types
 
 logger = logging.getLogger('rl')
 
-from rl.save import rl_types
 
 
 class Board:
@@ -17,7 +17,7 @@ class Board:
         self.actors = []
 
         self.rows = [
-            [tile.Tile(self, (x, y)) for x in range(self.width)]
+            [Tile(self, (x, y)) for x in range(self.width)]
             for y in range(self.height)
         ]
 
@@ -66,7 +66,6 @@ class Board:
     def __getitem__(self, pos):
         x, y = pos
         return self.rows[int(y)][int(x)]
-
 
     def position_is_valid(self, pos):
         x, y = pos
@@ -126,6 +125,7 @@ class Board:
             for j in range(row, radius+1):
                 dx, dy = -j-1, -j
                 blocked = False
+                new_start = None
                 while dx <= 0:
                     dx += 1
                     # Translate the dx, dy coordinates into map coordinates:
@@ -172,7 +172,7 @@ class Board:
             if ent.can_act:
                 self.actors.append(ent)
 
-        except(tile.EntityPlacementException):
+        except(EntityPlacementException):
             pass
 
     def remove_entity(self, ent):
@@ -247,7 +247,7 @@ def _load_board(data, version):
 
         region.connections = connections
 
-    #FIXME these should be restored elsewhere?
+    # FIXME these should be restored elsewhere?
     from rl.ai.basic import BasicAI
     from rl.ai.strategies.aggressive import AggressiveStrategy
     actors_by_id = {actor._save_id: actor for actor in board.actors}
