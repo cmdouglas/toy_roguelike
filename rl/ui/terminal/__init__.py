@@ -1,7 +1,7 @@
 from termapp import application
 
 from rl.ui.terminal.modes.world import WorldMode
-from rl.ui.console import Console
+from rl.ui.log import Log
 
 
 class TerminalUIException(Exception):
@@ -19,7 +19,7 @@ class TerminalUI(application.TerminalApplication):
     def __init__(self):
         super().__init__()
         self.modes = []
-        self.console = Console()
+        self.log = Log()
 
     def on_start(self):
         self.enter_mode(WorldMode())

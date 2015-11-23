@@ -4,7 +4,7 @@ from termapp.layout import Layout
 from termapp.term import term
 
 from rl.ui.terminal.display.panes import board
-from rl.ui.terminal.display.panes import console
+from rl.ui.terminal.display.panes import log
 from rl.ui.terminal.display.panes import hud
 from rl.ui.terminal.display.panes import examined_object
 from rl.ui import colors
@@ -45,7 +45,7 @@ class ExamineModeLayout(Layout):
         self.examined_object_pane = examined_object.ObjectDetailsPane(
             examined_object_width, examined_object_height, self.mode.world
         )
-        self.console_pane = console.ConsolePane(console_width, console_height, self.mode.console)
+        self.console_pane = log.LogPane(console_width, console_height, self.mode.console)
 
         self.panes = {
             viewport_pos: self.board_pane,

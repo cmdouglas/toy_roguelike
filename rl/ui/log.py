@@ -2,7 +2,7 @@ import textwrap
 
 from rl.ui import colors
 
-class Console(object):
+class Log(object):
     def __init__(self):
         self.messages = []
         

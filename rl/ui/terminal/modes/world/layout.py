@@ -4,7 +4,7 @@ from termapp.layout import Layout
 from termapp.term import term
 
 from rl.ui.terminal.display.panes import board
-from rl.ui.terminal.display.panes import console as console_mod
+from rl.ui.terminal.display.panes import log as console_mod
 from rl.ui.terminal.display.panes import hud
 from rl.ui.terminal.display.panes import objects_of_interest
 
@@ -39,7 +39,7 @@ class WorldModeLayout(Layout):
         self.ooi_pane = objects_of_interest.ObjectsOfInterestPane(
             ooi_width, ooi_height, self.world
         )
-        self.console_pane = console_mod.ConsolePane(console_width, console_height, self.console)
+        self.console_pane = console_mod.LogPane(console_width, console_height, self.console)
 
         self.panes = {
             viewport_pos: self.board_pane,

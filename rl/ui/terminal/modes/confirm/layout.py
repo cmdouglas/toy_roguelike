@@ -1,7 +1,7 @@
 from termapp.term import term
 
 from rl.ui.terminal.modes.world.layout import WorldModeLayout
-from rl.ui.terminal.display.panes.console import ConfirmConsolePane
+from rl.ui.terminal.display.panes.log import ConfirmLogPane
 
 class BasicConfirmLayout(WorldModeLayout):
     """This is just like world mode layout, but with a different console"""
@@ -17,5 +17,5 @@ class BasicConfirmLayout(WorldModeLayout):
 
         console_pos = (0, viewport_height)
 
-        self.console_pane = ConfirmConsolePane(console_width, console_height, console)
+        self.console_pane = ConfirmLogPane(console_width, console_height, console)
         self.panes[console_pos] = self.console_pane

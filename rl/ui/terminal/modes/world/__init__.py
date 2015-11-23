@@ -8,7 +8,7 @@ from rl.ui.terminal.modes.world import mode_commands
 from rl.ui import debug_commands
 from rl.ui.terminal.modes.world import layout
 from rl.ui.terminal.modes.confirm import SimpleConfirmMode
-from rl.ui import console
+from rl.ui import log
 from rl.world import World, GameOver
 from termapp.term import term
 
@@ -33,8 +33,8 @@ class WorldMode(Mode):
             self.world = World()
             self.world.generate()
 
-        self.console = console.Console()
-        self.layout = layout.WorldModeLayout(self.world, self.console)
+        self.log = log.Log()
+        self.layout = layout.WorldModeLayout(self.world, self.log)
         self.rendered = False
 
         self.player_commands = {
@@ -157,7 +157,7 @@ class WorldMode(Mode):
                     if event.perceptible(self.world.player):
                         message = event.describe(self.world.player)
                         if message:
-                            self.console.add_message(message)
+                            self.log.add_message(message)
                         changed = True
             if changed or not self.rendered:
                 self.rendered = True
@@ -169,7 +169,7 @@ class WorldMode(Mode):
 
     def confirm(self, callback, prompt="--MORE--"):
         self.owner.enter_mode(SimpleConfirmMode(
-            self.world, self.console, prompt, callback
+            self.world, self.log, prompt, callback
         ))
 
     def handle_keypress(self, key):
