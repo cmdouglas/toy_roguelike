@@ -1,6 +1,6 @@
 import random
 
-from rl.world.entities.obstacles import wall
+from rl.world.entities.terrain import wall
 from rl.util import tools
 from rl.world.board.generator.painters import Painter
 

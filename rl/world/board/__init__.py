@@ -1,8 +1,8 @@
 import logging
 import random
 
-from rl.world.entities.actors.player import Player
 from rl.world.board.tile import Tile, EntityPlacementException
+from rl.world.entities.actors.creatures.player import Player
 
 #from rl.save import rl_types
 

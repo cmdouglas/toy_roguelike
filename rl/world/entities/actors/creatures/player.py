@@ -3,7 +3,7 @@ import math
 from rl.ui import colors
 from rl.util import dice
 
-from rl.world.entities.actors.creature import Creature
+from rl.world.entities.actors.creatures import Creature
 from rl.world.entities.items import potion
 from rl.world.ai import playercommand
 

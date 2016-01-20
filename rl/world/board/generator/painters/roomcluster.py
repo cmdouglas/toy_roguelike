@@ -4,7 +4,7 @@ from rl.util import dice, geometry, tools
 from rl.util.bubble import BubbleField
 from rl.world.board.generator.painters import Painter
 from rl.world.board.rooms import Room
-from rl.world.entities.obstacles import wall, smoothwall, door
+from rl.world.entities.terrain import wall, smoothwall, door
 
 
 class RoomCluster:

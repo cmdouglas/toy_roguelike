@@ -2,7 +2,7 @@
 import random
 import math
 
-from rl.world.entities.obstacles.wall import Wall
+from rl.world.entities.terrain.wall import Wall
 from rl.util import geometry
 from rl.world.board.generator.painters import Painter
 

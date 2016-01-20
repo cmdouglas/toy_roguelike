@@ -1,6 +1,6 @@
 import random
 
-from rl.world.entities.obstacles import smoothwall, wall, door
+from rl.world.entities.terrain import smoothwall, wall, door
 from rl.util import geometry
 from rl.util import dice
 from rl.world.board.rooms import Room

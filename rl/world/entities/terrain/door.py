@@ -1,11 +1,11 @@
-from rl.world.entities.obstacles import Obstacle
+from rl.world.entities.terrain import Terrain
 from rl.ui import colors
 from rl.ui import glyphs
 from rl.world.actions import interact
 #from rl.world.save import rl_types
 
 
-class Door(Obstacle):
+class Door(Terrain):
     color = colors.sepia
     glyph = '+'
     blocks_movement = True

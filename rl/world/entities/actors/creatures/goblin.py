@@ -1,6 +1,6 @@
 from rl.ui import colors
 #from rl.world.save import rl_types
-from rl.world.entities.actors.creature import Creature
+from rl.world.entities.actors.creatures import Creature
 from rl.world.ai.basic import BasicAI
 
 

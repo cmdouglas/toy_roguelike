@@ -1,9 +1,9 @@
 from rl.ui import colors
 from rl.ui import glyphs
-from rl.world.entities.obstacles import Obstacle
+from rl.world.entities.terrain import Terrain
 #from rl.world.save import rl_types
 
-class Wall(Obstacle):
+class Wall(Terrain):
     color = colors.sepia
     glyph = glyphs.medium_block
     blocks_movement=True

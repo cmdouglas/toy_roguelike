@@ -1,7 +1,8 @@
 from rl.world.entities import Entity
 from rl.world.actions import interact
 
-class Obstacle(Entity):
+
+class Terrain(Entity):
     blocks_movement = True
     blocks_vision = True
     is_wall = False

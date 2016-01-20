@@ -2,8 +2,8 @@ import logging
 from rl.ui import colors
 from rl.ui import glyphs
 from rl.util.geometry import Direction
-from rl.world.entities.obstacles.wall import Wall
-from rl.world.entities.obstacles import door
+from rl.world.entities.terrain.wall import Wall
+from rl.world.entities.terrain import door
 #from rl.world.save import rl_types
 
 logger = logging.getLogger('rl')

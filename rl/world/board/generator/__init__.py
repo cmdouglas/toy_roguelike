@@ -3,14 +3,14 @@ import random
 from rl.util import dice
 from rl.util import partition
 from rl.world.board import Board
-from rl.world.board.region import MapRegion
-from rl.world.board.generator.painters import shapedroom
-from rl.world.board.generator.painters import tunnel
 from rl.world.board.generator.painters import cave
 from rl.world.board.generator.painters import maze
 from rl.world.board.generator.painters import roomcluster
-from rl.world.entities.actors.goblin import Goblin
-from rl.world.entities.actors.ogre import Ogre
+from rl.world.board.generator.painters import shapedroom
+from rl.world.board.generator.painters import tunnel
+from rl.world.board.region import MapRegion
+from rl.world.entities.actors.creatures.goblin import Goblin
+from rl.world.entities.actors.creatures.ogre import Ogre
 from rl.world.entities.items.potion import HealingPotion
 from rl.world.entities.items.scroll import TeleportationScroll
 
