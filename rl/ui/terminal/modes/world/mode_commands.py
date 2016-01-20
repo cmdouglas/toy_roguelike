@@ -57,7 +57,7 @@ class SelectItemToDropCommand(WorldModeCommand):
 
 class ExamineCommand(WorldModeCommand):
     def process(self):
-        self.mode.owner.enter_mode(map_view.ExamineMode(self.mode.world, self.mode.console))
+        self.mode.owner.enter_mode(map_view.ExamineMode(self.mode.world, self.mode.log))
 
 class ExitGameCommand(WorldModeCommand):
     def process(self):

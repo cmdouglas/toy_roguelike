@@ -29,7 +29,7 @@ class LogPane(Pane):
 
 class ConfirmLogPane(LogPane):
     """
-    Like a console pane, but askes for --MORE--, or maybe Continue? (Y/N)
+    Like a log pane, but askes for --MORE--, or maybe Continue? (Y/N)
     """
 
     def __init__(self, width, height, log, prompt='--MORE--'):

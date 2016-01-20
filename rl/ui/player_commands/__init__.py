@@ -1,6 +1,6 @@
-from rl.actions import interact
-from rl.actions import movement
-from rl.actions import wait
+from rl.world.actions import interact
+from rl.world.actions import movement
+from rl.world.actions import wait
 
 
 class PlayerCommand:

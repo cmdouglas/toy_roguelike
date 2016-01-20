@@ -23,7 +23,6 @@ def setup_logger():
 
 
 def main():
-
     logger = setup_logger()
     logger.info('Game Start')
     g = game.Game()

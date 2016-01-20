@@ -1,5 +1,5 @@
 from rl.ui.player_commands import PlayerCommand
-from rl.actions import item
+from rl.world.actions import item
 
 
 class GetItemCommand(PlayerCommand):

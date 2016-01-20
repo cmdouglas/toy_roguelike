@@ -11,14 +11,14 @@ class SimpleConfirmMode(Mode):
     """Displays world mode like normal, but asks for --MORE--
     Accepts <space>, <enter>, and <escape> to continue.
     """
-    def __init__(self, world, console, prompt, callback):
+    def __init__(self, world, log, prompt, callback):
         super().__init__()
 
         self.world = world
         self.prompt = prompt
         self.callback = callback
-        self.console = console
-        self.layout = BasicConfirmLayout(self.world, self.console, self.prompt)
+        self.log = log
+        self.layout = BasicConfirmLayout(self.world, self.log, self.prompt)
 
         self.changed = True
 

@@ -4,18 +4,18 @@ from rl.ui.terminal.modes.world.layout import WorldModeLayout
 from rl.ui.terminal.display.panes.log import ConfirmLogPane
 
 class BasicConfirmLayout(WorldModeLayout):
-    """This is just like world mode layout, but with a different console"""
+    """This is just like world mode layout, but with a different log"""
 
     # FIXME: this shouldn't need to have a world object passed to it
     # maybe layouts can be smart enough to only refresh a portion of the screen?
-    def __init__(self, world, console, prompt):
-        super().__init__(world, console)
+    def __init__(self, world, log, prompt):
+        super().__init__(world, log)
 
-        console_width = term.width
-        console_height = 4
-        viewport_height = min(((term.height - console_height) - 1, 80))
+        log_width = term.width
+        log_height = 4
+        viewport_height = min(((term.height - log_height) - 1, 80))
 
-        console_pos = (0, viewport_height)
+        log_pos = (0, viewport_height)
 
-        self.console_pane = ConfirmLogPane(console_width, console_height, console)
-        self.panes[console_pos] = self.console_pane
+        self.log_pane = ConfirmLogPane(log_width, log_height, log)
+        self.panes[log_pos] = self.log_pane

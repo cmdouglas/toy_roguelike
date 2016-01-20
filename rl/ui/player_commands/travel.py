@@ -3,8 +3,8 @@ import logging
 logger = logging.getLogger('rl')
 
 from rl.ui.player_commands import PlayerCommand
-from rl.actions import movement
-from rl.actions import interact
+from rl.world.actions import movement
+from rl.world.actions import interact
 
 class TravelCommand(PlayerCommand):
     def next_move(self):
