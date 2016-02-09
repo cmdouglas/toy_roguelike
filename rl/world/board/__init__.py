@@ -23,6 +23,16 @@ class Board:
         ]
 
         self.regions = []
+        self.visible = set()
+        self.remembered = {}
+
+    def __getitem__(self, pos):
+        x, y = pos
+        return self.rows[int(y)][int(x)]
+
+    def position_is_valid(self, pos):
+        x, y = pos
+        return 0 <= x < self.width and 0 <= y < self.height
 
     @property
     def tiles(self):
@@ -34,7 +44,7 @@ class Board:
         player = Player()
         region = random.choice(self.regions)
         pos = random.choice(region.empty_points())
-        self.add_entity(player, pos)
+        self[pos].creature = player
 
         self.update_fov(player)
 
@@ -46,31 +56,20 @@ class Board:
                 return actor
 
     def update_fov(self, player):
-        for tile in self.tiles:
-            tile.visible = False
 
         visible_points = self.get_visible_points(
             player.tile.pos, player.sight_radius
         )
-        player.fov = set([point for point in visible_points if self.position_is_valid(point)])
+        self.visible = set([point for point in visible_points if self.position_is_valid(point)])
 
         for point in visible_points:
             if self.position_is_valid(point):
                 tile = self[point]
 
-                if not tile.has_been_seen:
+                if tile.pos not in self.remembered.keys():
                     tile.on_first_seen()
 
-                tile.has_been_seen = True
-                tile.visible = True
-
-    def __getitem__(self, pos):
-        x, y = pos
-        return self.rows[int(y)][int(x)]
-
-    def position_is_valid(self, pos):
-        x, y = pos
-        return 0 <= x < self.width and 0 <= y < self.height
+                self.remember_tile(tile)
 
     def region_containing_point(self, point):
         for region in self.regions:
@@ -166,95 +165,49 @@ class Board:
 
         return visible
 
-    def add_entity(self, ent, pos):
-        t = self[pos]
-        try:
-            t.add_entity(ent)
-            if ent.can_act:
-                self.actors.append(ent)
+    def __getstate__(self):
+        state = dict(
+            width=self.width,
+            height=self.height,
+            regions=self.regions,
+            tiles={tile.pos: tile for tile in self.tiles}
+        )
 
-        except(EntityPlacementException):
-            pass
+        return state
 
-    def remove_entity(self, ent):
-        if not ent:
-            # logger.warn("Trying to remove an entity that doesn't exist!")
-            return
+    def __setstate__(self, state):
+        self.__init__(state['width'], state['height'])
+        for pos, tile in state['tiles'].items():
+            x, y = pos
+            self.rows[int(y)][int(x)] = tile
+            tile.board = self
+            tile.pos = pos
+            if tile.creature:
+                self.actors.append(tile.actor)
 
-        ent.tile.remove_entity(ent)
-        if ent.can_act:
-            self.actors.remove(ent)
+        self.regions = state['regions']
 
-    def move_entity(self, ent, old_pos, new_pos):
-        if self.position_is_valid(new_pos):
-            old_tile = self[old_pos]
-            new_tile = self[new_pos]
-            x1, y1 = old_pos
-            x2, y2 = new_pos
+        # reconnect the regions
+        regions_by_id = {region.loaded_data['_save_id']: region for region in state['regions']}
+        for region in self.regions:
+            region.board = self
+            adjacent = {}
+            for neighbor_id, adjacency in region.loaded_data['adjacent'].items():
+                adjacent[regions_by_id[neighbor_id]] = adjacency
 
-            if not new_tile.blocks_movement():
-                old_tile.remove_entity(ent)
-                new_tile.add_entity(ent)
-                ent.on_move(old_pos, new_pos)
+            region.adjacent = adjacent
 
-                return True
+            connections = {}
+            for point, connection in region.loaded_data['connections'].items():
+                other_region_id, other_point = connection
+                connections[point] = (regions_by_id[other_region_id], other_point)
 
-        return False
+            region.connections = connections
 
-    def entities(self):
-        for tile in self.tiles:
-            for entity in tile.entities:
-                yield entity
+        from rl.world.ai.basic import BasicAI
+        from rl.world.ai.strategies.aggressive import AggressiveStrategy
+        actors_by_id = {actor._save_id: actor for actor in self.actors}
 
-
-# @rl_types.dumper(Board, 'board', version=1)
-# def _dump_board(board):
-#     data = dict(
-#         width=board.width,
-#         height=board.height,
-#         regions=board.regions,
-#         tiles={tile.pos: tile for tile in board.tiles}
-#     )
-#
-#     return data
-#
-
-# @rl_types.loader('board', 1)
-# def _load_board(data, version):
-#     board = Board(data['width'], data['height'])
-#     for pos, tile in data['tiles'].items():
-#         x, y = pos
-#         board.rows[int(y)][int(x)] = tile
-#         tile.board = board
-#         tile.pos = pos
-#         if tile.actor:
-#             board.actors.append(tile.actor)
-#
-#     board.regions = data['regions']
-#     # reconnect the regions
-#     regions_by_id = {region.loaded_data['_save_id']: region for region in data['regions']}
-#     for region in board.regions:
-#         region.board = board
-#         adjacent = {}
-#         for neighbor_id, adjacency in region.loaded_data['adjacent'].items():
-#             adjacent[regions_by_id[neighbor_id]] = adjacency
-#
-#         region.adjacent = adjacent
-#
-#         connections = {}
-#         for point, connection in region.loaded_data['connections'].items():
-#             other_region_id, other_point = connection
-#             connections[point] = (regions_by_id[other_region_id], other_point)
-#
-#         region.connections = connections
-#
-#     # FIXME these should be restored elsewhere?
-#     from rl.ai.basic import BasicAI
-#     from rl.ai.strategies.aggressive import AggressiveStrategy
-#     actors_by_id = {actor._save_id: actor for actor in board.actors}
-#
-#     for actor in board.actors:
-#         if isinstance(actor.intelligence, BasicAI) and isinstance(actor.intelligence.strategy, AggressiveStrategy):
-#             actor.intelligence.strategy.target = actors_by_id.get(actor.intelligence.strategy.target)
-#
-#     return board
+        for actor in self.actors:
+            if isinstance(actor.intelligence, BasicAI) and isinstance(actor.intelligence.strategy, AggressiveStrategy):
+                actor.intelligence.strategy.target = actors_by_id.get(actor.intelligence.strategy.target)

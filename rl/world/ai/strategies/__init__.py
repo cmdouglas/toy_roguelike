@@ -37,10 +37,10 @@ class Strategy(object):
 
         self._tactics = tactics
 
-def dump_strategy(strategy):
-    return dict(
-        tactics=strategy._tactics
-    )
+    def __getstate__(self):
+        return dict(
+            tactics=self._tactics
+        )
 
-def load_strategy(data, strategy):
-    strategy.tactics = data['tactics']
+    def __setstate__(self, state):
+        self.tactics = state['tactics']

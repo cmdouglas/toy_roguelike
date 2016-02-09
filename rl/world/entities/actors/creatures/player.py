@@ -1,8 +1,6 @@
 import math
-#from rl.world.save import rl_types
-from rl.ui import colors
-from rl.util import dice
 
+from rl.util import dice
 from rl.world.entities.actors.creatures import Creature
 from rl.world.entities.items import potion
 from rl.world.ai import playercommand
@@ -30,8 +28,6 @@ def xp_table():
 
 
 class Player(Creature):
-    color=colors.bright_white
-    glyph='@'
 
     base_str = 10
     base_mag = 10
@@ -48,14 +44,8 @@ class Player(Creature):
         self.gold = 300
         self.is_alive = True
         self.intelligence = playercommand.UserInput(self)
-        self.fov = set()
 
         self.inventory.add(potion.HealingPotion(num=3))
-
-    def persist_fields(self):
-        fields = super().persist_fields()
-        fields.extend(['name', 'gold'])
-        return fields
 
     def on_move(self, dx, dy):
         self.tile.board.update_fov(self)
@@ -70,7 +60,7 @@ class Player(Creature):
         return events
 
     def can_see_point(self, point):
-        return point in self.fov
+        return point in self.tile.board.visible
 
     def describe(self, show_strategy=False, num=1):
         return "you"
@@ -78,23 +68,17 @@ class Player(Creature):
     def die(self):
         self.is_alive = False
 
-#
-# @rl_types.dumper(Player, 'player', 1)
-# def _dump_player(player):
-#     data = dump_creature(player)
-#     data.update(dict(
-#         name=player.name,
-#         gold=player.gold,
-#         is_alive=player.is_alive
-#     ))
-#     return data
-#
-#
-# @rl_types.loader('player', 1)
-# def _load_player(data, version):
-#     player = Player()
-#     load_creature(data, player)
-#     player.name = data['name']
-#     player.gold = data['gold']
-#     player.is_alive = data['is_alive']
-#     return player
+    def __getstate__(self):
+        state = super().__getstate__()
+        state.update(dict(
+            name=self.name,
+            gold=self.gold,
+            is_alive=self.is_alive
+        ))
+        return state
+
+    def __setstate__(self, state):
+        super().__setstate__(state)
+        self.name = state['name']
+        self.gold = state['gold']
+        self.is_alive = state['is_alive']

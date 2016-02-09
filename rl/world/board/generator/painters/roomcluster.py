@@ -268,7 +268,7 @@ class RoomClusterPainter(Painter):
 
         self.fill(wall.Wall)
         for access_point in self.region.connections.keys():
-            self.board.remove_entity(self.board[access_point].obstacle)
+            self.board.remove_entity(self.board[access_point].terrain)
 
         rooms = []
 
@@ -280,12 +280,12 @@ class RoomClusterPainter(Painter):
 
         for room in rooms:
             for point in room.interior:
-                self.board.remove_entity(self.board[point].obstacle)
+                self.board.remove_entity(self.board[point].terrain)
 
             for point in room.walls:
-                self.board.remove_entity(self.board[point].obstacle)
+                self.board.remove_entity(self.board[point].terrain)
                 self.board.add_entity(smoothwall.SmoothWall(), point)
 
             for point in room.doors:
-                self.board.remove_entity(self.board[point].obstacle)
-                self.board.add_entity(door.Door(), point)
+                self.board.remove_entity(self.board[point].terrain)
+                self.board.add_entity(door.ClosedDoor(), point)

@@ -12,7 +12,7 @@ painter_type = RoomClusterPainter
 #painter_type = SnakeyTunnelPainter
 
 def tile_is_empty(tile):
-    return tile.obstacle is None
+    return tile.terrain is None
 
 def main():
     partition = Partition((0, 0), width, height)

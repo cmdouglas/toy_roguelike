@@ -24,7 +24,7 @@ class Painter(object):
 
     def clear(self):
         for point in self.region.shape.points:
-            ent = self.board[point].obstacle
+            ent = self.board[point].terrain
             if ent:
                 self.board.remove_entity(ent)
 
@@ -82,12 +82,12 @@ class Painter(object):
         if not points:
             raise Exception('Could not creat corridor from %s to %s' % (start, end))
 
-        self.board.remove_entity(self.board[start].obstacle)
-        self.board.remove_entity(self.board[end].obstacle)
+        self.board.remove_entity(self.board[start].terrain)
+        self.board.remove_entity(self.board[end].terrain)
 
         if points:
             for point in points:
-                self.board.remove_entity(self.board[point].obstacle)
+                self.board.remove_entity(self.board[point].terrain)
 
 
         return points
@@ -100,7 +100,7 @@ class Painter(object):
             points = self.region.empty_points()
 
         if not is_connected:
-            is_connected = lambda point: self.board[point].obstacle is None
+            is_connected = lambda point: self.board[point].terrain is None
 
         points = set(points)
 

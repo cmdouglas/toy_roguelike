@@ -34,7 +34,7 @@ class CavePainter(Painter):
             num_walls += num_tiles - len(r)
             
             for p in r:
-                if self.board[p].obstacle:
+                if self.board[p].terrain:
                     num_walls += 1
                     
             return num_walls
@@ -45,7 +45,7 @@ class CavePainter(Painter):
         border = self.region.shape.border
         
         for point in points:
-            if point in border and not self.board[point].obstacle:
+            if point in border and not self.board[point].terrain:
                 self.board.add_entity(wall.Wall(), point)
             elif random.randrange(100) < 40:
                 self.board.add_entity(wall.Wall(), point)
@@ -54,31 +54,31 @@ class CavePainter(Painter):
         for i in range(4):
             for point in points:
                 if walls_in_r(r(point, 1), 1) >= 5:
-                    if not self.board[point].obstacle:
+                    if not self.board[point].terrain:
                         self.board.add_entity(wall.Wall(), point)
                     
                 elif walls_in_r(r(point, 2), 2) <= 2:
-                    if not self.board[point].obstacle:
+                    if not self.board[point].terrain:
                         self.board.add_entity(wall.Wall(), point)
                 else:
-                    if self.board[point].obstacle and not point in border:
+                    if self.board[point].terrain and not point in border:
                         
-                        self.board.remove_entity(self.board[point].obstacle)
+                        self.board.remove_entity(self.board[point].terrain)
                         
                         
         # 3.  3 repitions of r(1) == 4 
         for i in range(3):            
             for point in points:
                 if walls_in_r(r(point, 1), 1) >= 5:
-                    if not self.board[point].obstacle:
+                    if not self.board[point].terrain:
                         self.board.add_entity(wall.Wall(), point)
                 else:
-                    if self.board[point].obstacle and not point in border:
-                        self.board.remove_entity(self.board[point].obstacle)
+                    if self.board[point].terrain and not point in border:
+                        self.board.remove_entity(self.board[point].terrain)
 
 
         for border_point in border:
-            if not self.board[border_point].obstacle:
+            if not self.board[border_point].terrain:
                 self.board.add_entity(wall.Wall(), border_point)
 
         #make sure zones are connected
@@ -99,6 +99,6 @@ class CavePainter(Painter):
         point = random.choice(empty_points)
         
         for access_point in self.region.connections:
-            if self.board[access_point].obstacle:
-                self.board.remove_entity(self.board[access_point].obstacle)
+            if self.board[access_point].terrain:
+                self.board.remove_entity(self.board[access_point].terrain)
             self.smart_draw_corridor(access_point, point)

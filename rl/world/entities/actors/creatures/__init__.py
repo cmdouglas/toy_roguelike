@@ -1,7 +1,6 @@
 import logging
 
 from rl.world.entities.actors import Actor
-from rl.ui import colors
 from rl.util import dice, tools, bag, geometry
 
 from rl.world.events.interactions.combat import AttackEvent, HitEvent
@@ -147,30 +146,26 @@ class Creature(Actor):
 
         return True
 
-#
-# def dump_creature(creature):
-#     data = dump_actor(creature)
-#     data.update(dict(
-#         health=creature.health,
-#         energy=creature.energy,
-#         level=creature.level,
-#         timeout=creature.timeout,
-#         inventory=creature.inventory.to_dict(),
-#         intelligence=creature.intelligence
-#
-#     ))
-#
-#     return data
-#
-#
-# def load_creature(data, creature):
-#
-#     load_actor(data, creature)
-#
-#     creature.health = data['health']
-#     creature.energy = data['energy']
-#     creature.level = data['level']
-#     creature.timeout = data['timeout']
-#     creature.inventory = bag.KeyedStackableBag().from_dict(data['inventory'])
-#     creature.intelligence = data['intelligence']
-#     creature.intelligence.actor = creature
+    def __getstate__(self):
+        state = super().__getstate__()
+        state.update(dict(
+            health=self.health,
+            energy=self.energy,
+            level=self.level,
+            timeout=self.timeout,
+            inventory=self.inventory.to_dict(),
+            intelligence=self.intelligence
+        ))
+
+        return state
+
+    def __setstate__(self, state):
+        super().__setstate__(state)
+
+        self.health = state['health']
+        self.energy = state['energy']
+        self.level = state['level']
+        self.timeout = state['timeout']
+        self.inventory = bag.KeyedStackableBag().from_dict(state['inventory'])
+        self.intelligence = state['intelligence']
+        self.intelligence.actor = self

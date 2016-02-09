@@ -1,14 +1,10 @@
 import random
 
 from rl.world.entities.items import Item
-from rl.ui import colors
 from rl.world.events.movement import TeleportEvent
-#from rl.world.save import rl_types
 
 class Scroll(Item):
     usable = True
-    glyph = '?'
-    color = colors.bright_white
     name = "scroll"
     name_plural = "scrolls"
 
@@ -39,16 +35,3 @@ class TeleportationScroll(Scroll):
 
         actor.inventory.remove(item=self)
         return [TeleportEvent(actor, old_pos, new_pos)]
-
-#
-# @rl_types.dumper(TeleportationScroll, 'teleportation_scroll', 1)
-# def _dump_teleportation_scroll(teleportation_scroll):
-#     return dump_item(teleportation_scroll)
-#
-#
-# @rl_types.loader('teleportation_scroll', 1)
-# def _load_teleportation_scroll(data, version):
-#     teleportation_scroll = TeleportationScroll()
-#     load_item(data, teleportation_scroll)
-#
-#     return teleportation_scroll

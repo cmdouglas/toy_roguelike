@@ -18,23 +18,3 @@ class MillTactics(wander.WanderTactics):
     def choose_destination(self):
         region = self.world.board.region_containing_point(self.actor.tile.pos)
         self.destination = random.choice(region.empty_points())
-
-# @rl_types.dumper(MillTactics, 'mill_tactics', 1)
-# def _dump_mill_tactics(mill_tactics):
-#     return dict(
-#         destination=mill_tactics.destination,
-#         path=mill_tactics.path,
-#         max_wait=mill_tactics.max_wait,
-#         wait_timer=mill_tactics.wait_timer
-#     )
-#
-#
-# @rl_types.loader('mill_tactics', 1)
-# def load_mill_tactics(data, version):
-#     mill_tactics = MillTactics()
-#     mill_tactics.destination = data['destination']
-#     mill_tactics.path = data['path']
-#     mill_tactics.max_wait = data['max_wait']
-#     mill_tactics.wait_timer = data['wait_timer']
-#
-#     return mill_tactics

@@ -190,7 +190,7 @@ def find_path(board, start, end,
             if only_known_points and not (t.visible or t.has_been_seen):
                 continue
 
-            if t.blocks_movement() and t.obstacle and not t.is_closed_door():
+            if t.blocks_movement() and t.terrain and not t.is_closed_door():
                 continue
 
             x1, y1 = t.pos

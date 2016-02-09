@@ -50,9 +50,9 @@ class Tactics(object):
             dx, dy = move
             board = self.world.board
             new_pos = (x+dx, y+dy)
-            obstacle = board[new_pos].obstacle
-            if obstacle and obstacle.is_door and not obstacle.is_open and self.actor.can_open_doors:
-                return interact.OpenAction(self.actor, obstacle)
+            terrain = board[new_pos].terrain
+            if terrain.is_door  and self.actor.can_open_doors:
+                return interact.OpenAction(self.actor, terrain)
 
             else:
                 raise PathBlockedException()
@@ -60,4 +60,5 @@ class Tactics(object):
     def describe(self):
         return ""
 
-
+    def __getstate__(self):
+        return {}

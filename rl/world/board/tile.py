@@ -2,6 +2,9 @@ import logging
 
 from rl.ui import colors
 from rl.util import geometry
+from rl.world.entities.actors.creatures import Creature
+from rl.world.entities.terrain import Terrain
+from rl.world.entities.items import Item
 
 logger = logging.getLogger('rl')
 
@@ -14,102 +17,60 @@ class Tile(object):
     def __init__(self, board=None, pos=None):
         self.pos = pos
         self.board = board
-        self.has_been_seen = False
-        self.visible = False
-        self.remembered = ' '
-        self.remembered_desc = ''
-        self.entities = {
-            'obstacle': None,
-            'actor': None,
-            'items': [],
-            'decorations': []
-        }
+
+        # entity layers
+        self._terrain = None
+        self._creature = None
+        self._items = []
 
     @property
-    def obstacle(self):
-        return self.entities['obstacle']
+    def entities(self):
+        yield self._creature
+        yield self._terrain
 
-    @obstacle.setter
-    def obstacle(self, val):
-        self.entities['obstacle'] = val
+        for item in self._items:
+            yield item
 
     @property
-    def actor(self):
-        return self.entities['actor']
+    def terrain(self):
+        return self._terrain
 
-    @actor.setter
-    def actor(self, val):
-        self.entities['actor'] = val
+    @terrain.setter
+    def terrain(self, new_terrain):
+        if self._terrain:
+            self._terrain.tile = None
+
+        self._terrain = new_terrain
+        new_terrain.tile = self
+
+    @property
+    def creature(self):
+        return self._creature
+
+    @creature.setter
+    def creature(self, new_creature):
+        if new_creature:
+            if self._creature:
+                raise EntityPlacementException("Cannot add creature to occupied tile")
+            new_creature.tile = self
+        self._creature = new_creature
 
     @property
     def items(self):
-        return self.entities['items']
+        return self._items
 
-    @property
-    def decorations(self):
-        return self.entities['decorations']
+    @items.setter
+    def items(self, items):
+        self._items = items
 
-    @property
-    def all_entities(self):
-        if self.actor:
-            yield self.actor
 
-        if self.obstacle:
-            yield self.obstacle
-
+    def add_item(self, new_item):
         for item in self.items:
-            yield item
-
-        for decoration in self.decorations:
-            yield decoration
-
-
-    def blocks_movement(self):
-        if self.obstacle and self.obstacle.blocks_movement:
-            return True
-
-        if self.actor and self.actor.blocks_movement:
-
-            return True
-
-        return False
-
-    def is_closed_door(self):
-        if (self.obstacle
-            and self.obstacle.is_door
-            and not self.obstacle.is_open):
-            return True
-        else:
-            return False
-
-    def blocks_vision(self):
-        for ent in self.all_entities:
-            if ent.blocks_vision:
-                return True
-
-        return False
-
-    def add_actor(self, ent):
-        if self.actor is not None:
-            raise EntityPlacementException(
-                "Tried to add an actor to a square that already has one"
-            )
-        self.actor = ent
-
-    def add_obstacle(self, ent):
-        if self.obstacle is not None:
-            raise EntityPlacementException(
-                "Tried to add an obstacle to a square that already has one"
-            )
-        self.obstacle = ent
-
-    def add_item(self, ent):
-        for item in self.items:
-            if type(ent) == type(item):
+            if type(new_item) == type(item):
                 item.stack_size += 1
                 return
 
-        self.items.append(ent)
+        self.items.append(new_item)
 
     def remove_item(self, item, quantity=None):
         for i, item_ in enumerate(self.items):
@@ -125,81 +86,14 @@ class Tile(object):
                     self.items.remove(item_)
                     return item_
 
-    def add_decoration(self, ent):
-        if ent not in self.decorations:
-            self.decorations.append(ent)
+    def blocks_movement(self):
+        return any(ent.blocks_movement for ent in self.entities)
 
-    def add_entity(self, ent):
-        if ent.can_act:
-            self.add_actor(ent)
-        elif ent.blocks_movement:
-            self.add_obstacle(ent)
-        elif (ent.usable or ent.equippable):
-            self.add_item(ent)
-        else:
-            self.add_decoration(ent)
-
-        ent.tile = self
-
-    def remove_entity(self, ent):
-        if ent.can_act and self.actor == ent:
-            self.actor = None
-        elif ent.blocks_movement and self.obstacle == ent:
-            self.obstacle = None
-        elif ent.can_be_taken and ent in self.items:
-            self.remove_item(ent)
-        elif ent in self.decorations:
-            self.decorations.remove(ent)
-
-        ent.tile = None
-
-    def remembered_glyph(self):
-        glyph = '.'
-        ents = list(self.all_entities)
-        if ents:
-            glyph = ents[0].glyph
-
-        return glyph
-
-    def get_visible_entity(self, force_visible=False):
-        ent = None
-        if self.visible or force_visible:
-            ents = list(self.all_entities)
-            if ents:
-                ent = ents[0]
-
-        return ent
-
-    def remember_entity(self, ent):
-        if ent:
-            glyph, _, _ = ent.draw()
-            self.remembered = glyph
-            self.remembered_desc = ent.describe()
-        else:
-            self.remembered = '.'
-            self.remembered_desc = ''
-
-    def draw(self, force_visible=False):
-        color = colors.light_gray
-        bgcolor = None
-
-        if self.visible or force_visible:
-            glyph = '.'
-            ent = self.get_visible_entity(force_visible=force_visible)
-            if ent:
-                glyph, color, bgcolor = ent.draw()
-
-            self.remember_entity(ent)
-
-        else:
-            glyph = self.remembered
-            color = colors.dark_gray
-            bgcolor = colors.black
-
-        return (glyph, color, bgcolor)
+    def blocks_vision(self):
+        return any(ent.blocks_vision for ent in self.entities)
 
     def on_first_seen(self):
-        for ent in self.all_entities:
+        for ent in self.entities:
             ent.on_first_seen()
 
     def neighbors(self, as_dict=False):
@@ -227,7 +121,7 @@ class Tile(object):
         neighboring_tiles_dict = {}
         for d in geometry.Direction:
             dx, dy = d
-            if (dx != 0 and dy != 0):
+            if dx != 0 and dy != 0:
                 continue
 
             point = (x+dx, y+dy)
@@ -241,26 +135,17 @@ class Tile(object):
         else:
             return neighboring_tiles
 
-#
-# @rl_types.dumper(Tile, 'tile', 1)
-# def _dump_tile(tile):
-#     return dict(
-#         has_been_seen=tile.has_been_seen,
-#         visible=tile.visible,
-#         remembered=tile.remembered,
-#         remembered_desc=tile.remembered_desc,
-#         entities=tile.entities
-#     )
-#
-#
-# @rl_types.loader('tile', 1)
-# def _load_tile(data, version):
-#     t = Tile()
-#     t.has_been_seen = data['has_been_seen']
-#     t.visible = data['visible']
-#     t.remembered = data['remembered']
-#     t.remembered_desc = data['remembered_desc']
-#     t.entities = data['entities']
-#     for ent in t.all_entities:
-#         ent.tile = t
-#     return t
+    def __getstate__(self):
+        return {
+            'pos': self.pos,
+            'terrain': self.terrain,
+            'creature': self.creature,
+            'items': self.items
+        }
+
+    def __setstate__(self, state):
+        self.pos = state['pos']
+        self.terrain = state['terrain']
+        self.creature = state['creature']
+        self.items = state['items']
+

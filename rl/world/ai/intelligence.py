@@ -22,11 +22,11 @@ class Intelligence:
 
         self._strategy = strategy
 
-def dump_intelligence(intelligence):
-    return dict(
-        strategy=intelligence._strategy
-    )
+    def __getstate__(self):
+        return dict(
+            strategy = self.strategy
+        )
 
-def load_intelligence(data, intelligence):
-    intelligence.strategy = data['strategy']
+    def __setstate(self, state):
+        self.strategy = state['strategy']
 

@@ -15,7 +15,7 @@ class MazeCell:
         self.walls = self.border()
         self.visited = False
 
-        self.board.remove_entity(self.board[self.point].obstacle)
+        self.board.remove_entity(self.board[self.point].terrain)
 
     def border(self):
         b = set()
@@ -29,7 +29,7 @@ class MazeCell:
 
     def remove_wall(self, point):
         if point in self.walls:
-            self.board.remove_entity(self.board[point].obstacle)
+            self.board.remove_entity(self.board[point].terrain)
             self.walls.remove(point)
 
 

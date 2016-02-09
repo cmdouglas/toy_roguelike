@@ -104,21 +104,16 @@ class AggressiveStrategy(Strategy):
 
         return self.tactics.describe()
 
-#
-# @rl_types.dumper(AggressiveStrategy, 'aggressive_strategy', 1)
-# def _dump_aggressive_strategy(aggressive_strategy):
-#     data = strategy.dump_strategy(aggressive_strategy)
-#     data.update(dict(
-#         target=id(aggressive_strategy.target),
-#         target_last_seen=aggressive_strategy.target_last_seen
-#     ))
-#     return data
-#
-# @rl_types.loader('aggressive_strategy', 1)
-# def _load_aggressive_strategy(data, version):
-#     aggressive_strategy = AggressiveStrategy()
-#     strategy.load_strategy(data, aggressive_strategy)
-#     aggressive_strategy.saved_target = data['target']
-#     aggressive_strategy.target_last_seen = data['target_last_seen']
-#
-#     return aggressive_strategy
+    def __getstate__(self):
+        state = super().__getstate__()
+        state.update(dict(
+            target=id(self.target),
+            target_last_seen=self.target_last_seen
+        ))
+
+        return state
+
+    def __setstate__(self, state):
+        super().__setstate__(state)
+        self.saved_target = state['target']
+        self.target_last_seen = state['target_last_seen']

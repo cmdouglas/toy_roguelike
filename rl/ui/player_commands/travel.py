@@ -26,8 +26,7 @@ class TravelCommand(PlayerCommand):
             return True
 
         if board[next_pos].blocks_movement():
-            if not board[next_pos].is_closed_door():
-                return True
+            return True
 
         # next check for any visible hostiles:
         visible_hostiles = [
@@ -67,7 +66,7 @@ class PathTravelCommand(TravelCommand):
             board = self.player.tile.board
             next_tile = board[self.next_pos()]
             if (next_tile.is_closed_door()):
-                return interact.OpenAction(self.player, next_tile.obstacle)
+                return interact.OpenAction(self.player, next_tile.terrain)
 
             move = self.path.pop(0)
             return movement.MovementAction(self.player, move)
@@ -146,13 +145,13 @@ class DirectionalTravelCommand(TravelCommand):
         return list(set(s))
 
     def main_feature(self, tile):
-        if not tile.obstacle:
+        if not tile.terrain:
             return ' '
 
-        if tile.obstacle.is_wall:
+        if tile.terrain.is_wall:
             return '#'
 
-        if tile.obstacle.is_door:
+        if tile.terrain.is_door:
             return '+'
 
 

@@ -28,10 +28,10 @@ class Item(Entity, Stackable):
     def __str__(self):
         return self.describe()
 
-#
-# def dump_item(item):
-#     return dump_stackable(item)
-#
-#
-# def load_item(data, item):
-#     load_stackable(data, item)
+    def __getstate__(self):
+        state = super().__getstate__()
+        state.update(self.dump_stackable())
+
+    def __setstate__(self, state):
+        super().__setstate__(state)
+        self.load_stackable(state)

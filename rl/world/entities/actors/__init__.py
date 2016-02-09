@@ -2,7 +2,6 @@ from rl.world.entities import Entity
 
 class Actor(Entity):
     blocks_movement = True
-    can_act = True
     can_open_doors = False
     is_player = False
 
@@ -15,11 +14,13 @@ class Actor(Entity):
     def can_see_point(self, point):
         return False
 
-#
-# def dump_actor(actor):
-#     return dict(
-#         _save_id=id(actor)
-#     )
-#
-# def load_actor(data, actor):
-#     actor._save_id = data['_save_id']
+    def __getstate__(self):
+        state = super().__getstate__()
+        state.update(dict(
+            _save_id=id(self)
+        ))
+
+        return state
+
+    def __setstate__(self, state):
+        self._save_id = state['save_id']

@@ -35,7 +35,7 @@ class GoToPointCommand(MapViewCommand):
             return
 
         # don't go to the point if there's an obstacle there
-        if board[point].obstacle and board[point].blocks_movement:
+        if board[point].terrain and board[point].blocks_movement:
             return
 
         # don't go to points that haven't been seen

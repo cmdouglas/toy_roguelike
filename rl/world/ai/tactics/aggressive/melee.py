@@ -35,13 +35,3 @@ class MeleeTactics(AggressiveTactics):
         # OK GO
         # logger.debug('Melee tactics: attacking target')
         return interact.AttackAction(self.actor, self.target)
-
-#
-# @rl_types.dumper(MeleeTactics, 'melee_tactics', 1)
-# def _dump_melee_tactics(melee_tactics):
-#     return ""
-#
-#
-# @rl_types.loader('melee_tactics', 1)
-# def load_melee_tactics(data, version):
-#     return MeleeTactics()

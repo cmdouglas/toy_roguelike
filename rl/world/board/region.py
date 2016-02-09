@@ -24,7 +24,7 @@ class MapRegion:
     def empty_points(self):
         return [point for point in self.shape.points
                 if self.board[point].actor is None
-                and self.board[point].obstacle is None]
+                and self.board[point].terrain is None]
 
     def find_neighbors(self, regions):
         for region in regions:
@@ -109,33 +109,27 @@ class MapRegion:
 
         return True
 
+    def __getstate__(self):
+        state = dict(
+            _save_id=id(self),
+            shape=self.shape,
+        )
+        adjacent = {}
+        for neighbor, adjacencies in self.adjacent.items():
+            adjacent[id(neighbor)] = adjacencies
 
-# @rl_types.dumper(MapRegion, 'map_region', 1)
-# def _dump_region(region):
-#     data = dict(
-#         _save_id=id(region),
-#         shape=region.shape,
-#     )
-#     adjacent = {}
-#     for neighbor, adjacencies in region.adjacent.items():
-#         adjacent[id(neighbor)] = adjacencies
-#
-#     data['adjacent'] = adjacent
-#
-#     connections = {}
-#     for point, connection in region.connections.items():
-#         other_region, other_point = connection
-#         connections[point] = (id(other_region), other_point)
-#
-#     data['connections'] = connections
-#
-#     return data
-#
-#
-# @rl_types.loader('map_region', 1)
-# def _load_region(data, version):
-#     region = MapRegion()
-#     region.shape = data['shape']
-#
-#     region.loaded_data = data
-#     return region
+        state['adjacent'] = adjacent
+
+        connections = {}
+        for point, connection in self.connections.items():
+            other_region, other_point = connection
+            connections[point] = (id(other_region), other_point)
+
+        state['connections'] = connections
+
+        return state
+
+    def __setstate__(self, state):
+        self.shape = state['shape']
+
+        self.loaded_data = state

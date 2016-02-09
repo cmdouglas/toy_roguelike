@@ -20,11 +20,5 @@ class UserInput():
         if self.commands:
             return self.commands.pop(0).process()
 
-#
-# @rl_types.dumper(UserInput, 'user_input', 1)
-# def _dump_user_input(user_input):
-#     return ""
-#
-# @rl_types.loader('user_input', 1)
-# def _load_user_input(data, version):
-#     return UserInput()
+    def __setstate__(self):
+        return {}

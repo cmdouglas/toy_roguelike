@@ -1,21 +1,13 @@
 import logging
-from rl.ui import colors
 from rl.ui import glyphs
 from rl.util.geometry import Direction
 from rl.world.entities.terrain.wall import Wall
 from rl.world.entities.terrain import door
-#from rl.world.save import rl_types
 
 logger = logging.getLogger('rl')
 
-##
-# TODO: most of the logic here is actually UI logic so... maybe this shouldn't
-# be a kind of entity?  Maybe some kind of entity view?  Maybe all color/glyph
-# stuff belongs there as well?
-#
 class SmoothWall(Wall):
     """A wall that updates its glyph based on surrounding tiles"""
-    color = colors.light_gray
     glyph = u' '
 
     glyph_occluded = u' '
@@ -125,21 +117,22 @@ class SmoothWall(Wall):
         neighbors = self.tile.neighbors(as_dict=True)
         r = {}
         for k, v in neighbors.items():
-            if isinstance(v.obstacle, SmoothWall):
-                r[k] = v.obstacle
+            if isinstance(v.terrain, SmoothWall):
+                r[k] = v.terrain
 
         return r
 
     def adjoining_room_border_tiles(self):
         room_borders = [
-            door.Door,
+            door.ClosedDoor,
+            door.OpenDoor,
             SmoothWall
         ]
         neighbors = self.tile.neighbors(as_dict=True)
         r = {}
         for k, v in neighbors.items():
             # for purposes of drawing tiles, assume unseen tiles are empty.
-            if (v.obstacle and type(v.obstacle) in room_borders):
+            if (v.terrain and type(v.terrain) in room_borders):
                 r[k] = v
 
         return r
@@ -350,17 +343,3 @@ class SmoothWall(Wall):
                 return True
 
         return False
-
-#
-# @rl_types.dumper(SmoothWall, 'smoothwall', 1)
-# def _dump_smoothwall(smoothwall):
-#     return dict(
-#         glyph=smoothwall.glyph
-#     )
-#
-#
-# @rl_types.loader('smoothwall', 1)
-# def _load_smoothwall(data, version):
-#     wall = SmoothWall()
-#     wall.glyph = data['glyph']
-#     return wall

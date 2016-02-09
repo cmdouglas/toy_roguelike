@@ -1,18 +1,11 @@
-from rl.ui import colors
 
 class Entity(object):
     article="a"
     name = ""
     name_plural = ""
 
-    color = colors.light_gray
-    bgcolor = None
-    glyph = ' '
-
     blocks_movement = False
     blocks_vision = False
-    can_act = False
-    can_be_taken = False
 
     interest_level = 0
 
@@ -46,17 +39,8 @@ class Entity(object):
     def on_first_seen(self):
         pass
 
-    def is_in_fov(self):
-        return self.tile.visible
-
     def default_interaction(self, actor):
         return None
-
-    def draw(self):
-        return (self.glyph, self.color, self.bgcolor)
-
-    def update_glyph(self):
-        pass
 
     def describe(self, num=1):
         if num != 1:
@@ -69,3 +53,9 @@ class Entity(object):
         r = "{article} {name}".format(article=article, name=name)
 
         return r
+
+    def __getstate__(self):
+        return {}
+
+    def __setstate__(self, state):
+        pass

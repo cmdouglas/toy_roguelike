@@ -1,5 +1,3 @@
-#from rl.world.save import rl_types
-from rl.ui import colors
 from rl.util import dice
 from rl.world.entities.items import Item
 
@@ -8,7 +6,6 @@ from rl.world.events.health import GainHealthEvent
 
 class Potion(Item):
     usable = True
-    glyph = '!'
     name = "potion"
     name_plural = "potions"
 
@@ -26,7 +23,6 @@ class Potion(Item):
 
 
 class HealingPotion(Potion):
-    color = colors.bright_yellow
     name = "healing potion"
     name_plural = "healing potions"
     interest_level = 8
@@ -36,16 +32,3 @@ class HealingPotion(Potion):
         actor.heal(amount)
         actor.inventory.remove(item=self)
         return [GainHealthEvent(actor, amount)]
-
-#
-# @rl_types.dumper(HealingPotion, 'healing_potion', 1)
-# def _dump_healing_potion(healing_potion):
-#     return dump_item(healing_potion)
-#
-#
-# @rl_types.loader('healing_potion', 1)
-# def _load_healing_potion(data, version):
-#     healing_potion = HealingPotion()
-#     load_item(data, healing_potion)
-#
-#     return healing_potion

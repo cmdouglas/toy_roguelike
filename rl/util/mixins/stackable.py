@@ -34,15 +34,14 @@ class Stackable:
         return self.stack_size <= 0
 
 
-def dump_stackable(stackable):
-    return dict(
-        stack_size=stackable.stack_size,
-        max_stack_size=stackable.max_stack_size
-    )
+    def dump_stackable(self):
+        return dict(
+            stack_size=self.stack_size,
+            max_stack_size=self.max_stack_size
+        )
 
-
-def load_stackable(data, stackable):
-    stackable.stack_size = data['stack_size']
-    stackable.max_stack_size = data['max_stack_size']
+    def load_stackable(self, data):
+        self.stack_size = data['stack_size']
+        self.max_stack_size = data['max_stack_size']
 
 

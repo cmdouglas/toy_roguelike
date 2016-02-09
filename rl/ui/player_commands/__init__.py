@@ -31,8 +31,8 @@ class MoveOrInteractCommand(PlayerCommand):
                 other = board[new_pos].actor
                 return interact.AttackAction(self.player, other)
 
-            if board[new_pos].obstacle:
-                ob = board[new_pos].obstacle
+            if board[new_pos].terrain:
+                ob = board[new_pos].terrain
                 return ob.default_interaction(self.player)
 
         else:
