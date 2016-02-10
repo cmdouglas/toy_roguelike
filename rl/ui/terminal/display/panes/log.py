@@ -1,6 +1,6 @@
+from rl.ui.terminal.display import colors
 from termapp.formatstring import FormatString
 from termapp.layout import Pane
-from rl.ui import colors
 
 
 class LogPane(Pane):

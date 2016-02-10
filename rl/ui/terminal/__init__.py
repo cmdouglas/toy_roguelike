@@ -1,8 +1,7 @@
-from termapp import application
-
+from rl.ui.terminal.log import Log
 from rl.ui.terminal.modes.menu import SingleSelectMenuMode
 from rl.ui.terminal.modes.world import WorldMode
-from rl.ui.log import Log
+from termapp import application
 
 
 class TerminalUIException(Exception):

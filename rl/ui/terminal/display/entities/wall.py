@@ -1,17 +1,13 @@
-import logging
 
-from rl.ui.terminal.display import glyphs
+from rl.ui.terminal.display import glyphs, colors
 from rl.util.geometry import Direction
-from rl.world.entities.terrain import door
-from rl.world.entities.terrain.wall import Wall
+from rl.ui.terminal.display.entities import EntityDisplay
 
-logger = logging.getLogger('rl')
 
-class SmoothWall(Wall):
-    """A wall that updates its glyph based on surrounding tiles"""
+class WallDisplay(EntityDisplay):
     glyph = u' '
 
-    glyph_occluded = u' '
+    glyph_occluded = ' '
     glyph_pillar = glyphs.vline
     glyph_vwall = glyphs.vline
     glyph_hwall = glyphs.hline
@@ -24,88 +20,108 @@ class SmoothWall(Wall):
     glyph_t_east = glyphs.tee_e
     glyph_t_west = glyphs.tee_w
     glyph_cross = glyphs.cross
-    should_update = False
-    description = 'The smooth stone wall is solid and unyielding.'
-    name = "smooth stone wall"
-    name_plural = "smooth stone walls"
 
-    def on_first_seen(self):
-        self.should_update = True
-        for neighbor in self.adjoining_smoothwalls().values():
-            neighbor.should_update = True
+    def __init__(self, entity):
+        super().__init__(entity)
+        self.neighbors_seen = set()
+        self.glyph = self.glyph_occluded
+
+    def should_update(self):
+        # if more of my neighbors have been seen than I know about, update me
+        neighbors = set(self.entity.tile.neighbors())
+        remembered = set(self.entity.tile.board.remembered.keys())
+        neighbors_seen = remembered.intersection(neighbors)
+        if neighbors_seen != self.neighbors_seen:
+            self.neighbors_seen = neighbors_seen
+            return True
+
+    def update(self):
+        # logger.debug('Updating Wall at %s', self.tile.pos)
+
+        neighbors = self.entity.tile.neighbors(as_dict=True)
+        neighboring_artificial_walls = {
+            pos: tile for pos, tile in
+            neighbors.items()
+            if tile.terrain.artificial
+        }
+        filled = set(neighboring_artificial_walls.keys())
+        glyph = self.choose_glyph(filled)
+
+        if (glyph in [self.glyph_cross,
+                      self.glyph_t_east,
+                      self.glyph_t_west,
+                      self.glyph_t_north,
+                      self.glyph_t_south]
+            and len(self.neighbors_seen) < len(neighbors)):
+            # we don't want to give away information here!  maybe the player
+            # has only seen a corner or a side, so choose a glyph based on the
+            # sides that have been seen.
+
+            seen_sides = self.seen_sides()
+
+            seen = set()
+            for s in seen_sides:
+                seen.update(Direction.quadrant(s))
+
+            glyph = self.choose_glyph(filled.intersection(seen))
+
+        self.glyph = glyph
+
+    def seen_sides(self):
+        neighbors = self.entity.tile.neighbors(as_dict=True)
+        r = set()
+        for k, v in neighbors.items():
+            if v.has_been_seen:
+                r.add(k)
+        return r
 
     def draw(self):
-        if self.should_update:
-            self.update_glyph()
-            self.should_update = False
+        if not self.entity.artificial:
+            return (glyphs.medium_block, colors)
+        if self.should_update():
+            self.update()
 
         return (self.glyph, self.color, self.bgcolor)
 
-    def choose_glyph(self, filled):
-        if len(filled) == 8:
+    def choose_glyph(self, neighboring_artificial_walls):
+        if len(neighboring_artificial_walls) == 8:
             return self.glyph_occluded
 
-        elif self.hwall(filled):
+        elif self.hwall(neighboring_artificial_walls):
             return self.glyph_hwall
 
-        elif self.vwall(filled):
+        elif self.vwall(neighboring_artificial_walls):
             return self.glyph_vwall
 
-        elif self.necorner(filled):
+        elif self.necorner(neighboring_artificial_walls):
             return self.glyph_necorner
 
-        elif self.nwcorner(filled):
+        elif self.nwcorner(neighboring_artificial_walls):
             return self.glyph_nwcorner
 
-        elif self.secorner(filled):
+        elif self.secorner(neighboring_artificial_walls):
             return self.glyph_secorner
 
-        elif self.swcorner(filled):
+        elif self.swcorner(neighboring_artificial_walls):
             return self.glyph_swcorner
 
-        elif self.t_north(filled):
+        elif self.t_north(neighboring_artificial_walls):
             return self.glyph_t_north
 
-        elif self.t_south(filled):
+        elif self.t_south(neighboring_artificial_walls):
             return self.glyph_t_south
 
-        elif self.t_east(filled):
+        elif self.t_east(neighboring_artificial_walls):
             return self.glyph_t_east
 
-        elif self.t_west(filled):
+        elif self.t_west(neighboring_artificial_walls):
             return self.glyph_t_west
 
-        elif self.cross(filled):
+        elif self.cross(neighboring_artificial_walls):
             return self.glyph_cross
 
         else:
             return self.glyph_pillar
-
-
-
-    def adjoining_smoothwalls(self):
-        neighbors = self.tile.neighbors(as_dict=True)
-        r = {}
-        for k, v in neighbors.items():
-            if isinstance(v.terrain, SmoothWall):
-                r[k] = v.terrain
-
-        return r
-
-    def adjoining_room_border_tiles(self):
-        room_borders = [
-            door.ClosedDoor,
-            door.OpenDoor,
-            SmoothWall
-        ]
-        neighbors = self.tile.neighbors(as_dict=True)
-        r = {}
-        for k, v in neighbors.items():
-            # for purposes of drawing tiles, assume unseen tiles are empty.
-            if (v.terrain and type(v.terrain) in room_borders):
-                r[k] = v
-
-        return r
 
     def hwall(self, dirs):
         """returns true if self should be an hwall according to dirs

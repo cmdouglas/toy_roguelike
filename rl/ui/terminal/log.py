@@ -1,6 +1,7 @@
 import textwrap
 
-from rl.ui import colors
+from rl.ui.terminal.display import colors
+
 
 class Log(object):
     def __init__(self):
@@ -8,7 +9,7 @@ class Log(object):
         
     def add_message(self, message, color=None, important=False):
         if not color:
-            color=colors.white
+            color= colors.white
         self.messages.append({
             'message': message,
             'color': color,

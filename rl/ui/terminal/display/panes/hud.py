@@ -1,10 +1,9 @@
 import logging
 
-from termapp.layout import Pane
-from termapp.formatstring import FormatString
-
+from rl.ui.terminal.display import colors
 from rl.util.tools import clamp
-from rl.ui import colors
+from termapp.formatstring import FormatString
+from termapp.layout import Pane
 
 logger = logging.getLogger('rl')
 

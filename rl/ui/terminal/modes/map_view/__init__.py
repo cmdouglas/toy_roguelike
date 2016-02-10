@@ -1,10 +1,10 @@
 import logging
-from rl.util.geometry import Direction
+
 from rl.ui import tools as ui_tools
 from rl.ui.terminal.modes import Mode
 from rl.ui.terminal.modes.map_view import commands
 from rl.ui.terminal.modes.map_view import layout
-from rl.ui import log
+from rl.util.geometry import Direction
 from termapp.term import term
 
 logger = logging.getLogger('rl')

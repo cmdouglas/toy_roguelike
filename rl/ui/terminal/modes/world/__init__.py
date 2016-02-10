@@ -1,15 +1,16 @@
 import logging
-from rl.ui.terminal.modes import Mode
-from rl.util.geometry import Direction
+
+from rl.ui import debug_commands
 from rl.ui import player_commands
 from rl.ui.player_commands import item as item_commands
 from rl.ui.player_commands import travel as travel_commands
-from rl.ui.terminal.modes.world import mode_commands
-from rl.ui import debug_commands
-from rl.ui.terminal.modes.world import layout
+from rl.ui.terminal import log
+from rl.ui.terminal.modes import Mode
 from rl.ui.terminal.modes.confirm import SimpleConfirmMode
-from rl.ui import log
-from rl.world import World, GameOver
+from rl.ui.terminal.modes.world import layout
+from rl.ui.terminal.modes.world import mode_commands
+from rl.util.geometry import Direction
+from rl.world import World
 from termapp.term import term
 
 logger = logging.getLogger('rl')

@@ -1,13 +1,10 @@
 import logging
 
-from collections import Counter
-
-from termapp.layout import Pane
-from termapp.formatstring import FormatString
-
-from rl.util.mixins.stackable import Stackable
-from rl.ui import colors
 from rl.ui import tools as ui_tools
+from rl.ui.terminal.display import colors
+from rl.util.mixins.stackable import Stackable
+from termapp.formatstring import FormatString
+from termapp.layout import Pane
 
 
 logger = logging.getLogger('rl')

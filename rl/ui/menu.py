@@ -1,5 +1,6 @@
-from rl.ui import colors
 import textwrap
+
+from rl.ui.terminal.display import colors
 
 
 class Menu(object):

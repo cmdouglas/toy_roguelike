@@ -9,6 +9,7 @@ class ClosedDoor(Terrain):
     description = "The heavy wooden door is solidly closed."
     name = "door"
     name_plural = "doors"
+    artificial = True
 
     def open(self):
         self.tile.terrain = OpenDoor()
@@ -29,6 +30,7 @@ class OpenDoor(Terrain):
     description = "The heavy wooden door stands open."
     name = "door"
     name_plural = "doors"
+    artificial = True
 
     def close(self):
         self.tile.terrain = ClosedDoor()

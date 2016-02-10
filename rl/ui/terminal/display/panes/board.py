@@ -1,7 +1,6 @@
-from termapp.layout import Pane
+from rl.ui.terminal.display import colors
 from termapp.formatstring import FormatString, FormatStringChunk, Format
-
-from rl.ui import colors
+from termapp.layout import Pane
 
 
 class BoardPane(Pane):
@@ -55,7 +54,7 @@ class BoardPane(Pane):
             fmt = Format()
             for tile in row[ul_x:(ul_x + self.width)]:
 
-                char, fg, bg = tile.draw()
+                char, fg, bg = self.draw_tile(tile)
 
                 if tile.pos in self.highlight:
                     bg = self.highlight_color
@@ -81,3 +80,9 @@ class BoardPane(Pane):
 
     def refresh(self):
         self.draw_viewport(self.world.board, self.center)
+
+    def draw_tile(self, tile):
+        pass
+
+    def draw_entity(self, entity):
+        pass

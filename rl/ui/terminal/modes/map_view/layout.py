@@ -1,13 +1,12 @@
 import logging
 
+from rl.ui.terminal.display import colors
+from rl.ui.terminal.display.panes import board
+from rl.ui.terminal.display.panes import examined_object
+from rl.ui.terminal.display.panes import hud
+from rl.ui.terminal.display.panes import log
 from termapp.layout import Layout
 from termapp.term import term
-
-from rl.ui.terminal.display.panes import board
-from rl.ui.terminal.display.panes import log
-from rl.ui.terminal.display.panes import hud
-from rl.ui.terminal.display.panes import examined_object
-from rl.ui import colors
 
 logger = logging.getLogger('rl')
 

@@ -8,6 +8,7 @@ class Terrain(Entity):
     is_wall = False
     is_door = False
     name=""
+    artificial = False
 
     def default_interaction(self, actor):
         return interact.ExamineAction(actor, self)

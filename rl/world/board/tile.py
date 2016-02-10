@@ -1,10 +1,6 @@
 import logging
 
-from rl.ui import colors
 from rl.util import geometry
-from rl.world.entities.actors.creatures import Creature
-from rl.world.entities.terrain import Terrain
-from rl.world.entities.items import Item
 
 logger = logging.getLogger('rl')
 

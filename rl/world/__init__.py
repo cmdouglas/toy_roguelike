@@ -56,19 +56,13 @@ class World:
         if type(event) in [OpenEvent, CloseEvent] and event.perceptible(self.player):
             self.board.update_fov(self.player)
 
-# serialization
-# @rl_types.dumper(World, 'world', 1)
-# def _dump_world(world):
-#     return dict (
-#         board=world.board,
-#         ticks=world.ticks
-#     )
-#
-# @rl_types.loader('world', 1)
-# def _load_world(data, version):
-#     w = World()
-#     w.board = data['board']
-#     w.board.world = w
-#     w.ticks = data['ticks']
-#     w.player = w.board.find_player()
-#     return w
+    def __getstate__(self):
+        return dict(
+            ticks=self.ticks,
+            board=self.board
+        )
+
+    def __setstate__(self, state):
+        self.board = state['board']
+        self.ticks = state['ticks']
+        self.player = self.board.find_player()
