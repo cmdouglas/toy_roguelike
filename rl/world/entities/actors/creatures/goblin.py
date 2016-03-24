@@ -3,6 +3,7 @@ from rl.world.ai.basic import BasicAI
 
 
 class Goblin(Creature):
+    type = 'goblin'
     name = "goblin"
     name_plural = "goblins"
     interest_level = 10

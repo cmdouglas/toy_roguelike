@@ -1,14 +1,10 @@
 
-class EntityDisplayManager:
-    def __init__(self):
-        self.entity_display_map
-
 class EntityDisplay:
     def __init__(self, entity):
         self.entity = entity
         self.entity.display = self
 
-    def draw(self):
+    def draw(self, tile):
         return (' ', None, None)
 
 
@@ -19,5 +15,5 @@ class BasicEntityDisplay(EntityDisplay):
         self.color = color
         self.bgcolor = bgcolor
 
-    def draw(self):
+    def draw(self, tile):
         return (self.glyph, self.color, self.bgcolor)

@@ -20,5 +20,5 @@ class UserInput():
         if self.commands:
             return self.commands.pop(0).process()
 
-    def __setstate__(self):
+    def __setstate__(self, state):
         return {}

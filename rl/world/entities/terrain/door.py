@@ -3,6 +3,7 @@ from rl.world.actions import interact
 
 
 class ClosedDoor(Terrain):
+    type = 'closed_door'
     blocks_movement = True
     blocks_vision = True
     is_door = True
@@ -24,8 +25,9 @@ class ClosedDoor(Terrain):
 
 
 class OpenDoor(Terrain):
-    blocks_movement = True
-    blocks_vision = True
+    type = 'open_door'
+    blocks_movement = False
+    blocks_vision = False
     is_door = True
     description = "The heavy wooden door stands open."
     name = "door"

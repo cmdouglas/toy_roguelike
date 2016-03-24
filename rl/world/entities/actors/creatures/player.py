@@ -28,7 +28,7 @@ def xp_table():
 
 
 class Player(Creature):
-
+    type = 'player'
     base_str = 10
     base_mag = 10
     base_dex = 10

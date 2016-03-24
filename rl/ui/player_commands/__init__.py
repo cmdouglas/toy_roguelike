@@ -27,8 +27,8 @@ class MoveOrInteractCommand(PlayerCommand):
         if (board.position_is_valid(new_pos)
            and board[new_pos].blocks_movement()):
 
-            if board[new_pos].actor:
-                other = board[new_pos].actor
+            if board[new_pos].creature:
+                other = board[new_pos].creature
                 return interact.AttackAction(self.player, other)
 
             if board[new_pos].terrain:

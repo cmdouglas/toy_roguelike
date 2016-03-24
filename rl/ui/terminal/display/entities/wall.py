@@ -26,19 +26,11 @@ class WallDisplay(EntityDisplay):
         self.neighbors_seen = set()
         self.glyph = self.glyph_occluded
 
-    def should_update(self):
-        # if more of my neighbors have been seen than I know about, update me
-        neighbors = set(self.entity.tile.neighbors())
-        remembered = set(self.entity.tile.board.remembered.keys())
-        neighbors_seen = remembered.intersection(neighbors)
-        if neighbors_seen != self.neighbors_seen:
-            self.neighbors_seen = neighbors_seen
-            return True
 
-    def update(self):
+    def update(self, tile):
         # logger.debug('Updating Wall at %s', self.tile.pos)
 
-        neighbors = self.entity.tile.neighbors(as_dict=True)
+        neighbors = tile.neighbors(as_dict=True)
         neighboring_artificial_walls = {
             pos: tile for pos, tile in
             neighbors.items()
@@ -57,7 +49,7 @@ class WallDisplay(EntityDisplay):
             # has only seen a corner or a side, so choose a glyph based on the
             # sides that have been seen.
 
-            seen_sides = self.seen_sides()
+            seen_sides = self.seen_sides(tile)
 
             seen = set()
             for s in seen_sides:
@@ -67,21 +59,21 @@ class WallDisplay(EntityDisplay):
 
         self.glyph = glyph
 
-    def seen_sides(self):
-        neighbors = self.entity.tile.neighbors(as_dict=True)
+    def seen_sides(self, tile):
+        neighbors = tile.neighbors(as_dict=True)
         r = set()
         for k, v in neighbors.items():
-            if v.has_been_seen:
+            if v in tile.board.remembered.keys():
                 r.add(k)
         return r
 
-    def draw(self):
+    def draw(self, tile):
         if not self.entity.artificial:
-            return (glyphs.medium_block, colors)
-        if self.should_update():
-            self.update()
+            return (glyphs.medium_block, colors.sepia, None)
 
-        return (self.glyph, self.color, self.bgcolor)
+        self.update(tile)
+
+        return (self.glyph, colors.light_gray, None)
 
     def choose_glyph(self, neighboring_artificial_walls):
         if len(neighboring_artificial_walls) == 8:

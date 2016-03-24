@@ -1,4 +1,5 @@
 from rl.ui.terminal.display import colors
+from rl.ui.terminal.display.entities.renderer import EntityRenderer
 from termapp.formatstring import FormatString, FormatStringChunk, Format
 from termapp.layout import Pane
 
@@ -25,6 +26,8 @@ class BoardPane(Pane):
         self.highlight_color = highlight_color
         self.cursor_pos = cursor_pos
         self.cursor_attr = cursor_attr
+
+        self.entity_renderer = EntityRenderer()
 
     def draw_viewport(self, board, center):
 
@@ -81,8 +84,30 @@ class BoardPane(Pane):
     def refresh(self):
         self.draw_viewport(self.world.board, self.center)
 
+    def visible_entity(self, tile):
+        if tile.creature:
+            return tile.creature
+        if tile.items:
+            return tile.items[0]
+        return tile.terrain
+
     def draw_tile(self, tile):
-        pass
+        visible_tiles = tile.board.visible
+        remembered_tiles = tile.board.remembered
+
+        if tile.pos in visible_tiles:
+            entity = self.visible_entity(tile)
+            return self.entity_renderer.render(entity, tile)
+
+        elif tile.pos in remembered_tiles.keys():
+            remembered_tile = remembered_tiles[tile.pos]
+            entity = self.visible_entity(remembered_tile)
+            glyph, _, _ = self.entity_renderer.render(entity, tile)
+            return (glyph, colors.dark_gray, None)
+
+        else:
+            return (' ', colors.light_gray, None)
+
 
     def draw_entity(self, entity):
-        pass
+        return self.entity_renderer.render(entity)

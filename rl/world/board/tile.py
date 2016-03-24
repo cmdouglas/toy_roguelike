@@ -21,10 +21,13 @@ class Tile(object):
 
     @property
     def entities(self):
-        yield self._creature
-        yield self._terrain
+        if self.creature:
+            yield self.creature
 
-        for item in self._items:
+        if self.terrain:
+            yield self.terrain
+
+        for item in self.items:
             yield item
 
     @property
@@ -141,7 +144,7 @@ class Tile(object):
 
     def __setstate__(self, state):
         self.pos = state['pos']
-        self.terrain = state['terrain']
-        self.creature = state['creature']
-        self.items = state['items']
+        self._terrain = state['terrain']
+        self._creature = state['creature']
+        self._items = state['items']
 

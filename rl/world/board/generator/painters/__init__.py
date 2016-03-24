@@ -1,8 +1,9 @@
-import random
 import math
 
 from rl.util import geometry, search
 from rl.world.board import tile
+
+from rl.world.entities.terrain.floor import Floor
 
 
 class Painter(object):
@@ -15,18 +16,16 @@ class Painter(object):
     def region_meets_requirements(cls, region):
         return True
 
-    def fill(self, ent_type):
+    def terrain_fill(self, terrain_type):
         for point in self.region.shape.points:
             try:
-                self.board.add_entity(ent_type(), point)
+                self.board[point].terrain = terrain_type()
             except tile.EntityPlacementException:
                 continue
 
-    def clear(self):
+    def terrain_clear(self):
         for point in self.region.shape.points:
-            ent = self.board[point].terrain
-            if ent:
-                self.board.remove_entity(ent)
+            self.board[point].terrain = Floor()
 
     def smart_draw_corridor(self, start, end, blocked=None, costs=None):
         """uses an A* search to find a corridor from start to end that does not cross any points in blocked"""
@@ -82,12 +81,12 @@ class Painter(object):
         if not points:
             raise Exception('Could not creat corridor from %s to %s' % (start, end))
 
-        self.board.remove_entity(self.board[start].terrain)
-        self.board.remove_entity(self.board[end].terrain)
+        self.board[start].terrain = Floor()
+        self.board[end].terrain = Floor()
 
         if points:
             for point in points:
-                self.board.remove_entity(self.board[point].terrain)
+                self.board[point].terrain = Floor()
 
 
         return points

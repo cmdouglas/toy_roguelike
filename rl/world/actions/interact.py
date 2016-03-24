@@ -42,8 +42,11 @@ class OpenAction(Action):
         return 1000
 
     def do_action(self):
+        # opening a door can cause entities to shift around
+        tile = self.other.tile
+
         self.other.open()
-        return [OpenEvent(self.actor, self.other)]
+        return [OpenEvent(self.actor, tile.terrain)]
 
 
 class CloseAction(Action):
@@ -55,7 +58,10 @@ class CloseAction(Action):
         return 1000
 
     def do_action(self):
+        # closing a door can cause entities to shift around
+        tile = self.other.tile
+
         self.other.close()
-        return [CloseEvent(self.actor, self.other)]
+        return [CloseEvent(self.actor, tile.terrain)]
 
 

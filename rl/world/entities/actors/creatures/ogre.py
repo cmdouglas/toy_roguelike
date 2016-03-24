@@ -3,8 +3,9 @@ from rl.world.ai.basic import BasicAI
 
 
 class Ogre(Creature):
+    type = 'ogre'
     article = "an"
-    name = u"ogre"
+    name = "ogre"
     name_plural = "ogres"
     interest_level = 18
     base_str = 8

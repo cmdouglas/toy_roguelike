@@ -1,3 +1,6 @@
+import logging
+
+logger = logging.getLogger('rl')
 
 from rl.world.board.generator import Generator
 
@@ -34,6 +37,9 @@ class World:
             for actor in actors:
                 actor.timeout -= timeout
 
+
+        # logger.debug('%r' % actors)
+        # logger.debug('%r' % self.current_actor)
         events = self.current_actor.process_turn(self)
 
         if events:
@@ -50,7 +56,8 @@ class World:
             if actor == self.player:
                 pass
             else:
-                self.board.remove_entity(actor)
+                pos = actor.tile.pos
+                self.board[pos].creature = None
 
         # if a door is opened or closed, recalculate FOV
         if type(event) in [OpenEvent, CloseEvent] and event.perceptible(self.player):

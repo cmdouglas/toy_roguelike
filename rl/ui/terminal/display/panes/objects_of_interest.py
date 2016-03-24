@@ -2,6 +2,7 @@ import logging
 
 from rl.ui import tools as ui_tools
 from rl.ui.terminal.display import colors
+from rl.ui.terminal.display.entities.renderer import EntityRenderer
 from rl.util.mixins.stackable import Stackable
 from termapp.formatstring import FormatString
 from termapp.layout import Pane
@@ -14,6 +15,7 @@ class ObjectsOfInterestPane(Pane):
     def __init__(self, width, height, world):
         super().__init__(width, height)
         self.world = world
+        self.entity_renderer = EntityRenderer()
 
     def draw_objects_of_interest(self):
         oois = ui_tools.entities_by_type(ui_tools.interesting_entities(self.world))
@@ -43,7 +45,7 @@ class ObjectsOfInterestPane(Pane):
             description = ents[0].describe(num=count)
             glyphs = []
             for ent in ents[:5]:
-                glyph, color, bgcolor = ent.draw()
+                glyph, color, bgcolor = self.entity_renderer.render(ent, ent.tile)
                 glyphs.append(FormatString().simple(
                     glyph, color=color, bgcolor=bgcolor
                 ))

@@ -1,5 +1,6 @@
 import logging
 import random
+import copy
 
 from rl.world.board.tile import Tile, EntityPlacementException
 from rl.world.entities.actors.creatures.player import Player
@@ -45,6 +46,7 @@ class Board:
         region = random.choice(self.regions)
         pos = random.choice(region.empty_points())
         self[pos].creature = player
+        self.actors.append(player)
 
         self.update_fov(player)
 
@@ -54,6 +56,10 @@ class Board:
         for actor in self.actors:
             if isinstance(actor, Player):
                 return actor
+
+    def remember_tile(self, tile):
+        pos = tile.pos
+        self.remembered[pos] = copy.deepcopy(tile)
 
     def update_fov(self, player):
 

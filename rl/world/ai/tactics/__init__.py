@@ -51,7 +51,7 @@ class Tactics(object):
             board = self.world.board
             new_pos = (x+dx, y+dy)
             terrain = board[new_pos].terrain
-            if terrain.is_door  and self.actor.can_open_doors:
+            if terrain.blocks_movement and terrain.is_door and self.actor.can_open_doors:
                 return interact.OpenAction(self.actor, terrain)
 
             else:

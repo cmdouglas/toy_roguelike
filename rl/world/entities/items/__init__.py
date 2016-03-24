@@ -3,6 +3,7 @@ from rl.util.mixins.stackable import Stackable
 
 
 class Item(Entity, Stackable):
+    type = 'item'
     usable = False
     equippable = False
     article = "a"

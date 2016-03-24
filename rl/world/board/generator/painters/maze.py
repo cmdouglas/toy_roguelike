@@ -3,6 +3,7 @@ import random
 import math
 
 from rl.world.entities.terrain.wall import Wall
+from rl.world.entities.terrain.floor import Floor
 from rl.util import geometry
 from rl.world.board.generator.painters import Painter
 
@@ -15,7 +16,7 @@ class MazeCell:
         self.walls = self.border()
         self.visited = False
 
-        self.board.remove_entity(self.board[self.point].terrain)
+        self.board[self.point].terrain = Floor()
 
     def border(self):
         b = set()
@@ -29,7 +30,7 @@ class MazeCell:
 
     def remove_wall(self, point):
         if point in self.walls:
-            self.board.remove_entity(self.board[point].terrain)
+            self.board[point].terrain = Floor()
             self.walls.remove(point)
 
 
@@ -89,7 +90,7 @@ class MazePainter(Painter):
         return isinstance(region.shape, geometry.Rectangle)
 
     def paint(self):
-        self.fill(Wall)
+        self.terrain_fill(Wall)
 
         cellgrid = MazeCellGrid(self.board, self.region)
         pos, start = cellgrid.random_cell()

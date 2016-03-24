@@ -4,6 +4,7 @@ class Actor(Entity):
     blocks_movement = True
     can_open_doors = False
     is_player = False
+    type = 'actor'
 
     def on_move(self, old_pos, new_pos):
         pass
@@ -23,4 +24,5 @@ class Actor(Entity):
         return state
 
     def __setstate__(self, state):
-        self._save_id = state['save_id']
+        self._save_id = state['_save_id']
+

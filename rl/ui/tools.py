@@ -1,11 +1,11 @@
 def most_interesting_entity(tile):
-    ents = [ent for ent in tile.all_entities if ent.interest_level > 0]
+    ents = [ent for ent in tile.entities if ent.interest_level > 0]
     if ents:
         return sorted(ents, reverse=True, key=lambda e: e.interest_level)[0]
 
 def interesting_entities(world):
     interesting_visible_entities = []
-    for p in world.player.fov:
+    for p in world.board.visible:
         ent = most_interesting_entity(world.board[p])
         if ent:
             interesting_visible_entities.append(ent)

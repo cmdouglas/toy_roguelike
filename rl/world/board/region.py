@@ -23,8 +23,7 @@ class MapRegion:
 
     def empty_points(self):
         return [point for point in self.shape.points
-                if self.board[point].actor is None
-                and self.board[point].terrain is None]
+                if not self.board[point].blocks_movement()]
 
     def find_neighbors(self, regions):
         for region in regions:

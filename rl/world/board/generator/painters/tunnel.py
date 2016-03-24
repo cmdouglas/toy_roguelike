@@ -13,7 +13,7 @@ class TunnelPainter(Painter):
 
 class SnakeyTunnelPainter(TunnelPainter):
     def paint(self):
-        self.fill(wall.Wall)
+        self.terrain_fill(wall.Wall)
         border = self.region.shape.border
         connections = list(self.region.connections.keys())[:]
         costs = {}

@@ -1,6 +1,7 @@
 from rl.world.entities.terrain import Terrain
 
 class Wall(Terrain):
+    type = 'wall'
     blocks_movement=True
     blocks_vision=True
     is_wall = True
@@ -11,3 +12,9 @@ class Wall(Terrain):
     def __init__(self, artificial=False):
         super().__init__()
         self.artificial = artificial
+
+    def __getstate__(self):
+        return dict(artificial=self.artificial)
+
+    def __setstate__(self, state):
+        self.artificial = state['artificial']

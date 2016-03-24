@@ -4,7 +4,9 @@ from rl.util import dice, geometry, tools
 from rl.util.bubble import BubbleField
 from rl.world.board.generator.painters import Painter
 from rl.world.board.rooms import Room
-from rl.world.entities.terrain import wall, smoothwall, door
+from rl.world.entities.terrain.wall import Wall
+from rl.world.entities.terrain.floor import Floor
+from rl.world.entities.terrain.door import ClosedDoor
 
 
 class RoomCluster:
@@ -266,9 +268,9 @@ class RoomClusterPainter(Painter):
         field = BubbleField(self.region, blocked, num_bubbles)
         field.expand_bubbles()
 
-        self.fill(wall.Wall)
+        self.terrain_fill(Wall)
         for access_point in self.region.connections.keys():
-            self.board.remove_entity(self.board[access_point].terrain)
+            self.board[access_point].terrain = Floor()
 
         rooms = []
 
@@ -280,12 +282,10 @@ class RoomClusterPainter(Painter):
 
         for room in rooms:
             for point in room.interior:
-                self.board.remove_entity(self.board[point].terrain)
+                self.board[point].terrain = Floor()
 
             for point in room.walls:
-                self.board.remove_entity(self.board[point].terrain)
-                self.board.add_entity(smoothwall.SmoothWall(), point)
+                self.board[point].terrain = Wall(artificial=True)
 
             for point in room.doors:
-                self.board.remove_entity(self.board[point].terrain)
-                self.board.add_entity(door.ClosedDoor(), point)
+                self.board[point].terrain = ClosedDoor()

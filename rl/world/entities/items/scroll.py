@@ -4,6 +4,7 @@ from rl.world.entities.items import Item
 from rl.world.events.movement import TeleportEvent
 
 class Scroll(Item):
+    type = 'scroll'
     usable = True
     name = "scroll"
     name_plural = "scrolls"
@@ -21,6 +22,7 @@ class Scroll(Item):
 
 
 class TeleportationScroll(Scroll):
+    type = 'teleportation_scroll'
     name = "teleportation scroll"
     name_plural = "teleportation scrolls"
     interest_level = 5

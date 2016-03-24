@@ -3,6 +3,7 @@ class Entity(object):
     article="a"
     name = ""
     name_plural = ""
+    type = 'entity'
 
     blocks_movement = False
     blocks_vision = False
@@ -14,18 +15,6 @@ class Entity(object):
 
     def persist_fields(self):
         return []
-
-    def move(self, dxdy):
-        dx, dy = dxdy
-        old_pos = self.tile.pos
-        x, y = old_pos
-        new_pos = (x+dx, y+dy)
-
-        if self.tile.board.move_entity(self, old_pos, new_pos):
-            self.on_move(old_pos, new_pos)
-            return True
-
-        return False
 
     @property
     def pos(self):

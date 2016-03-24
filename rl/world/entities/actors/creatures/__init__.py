@@ -10,6 +10,7 @@ logger = logging.getLogger('rl')
 
 
 class Creature(Actor):
+    type = 'creature'
     base_str = 0
     base_dex = 0
     base_mag = 0
@@ -49,12 +50,31 @@ class Creature(Actor):
     def max_energy(self):
         return self.base_max_energy
 
+    def move(self, dxdy):
+        dx, dy = dxdy
+        old_pos = self.tile.pos
+        x, y = old_pos
+        new_pos = (x + dx, y + dy)
+        board = self.tile.board
+
+        if not board.position_is_valid(new_pos):
+            return False
+
+        if board[new_pos].blocks_movement():
+            return False
+
+        board[old_pos].creature = None
+        board[new_pos].creature = self
+
+        self.on_move(old_pos, new_pos)
+
+        return True
+
     def persist_fields(self):
         fields = super().persist_fields()
         fields.extend([
             'health', 'energy', 'level', 'timeout', 'inventory', 'intelligence'
         ])
-
 
     def process_turn(self, world):
         if not self.intelligence:

@@ -138,26 +138,30 @@ class Generator(object):
         self.connection_strategy.connect(b.regions)
         self.painter_strategy.paint(b)
 
-        for i in range(20):
-            region = random.choice(b.regions)
-            point = random.choice(region.empty_points())
-
-            b.add_entity(Goblin(), point)
-
-        for i in range(5):
-            region = random.choice(b.regions)
-            point = random.choice(region.empty_points())
-
-            b.add_entity(HealingPotion(), point)
+        # for i in range(20):
+        #     region = random.choice(b.regions)
+        #     point = random.choice(region.empty_points())
+        #     g = Goblin()
+        #
+        #     b[point].creature = g
+        #     b.actors.append(g)
 
         for i in range(5):
             region = random.choice(b.regions)
             point = random.choice(region.empty_points())
 
-            b.add_entity(TeleportationScroll(), point)
+            b[point].add_item(HealingPotion())
+
+        for i in range(5):
+            region = random.choice(b.regions)
+            point = random.choice(region.empty_points())
+
+            b[point].add_item(TeleportationScroll())
 
         region = random.choice(b.regions)
         point = random.choice(region.empty_points())
-        b.add_entity(Ogre(), point)
+        o = Ogre()
+        b[point].creature = o
+        b.actors.append(o)
 
         return b

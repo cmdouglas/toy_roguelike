@@ -3,6 +3,7 @@ from rl.world.actions import interact
 
 
 class Terrain(Entity):
+    type = 'terrain'
     blocks_movement = True
     blocks_vision = True
     is_wall = False

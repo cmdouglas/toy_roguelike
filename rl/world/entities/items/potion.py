@@ -5,6 +5,7 @@ from rl.world.events.health import GainHealthEvent
 
 
 class Potion(Item):
+    type = 'potion'
     usable = True
     name = "potion"
     name_plural = "potions"
@@ -23,6 +24,7 @@ class Potion(Item):
 
 
 class HealingPotion(Potion):
+    type = 'healing_potion'
     name = "healing potion"
     name_plural = "healing potions"
     interest_level = 8

@@ -39,8 +39,8 @@ class Strategy(object):
 
     def __getstate__(self):
         return dict(
-            tactics=self._tactics
+            tactics=self.tactics
         )
 
     def __setstate__(self, state):
-        self.tactics = state['tactics']
+        self._tactics = state['tactics']
