@@ -1,7 +1,9 @@
+from rl.ui.terminal.display.render.entities import BasicEntityDisplay
+from rl.ui.terminal.display.render.entities.creature import CreatureDisplay
+
 from rl.ui.terminal.display import colors, glyphs
-from rl.ui.terminal.display.entities import BasicEntityDisplay
-from rl.ui.terminal.display.entities.creature import CreatureDisplay
-from rl.ui.terminal.display.entities.wall import WallDisplay
+from rl.ui.terminal.display.render.entities.wall import WallDisplay
+
 
 class EntityRenderer:
     def __init__(self):

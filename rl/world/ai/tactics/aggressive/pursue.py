@@ -5,7 +5,6 @@ from rl.world.ai.tactics import PathBlockedException
 from rl.world.ai.tactics.aggressive import AggressiveTactics
 from rl.util import search
 from rl.world.ai import events
-#from rl.world.save import rl_types
 
 logger = logging.getLogger('rl')
 

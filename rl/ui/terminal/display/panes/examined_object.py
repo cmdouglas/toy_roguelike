@@ -1,6 +1,7 @@
 import logging
 
 from rl.ui.terminal.display import colors
+from rl.ui.terminal.display.render.tile import visible_entity, render_tile
 from termapp.formatstring import FormatString
 from termapp.layout import Pane
 
@@ -23,22 +24,24 @@ class ObjectDetailsPane(Pane):
         desc = ''
 
 
-        if self.world.board[self.pos].visible:
+        if self.pos in self.world.board.visible:
             seen = True
             see = "  You can see here:"
             tile = self.world.board[self.pos]
-            ent = tile.get_visible_entity()
+            ent = visible_entity(tile)
 
             if ent:
-                glyph, color, bgcolor = tile.draw()
+                glyph, color, bgcolor = render_tile(tile)
                 desc = ent.describe()
 
-        elif self.world.board[self.pos].has_been_seen:
+        elif self.pos in self.world.board.remembered:
             seen = True
             see = "  You remember seeing here:"
             tile = self.world.board[self.pos]
-            glyph, color, bgcolor = tile.draw()
-            desc = tile.remembered_desc
+            remembered_tile = self.world.board.remembered[self.pos]
+            glyph, color, bgcolor = render_tile(tile)
+            ent = visible_entity(remembered_tile)
+            desc = ent.describe()
 
 
         self.set_line(

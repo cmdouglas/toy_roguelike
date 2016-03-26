@@ -2,7 +2,7 @@ import logging
 
 from rl.ui import tools as ui_tools
 from rl.ui.terminal.display import colors
-from rl.ui.terminal.display.entities.renderer import EntityRenderer
+from rl.ui.terminal.display.render.entities.renderer import EntityRenderer
 from rl.util.mixins.stackable import Stackable
 from termapp.formatstring import FormatString
 from termapp.layout import Pane

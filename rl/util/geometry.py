@@ -272,20 +272,6 @@ class Rectangle(Shape):
 
         return points
 
-#
-# @rl_types.dumper(Rectangle, 'rectangle', 1)
-# def _dump_rectangle(rect):
-#     return dict(
-#         midpoint=rect.midpoint,
-#         width=rect.width,
-#         height=rect.height
-#     )
-#
-#
-# @rl_types.loader('rectangle', 1)
-# def _load_rectangle(data, version):
-#     return Rectangle(data['midpoint'], data['width'], data['height'])
-#
 
 class Circle(Shape):
     radius = 0
@@ -317,19 +303,6 @@ class Circle(Shape):
         x, y = p
         return (x+0.5)**2 + (y+0.5)**2 <= self.radius**2
 
-#
-# @rl_types.dumper(Circle, 'circle', 1)
-# def _dump_circle(circle):
-#     return dict(
-#         midpoint=circle.midpoint,
-#         radius=circle.radius
-#     )
-#
-#
-# @rl_types.loader('circle', 1)
-# def _load_circle(data, version):
-#     return Circle(data['midpoint'], data['radius'])
-#
 
 class Ellipse(Shape):
     rx = 0
@@ -368,16 +341,3 @@ class Ellipse(Shape):
         v = vx + vy
 
         return v <= 1.0
-
-#
-# @rl_types.dumper(Ellipse, 'ellipse', 1)
-# def _dump_ellipse(ellipse):
-#     return dict(
-#         midpoint=ellipse.midpoint,
-#         r1=ellipse.r1,
-#         r2=ellipse.r2
-#     )
-#
-# @rl_types.loader('ellipse', 1)
-# def _load_ellipse(data, version):
-#     return Ellipse(data['midpoint'], data['r1'], data['r2'])

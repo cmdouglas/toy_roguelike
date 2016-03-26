@@ -1,7 +1,10 @@
+import logging
+
+logger = logging.getLogger('rl')
 
 from rl.ui.terminal.display import glyphs, colors
 from rl.util.geometry import Direction
-from rl.ui.terminal.display.entities import EntityDisplay
+from rl.ui.terminal.display.render.entities import EntityDisplay
 
 
 class WallDisplay(EntityDisplay):
@@ -23,18 +26,16 @@ class WallDisplay(EntityDisplay):
 
     def __init__(self, entity):
         super().__init__(entity)
-        self.neighbors_seen = set()
         self.glyph = self.glyph_occluded
-
 
     def update(self, tile):
         # logger.debug('Updating Wall at %s', self.tile.pos)
 
         neighbors = tile.neighbors(as_dict=True)
         neighboring_artificial_walls = {
-            pos: tile for pos, tile in
+            pos: t for pos, t in
             neighbors.items()
-            if tile.terrain.artificial
+            if t.terrain.artificial
         }
         filled = set(neighboring_artificial_walls.keys())
         glyph = self.choose_glyph(filled)
@@ -43,19 +44,21 @@ class WallDisplay(EntityDisplay):
                       self.glyph_t_east,
                       self.glyph_t_west,
                       self.glyph_t_north,
-                      self.glyph_t_south]
-            and len(self.neighbors_seen) < len(neighbors)):
+                      self.glyph_t_south]):
             # we don't want to give away information here!  maybe the player
             # has only seen a corner or a side, so choose a glyph based on the
             # sides that have been seen.
-
             seen_sides = self.seen_sides(tile)
 
             seen = set()
             for s in seen_sides:
                 seen.update(Direction.quadrant(s))
 
-            glyph = self.choose_glyph(filled.intersection(seen))
+
+            new_filled = filled.intersection(seen)
+
+            glyph = self.choose_glyph(new_filled)
+
 
         self.glyph = glyph
 
@@ -63,7 +66,7 @@ class WallDisplay(EntityDisplay):
         neighbors = tile.neighbors(as_dict=True)
         r = set()
         for k, v in neighbors.items():
-            if v in tile.board.remembered.keys():
+            if v.pos in tile.board.remembered.keys():
                 r.add(k)
         return r
 
