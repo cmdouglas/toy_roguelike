@@ -81,7 +81,13 @@ class WanderTactics(Tactics):
 
     def choose_destination(self):
         actors_region = self.board.region_containing_point(self.actor.tile.pos)
-        region, connections = random.choice(list(actors_region.connections.values()))
+        connections = actors_region.connections.values()
+
+        if connections:
+
+            region, connections = random.choice(list(actors_region.connections.values()))
+        else:
+            region = actors_region
         self.destination = random.choice(region.empty_points())
 
     def compute_path(self):

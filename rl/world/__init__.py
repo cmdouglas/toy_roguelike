@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger('rl')
 
-from rl.world.board.generator import Generator
+from rl.world.board.generator import Generator, TestGenerator
 
 from rl.world.events.death import DeathEvent
 from rl.world.events.interactions.misc import OpenEvent, CloseEvent
@@ -56,8 +56,10 @@ class World:
             if actor == self.player:
                 pass
             else:
-                pos = actor.tile.pos
-                self.board[pos].creature = None
+                tile = actor.tile
+                board = tile.board
+                tile.creature = None
+                board.actors.remove(actor)
 
         # if a door is opened or closed, recalculate FOV
         if type(event) in [OpenEvent, CloseEvent] and event.perceptible(self.player):

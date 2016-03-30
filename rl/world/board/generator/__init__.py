@@ -78,6 +78,12 @@ class RandomPainterStrategy(PainterStrategy):
 
             painter.paint()
 
+class TestPainterStrategy(PainterStrategy):
+    def paint(self, board):
+        for region in board.regions:
+            painter = cave.CavePainter(board, region)
+            painter.paint()
+
 
 class SimpleWebConnectionStrategy(ConnectionStrategy):
     def connect(self, regions):
@@ -126,7 +132,27 @@ class SimpleWebConnectionStrategy(ConnectionStrategy):
                         frontier.append(region)
 
 
-class Generator(object):
+class TestGenerator:
+    def __init__(self):
+        self.partition_strategy = BSPPartitionStrategy()
+        self.connection_strategy = SimpleWebConnectionStrategy()
+        self.painter_strategy = TestPainterStrategy()
+
+    def generate(self, width=20, height=20, world=None):
+        b = Board(width, height, world)
+        b.regions = self.partition_strategy.partition(b, 10, 10)
+        self.connection_strategy.connect(b.regions)
+        self.painter_strategy.paint(b)
+
+        region = random.choice(b.regions)
+        point = random.choice(region.empty_points())
+        goblin = Goblin()
+        b[point].creature = goblin
+        b.actors.append(goblin)
+
+        return b
+
+class Generator:
     def __init__(self):
         self.partition_strategy = BSPPartitionStrategy()
         self.connection_strategy = SimpleWebConnectionStrategy()
@@ -138,13 +164,12 @@ class Generator(object):
         self.connection_strategy.connect(b.regions)
         self.painter_strategy.paint(b)
 
-        # for i in range(20):
-        #     region = random.choice(b.regions)
-        #     point = random.choice(region.empty_points())
-        #     g = Goblin()
-        #
-        #     b[point].creature = g
-        #     b.actors.append(g)
+        for i in range(20):
+            region = random.choice(b.regions)
+            point = random.choice(region.empty_points())
+            g = Goblin()
+            b[point].creature = g
+            b.actors.append(g)
 
         for i in range(5):
             region = random.choice(b.regions)

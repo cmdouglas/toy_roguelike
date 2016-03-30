@@ -32,8 +32,10 @@ class TeleportationScroll(Scroll):
         region = random.choice(board.regions)
         new_pos = random.choice(region.empty_points())
         old_pos = actor.tile.pos
+        new_x, new_y = new_pos
+        old_x, old_y = old_pos
 
-        board.move_entity(actor, old_pos, new_pos)
+        actor.move((new_x-old_x, new_y-old_y))
 
         actor.inventory.remove(item=self)
         return [TeleportEvent(actor, old_pos, new_pos)]

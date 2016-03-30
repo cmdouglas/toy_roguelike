@@ -1,6 +1,9 @@
+import logging
+
 from rl.ui.player_commands import travel
 from rl.util import search
 
+logger = logging.getLogger('rl')
 
 class MapViewCommand:
     def __init__(self, mode):
@@ -35,16 +38,17 @@ class GoToPointCommand(MapViewCommand):
             return
 
         # don't go to the point if there's an obstacle there
-        if board[point].terrain and board[point].blocks_movement:
+        if board[point].blocks_movement():
             return
 
         # don't go to points that haven't been seen
-        if not (board[point].visible or board[point].has_been_seen):
+        if not (point in board.remembered):
             return
 
         path = search.find_path(
             board, player.tile.pos, point, doors_block=False, only_known_points=True
         )
+
         if path:
             player.intelligence.add_command(travel.PathTravelCommand(player, path))
             self.mode.exit()

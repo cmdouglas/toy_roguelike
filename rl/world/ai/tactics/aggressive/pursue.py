@@ -32,6 +32,8 @@ class PursueTactics(AggressiveTactics):
 
         else:
             # logger.debug('Pursue tactics: finding path to target')
+            # logger.debug('self_pos: {self_pos}'.format(self_pos=self.actor.tile.pos))
+            # logger.debug('target_pos: {target_pos}'.format(target_pos=self.target.tile.pos))
             path = search.find_path(
                 self.board,
                 self.actor.tile.pos,

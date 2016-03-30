@@ -186,16 +186,16 @@ def find_path(board, start, end,
             if doors_block and t.blocks_movement() and t.terrain.is_door:
                 continue
 
-            if only_known_points and not (t.visible or t.has_been_seen):
+            if only_known_points and not (t.pos in board.remembered):
                 continue
 
-            if t.blocks_movement() and t.terrain and not t.terrain.is_door:
+            if t.terrain.blocks_movement and not t.terrain.is_door:
                 continue
 
             x1, y1 = t.pos
             x2, y2 = point
             moves.append((x1 - x2, y1 - y2))
-
+        # logger.debug(moves)
         return moves
 
     def apply_move(node, move):

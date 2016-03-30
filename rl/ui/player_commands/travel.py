@@ -65,7 +65,7 @@ class PathTravelCommand(TravelCommand):
             # handle doors
             board = self.player.tile.board
             next_tile = board[self.next_pos()]
-            if (next_tile.is_closed_door()):
+            if (next_tile.blocks_movement() and next_tile.terrain.blocks_movement and next_tile.terrain.is_door):
                 return interact.OpenAction(self.player, next_tile.terrain)
 
             move = self.path.pop(0)
@@ -145,14 +145,13 @@ class DirectionalTravelCommand(TravelCommand):
         return list(set(s))
 
     def main_feature(self, tile):
-        if not tile.terrain:
-            return ' '
-
         if tile.terrain.is_wall:
             return '#'
 
         if tile.terrain.is_door:
             return '+'
+
+        return '.'
 
 
 

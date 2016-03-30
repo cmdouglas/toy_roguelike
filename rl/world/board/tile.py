@@ -69,6 +69,7 @@ class Tile(object):
                 item.stack_size += 1
                 return
 
+        new_item.tile = self
         self.items.append(new_item)
 
     def remove_item(self, item, quantity=None):
@@ -78,11 +79,13 @@ class Tile(object):
                     item_.stack_size -= quantity
                     if item_.stack_size == 0:
                         self.items.remove(item_)
+                        item_.tile = None
 
                     return item_
 
                 else:
                     self.items.remove(item_)
+                    item_.tile = None
                     return item_
 
     def blocks_movement(self):
