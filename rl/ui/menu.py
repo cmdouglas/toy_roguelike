@@ -9,6 +9,7 @@ class Menu(object):
         self.items = {}
 
         self.empty = empty
+
         for k, v in items.items():
             self.items[k] = str(v)
         self.keys = sorted(items.keys())
