@@ -1,4 +1,5 @@
 import logging
+import jsonpickle
 
 logger = logging.getLogger('rl')
 
@@ -38,8 +39,6 @@ class World:
                 actor.timeout -= timeout
 
 
-        # logger.debug('%r' % actors)
-        # logger.debug('%r' % self.current_actor)
         events = self.current_actor.process_turn(self)
 
         if events:
@@ -73,5 +72,13 @@ class World:
 
     def __setstate__(self, state):
         self.board = state['board']
+        self.board.world = self
         self.ticks = state['ticks']
         self.player = self.board.find_player()
+        self.current_actor = None
+
+def serialize_world(world):
+    return jsonpickle.dumps(world)
+
+def unserialize_world(s):
+    return jsonpickle.loads(s)

@@ -4,7 +4,6 @@ import random
 from rl.world.ai import events
 from rl.world.ai.strategies import Strategy
 from rl.world.ai.tactics.idle import mill, sleep, wander
-#from rl.world.save import rl_types
 
 class IdleStrategy(Strategy):
     def __init__(self, intelligence=None):

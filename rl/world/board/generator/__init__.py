@@ -158,9 +158,9 @@ class Generator:
         self.connection_strategy = SimpleWebConnectionStrategy()
         self.painter_strategy = RandomPainterStrategy()
 
-    def generate(self, width=80, height=80, world=None):
+    def generate(self, width=60, height=60, world=None):
         b = Board(width, height, world)
-        b.regions = self.partition_strategy.partition(b, 12, 12)
+        b.regions = self.partition_strategy.partition(b, 10, 10)
         self.connection_strategy.connect(b.regions)
         self.painter_strategy.paint(b)
 

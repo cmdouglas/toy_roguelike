@@ -13,7 +13,7 @@ class SleepTactics(Tactics):
         pass
 
     def do_tactics(self):
-        if self.actor.can_see_entity(self.world.player):
+        if self.actor.can_see_entity(self.actor.tile.board.world.player) and dice.one_chance_in(6):
             raise events.SeeHostileEvent()
         
         self.turns_to_sleep -= 1

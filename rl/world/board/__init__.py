@@ -176,20 +176,20 @@ class Board:
             width=self.width,
             height=self.height,
             regions=self.regions,
-            tiles={tile.pos: tile for tile in self.tiles}
+            tiles=[(tile.pos, tile) for tile in self.tiles]
         )
 
         return state
 
     def __setstate__(self, state):
         self.__init__(state['width'], state['height'])
-        for pos, tile in state['tiles'].items():
+        for pos, tile in state['tiles']:
             x, y = pos
             self.rows[int(y)][int(x)] = tile
             tile.board = self
             tile.pos = pos
             if tile.creature:
-                self.actors.append(tile.actor)
+                self.actors.append(tile.creature)
 
         self.regions = state['regions']
 
@@ -199,6 +199,7 @@ class Board:
             region.board = self
             adjacent = {}
             for neighbor_id, adjacency in region.loaded_data['adjacent'].items():
+                neighbor_id = int(neighbor_id)
                 adjacent[regions_by_id[neighbor_id]] = adjacency
 
             region.adjacent = adjacent

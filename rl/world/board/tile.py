@@ -148,6 +148,12 @@ class Tile(object):
     def __setstate__(self, state):
         self.pos = state['pos']
         self._terrain = state['terrain']
+        if self._terrain:
+            self._terrain.tile = self
         self._creature = state['creature']
+        if self._creature:
+            self._creature.tile = self
         self._items = state['items']
+        for item in self._items:
+            item.tile = self
 

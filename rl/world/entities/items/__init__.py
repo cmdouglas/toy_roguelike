@@ -32,6 +32,7 @@ class Item(Entity, Stackable):
     def __getstate__(self):
         state = super().__getstate__()
         state.update(self.dump_stackable())
+        return state
 
     def __setstate__(self, state):
         super().__setstate__(state)

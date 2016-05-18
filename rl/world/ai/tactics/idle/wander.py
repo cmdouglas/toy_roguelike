@@ -5,7 +5,6 @@ from rl.world.actions import wait
 from rl.world.ai import events
 from rl.world.ai.tactics import Tactics, PathBlockedException
 from rl.util import dice, search
-#from rl.world.save import rl_types
 
 logger = logging.getLogger('rl')
 
@@ -19,7 +18,7 @@ class WanderTactics(Tactics):
         self.wait_timer = random.randrange(self.max_wait) + 1
 
     def do_tactics(self):
-        if self.actor.can_see_entity(self.world.player) and dice.one_chance_in(3):
+        if self.actor.can_see_entity(self.actor.tile.board.world.player) and dice.one_chance_in(3):
             raise events.SeeHostileEvent()
 
         if not self.destination:
