@@ -1,3 +1,4 @@
+from rl.ui.menu import MenuItem
 from rl.ui.player_commands import item as item_commands
 from rl.ui.terminal.modes import menu
 from rl.ui.terminal.modes import map_view
@@ -19,7 +20,7 @@ class SelectItemToUseCommand(WorldModeCommand):
         items = self.mode.world.player.inventory
         self.mode.owner.enter_mode(
             menu.SingleSelectMenuMode(
-                items.to_dict(),
+                [MenuItem(k, v) for k, v in items.to_keyed_list()],
                 empty="You have no items.",
                 selected_callback=on_select
             )
@@ -31,7 +32,7 @@ class ViewInventoryCommand(WorldModeCommand):
         items = self.mode.world.player.inventory
         self.mode.owner.enter_mode(
             menu.SingleSelectMenuMode(
-                items.to_dict(),
+                [MenuItem(k, v) for k, v in items.to_keyed_list()],
                 empty="You have no items."
             )
         )
@@ -49,7 +50,7 @@ class SelectItemToDropCommand(WorldModeCommand):
         items = self.mode.world.player.inventory
         self.mode.owner.enter_mode(
             menu.SingleSelectMenuMode(
-                items.to_dict(),
+                [MenuItem(k, v) for k, v in items.to_keyed_list()],
                 empty="You have no items.",
                 selected_callback=on_select
             )

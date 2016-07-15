@@ -59,6 +59,9 @@ class KeyedStackableBag:
 
         return d
 
+    def to_keyed_list(self):
+        return [(k, v) for k, v in self.items.items() if v]
+
     @classmethod
     def from_dict(cls, d):
         bag = cls()

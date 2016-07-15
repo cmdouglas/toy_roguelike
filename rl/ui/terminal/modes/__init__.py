@@ -20,10 +20,10 @@ class Mode:
         return False
 
     def next_frame(self):
-        pass
+        raise NotImplementedError()
 
     def handle_keypress(self, key):
-        pass
+        raise NotImplementedError()
 
     def exit(self):
         self.owner.exit_mode()

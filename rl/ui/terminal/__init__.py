@@ -1,8 +1,10 @@
+import logging
+
 from rl.ui.terminal.log import Log
-from rl.ui.terminal.modes.menu import SingleSelectMenuMode
-from rl.ui.terminal.modes.world import WorldMode
+from rl.ui.terminal.modes.menu.main_menu import MainMenuMode
 from termapp import application
 
+logger = logging.getLogger('rl')
 
 class TerminalUIException(Exception):
     pass
@@ -22,7 +24,7 @@ class TerminalUI(application.TerminalApplication):
         self.log = Log()
 
     def on_start(self):
-        self.enter_mode(WorldMode())
+        self.enter_mode(MainMenuMode())
 
     def next_frame(self):
         # this should never happen, since the game would exit when the last
@@ -33,6 +35,7 @@ class TerminalUI(application.TerminalApplication):
         return self.modes[0].next_frame()
 
     def handle_keypress(self, key):
+        logger.debug("Handling keypress: " + str(key))
         # this should never happen, since the game would exit when the last
         # mode exits, but handle it anyway.
         if not self.modes:
@@ -40,6 +43,8 @@ class TerminalUI(application.TerminalApplication):
                 "There are no modes to handle a keypress."
             )
 
+        logger.debug(self.modes)
+        logger.debug(self.modes[0].handle_keypress)
         return self.modes[0].handle_keypress(key)
 
     def enter_mode(self, mode):

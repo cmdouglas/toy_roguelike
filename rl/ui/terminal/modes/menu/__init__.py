@@ -1,19 +1,23 @@
+import logging
+
 from rl.ui.terminal.modes import Mode
-from rl.ui.terminal.modes.menu import layout
-from rl.ui import menu
+from rl.ui.terminal.modes.menu.layout import MenuModeLayout
+from rl.ui.menu import Menu, MenuItem
 from rl.ui.terminal.modes.menu import commands
 
 from termapp.term import term
 
+logger = logging.getLogger('rl')
 
-class SingleSelectMenuMode(Mode):
-    def __init__(self, items, selected_callback=None,
-                 empty="", exit_on_select=True):
+
+class BaseMenuMode(Mode):
+    def __init__(self):
         super().__init__()
-        self.menu = menu.Menu(items, empty=empty)
-        self.exit_on_select = exit_on_select
-        self.selected_callback = selected_callback
-        self.layout = layout.MenuModeLayout(self.menu)
+
+        self.menu = Menu([], empty_msg="")
+        self.exit_on_select = False
+        self.on_select = None
+        self.layout = MenuModeLayout(self.menu)
         self.changed = True
 
         self.commands = {
@@ -29,6 +33,7 @@ class SingleSelectMenuMode(Mode):
             return self.layout.render()
 
     def handle_keypress(self, key):
+        logger.debug('BaseMenuMode: Recieved keypress ' + str(key))
         if key.is_sequence:
             letter = None
             code = key.code
@@ -48,8 +53,20 @@ class SingleSelectMenuMode(Mode):
         if self.exit_on_select:
             self.exit()
 
-        if item and self.selected_callback:
-            self.selected_callback(item)
+        if item and self.on_select:
+            self.on_select(item.item)
+
+
+class SingleSelectMenuMode(BaseMenuMode):
+    def __init__(self, items, empty_msg="", on_select=None, exit_on_select=False):
+        super().__init__()
+        self.menu.items = self.to_menu_items(items)
+        self.menu.empty_msg = empty_msg
+        self.on_select = on_select
+        self.exit_on_select = exit_on_select
+
+    def to_menu_items(self, items):
+        return items
 
 
 class MultiSelectMenuMode():
