@@ -9,6 +9,9 @@ logger = logging.getLogger()
 
 
 class AggressiveStrategy(Strategy):
+    target = None
+    target_last_seen = None
+
     def __init__(self, intelligence):
         super().__init__(intelligence)
         self.target = None

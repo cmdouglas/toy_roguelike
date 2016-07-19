@@ -37,6 +37,7 @@ class WorldMode(Mode):
         self.log = log.Log()
         self.layout = layout.WorldModeLayout(self.world, self.log)
         self.rendered = False
+        self.is_game_over = False
 
         self.player_commands = {
             # movement
@@ -153,7 +154,9 @@ class WorldMode(Mode):
             changed = False
             # is the player dead?  make the player confirm and then exit if so.
             if not self.world.player.is_alive:
-                self.game_over()
+                if not self.is_game_over:
+                    self.game_over()
+                return
 
             events = self.world.tick()
             if events:
@@ -195,6 +198,8 @@ class WorldMode(Mode):
 
     def game_over(self):
         logger.debug('game over called!')
+        self.is_game_over = True
+
         def _do_game_over():
             self.exit()
 

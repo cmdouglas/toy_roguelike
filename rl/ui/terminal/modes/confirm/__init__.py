@@ -41,5 +41,3 @@ class SimpleConfirmMode(Mode):
 
     def on_exit(self):
         self.callback()
-
-

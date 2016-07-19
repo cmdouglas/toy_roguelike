@@ -48,6 +48,7 @@ class TerminalUI(application.TerminalApplication):
         return self.modes[0].handle_keypress(key)
 
     def enter_mode(self, mode):
+        logger.debug('entering mode: {m}'.format(m=repr(mode)))
         mode.owner = self
         self.modes.insert(0, mode)
         mode.on_enter()
@@ -58,6 +59,8 @@ class TerminalUI(application.TerminalApplication):
 
         else:
             mode = self.modes.pop(0)
+
+        logger.debug('exiting mode: {m}'.format(m=repr(mode)))
 
         mode.on_exit()
         mode.owner = None
