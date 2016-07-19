@@ -26,4 +26,4 @@ class Mode:
         raise NotImplementedError()
 
     def exit(self):
-        self.owner.exit_mode()
+        self.owner.exit_mode(self)

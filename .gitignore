@@ -59,3 +59,6 @@ docs/_build/
 
 # misc
 .DS_Store
+
+# savefiles
+save/

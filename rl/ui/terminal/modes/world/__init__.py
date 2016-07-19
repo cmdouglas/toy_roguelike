@@ -123,6 +123,9 @@ class WorldMode(Mode):
             ord('d'): mode_commands.SelectItemToDropCommand(self),
             ord('x'): mode_commands.ExamineCommand(self),
 
+            # save
+            ord('S'): mode_commands.SaveGameCommand(self),
+            
             # quit
             ord('Q'): mode_commands.ExitGameCommand(self),
 

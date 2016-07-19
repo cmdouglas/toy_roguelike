@@ -3,6 +3,12 @@ import textwrap
 from rl.ui.terminal.display import colors
 
 
+def generate_menu_key():
+    keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    for key in keys:
+        yield key
+
+
 class MenuItem:
     def __init__(self, key, item, description=None):
         self.key = key

@@ -52,8 +52,13 @@ class TerminalUI(application.TerminalApplication):
         self.modes.insert(0, mode)
         mode.on_enter()
 
-    def exit_mode(self):
-        mode = self.modes.pop(0)
+    def exit_mode(self, mode=None):
+        if mode:
+            self.modes.remove(mode)
+
+        else:
+            mode = self.modes.pop(0)
+
         mode.on_exit()
         mode.owner = None
 

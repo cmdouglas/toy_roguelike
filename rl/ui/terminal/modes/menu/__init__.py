@@ -50,11 +50,21 @@ class BaseMenuMode(Mode):
         command.process(self.menu)
 
     def handle_select(self, item):
+        if item and self.on_select:
+            self.on_select(item.item)
+
         if self.exit_on_select:
             self.exit()
 
-        if item and self.on_select:
-            self.on_select(item.item)
+    def on_enter(self):
+        if self.owner:
+            self.owner.screen.clear()
+            self.owner.term.clear()
+
+    def on_reenter(self):
+        if self.owner:
+            self.owner.screen.clear()
+            self.owner.term.clear()
 
 
 class SingleSelectMenuMode(BaseMenuMode):

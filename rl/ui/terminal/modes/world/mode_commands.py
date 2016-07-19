@@ -2,6 +2,7 @@ from rl.ui.menu import MenuItem
 from rl.ui.player_commands import item as item_commands
 from rl.ui.terminal.modes.menu.inventory import InventoryMode
 from rl.ui.terminal.modes import map_view
+from rl.save import save_world
 
 class WorldModeCommand:
     def __init__(self, mode):
@@ -61,6 +62,11 @@ class SelectItemToDropCommand(WorldModeCommand):
 class ExamineCommand(WorldModeCommand):
     def process(self):
         self.mode.owner.enter_mode(map_view.ExamineMode(self.mode.world, self.mode.log))
+
+class SaveGameCommand(WorldModeCommand):
+    def process(self):
+        save_world(self.mode.world)
+        self.mode.exit()
 
 class ExitGameCommand(WorldModeCommand):
     def process(self):

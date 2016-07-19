@@ -176,13 +176,17 @@ class Board:
             width=self.width,
             height=self.height,
             regions=self.regions,
-            tiles=[(tile.pos, tile) for tile in self.tiles]
+            tiles=[(tile.pos, tile) for tile in self.tiles],
+            visible=self.visible,
+            remembered=[(k, v) for k, v in self.remembered.items()]
         )
 
         return state
 
     def __setstate__(self, state):
         self.__init__(state['width'], state['height'])
+        self.visible = state['visible']
+        self.remembered = {k: v for k, v in state['remembered']}
         for pos, tile in state['tiles']:
             x, y = pos
             self.rows[int(y)][int(x)] = tile

@@ -2,6 +2,7 @@ import logging
 
 from rl.ui.menu import MenuItem
 from rl.ui.terminal.modes.world import WorldMode
+from rl.ui.terminal.modes.menu.load_menu import LoadGameMenuMode
 from rl.ui.terminal.modes.menu import BaseMenuMode
 
 logger = logging.getLogger('rl')
@@ -27,15 +28,9 @@ class MainMenuMode(BaseMenuMode):
         self.owner.enter_mode(WorldMode())
 
     def select_game_to_continue(self):
-        pass
+        self.owner.enter_mode(LoadGameMenuMode())
 
-    def on_enter(self):
-        if self.owner:
-            self.owner.screen.clear()
 
-    def on_reenter(self):
-        if self.owner:
-            self.owner.screen.clear()
 
     def exit_game(self):
         self.exit()

@@ -19,6 +19,7 @@ class World:
         self.player = None
         self.current_actor = None
         self.ticks = 0
+        self.save_filename = None
 
     def generate(self):
         self.board = Generator().generate(world=self)
@@ -77,8 +78,10 @@ class World:
         self.player = self.board.find_player()
         self.current_actor = None
 
-def serialize_world(world):
+
+def serialize_world(world: World) -> str:
     return jsonpickle.dumps(world)
 
-def unserialize_world(s):
+
+def deserialize_world(s: str) -> World:
     return jsonpickle.loads(s)
