@@ -25,17 +25,10 @@ class SleepTactics(Tactics):
     def describe(self):
         return "sleeping"
 
+    def __getstate__(self):
+        return dict(
+            turns_to_sleep=self.turns_to_sleep
+        )
 
-# @rl_types.dumper(SleepTactics, 'sleep_tactics', 1)
-# def _dump_sleep_tactics(sleep_tactics):
-#     return dict(
-#         turns_to_sleep=sleep_tactics.turns_to_sleep,
-#     )
-#
-#
-# @rl_types.loader('sleep_tactics', 1)
-# def load_sleep_tactics(data, version):
-#     sleep_tactics = SleepTactics()
-#     sleep_tactics.turns_to_sleep = data['turns_to_sleep']
-#
-#     return sleep_tactics
+    def __setstate__(self, state):
+        self.turns_to_sleep = state['turns_to_sleep']

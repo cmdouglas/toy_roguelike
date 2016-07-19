@@ -29,4 +29,5 @@ class Intelligence:
 
     def __setstate__(self, state):
         self._strategy = state['strategy']
+        self.strategy.intelligence = self
 

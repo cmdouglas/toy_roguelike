@@ -125,7 +125,7 @@ class WorldMode(Mode):
 
             # save
             ord('S'): mode_commands.SaveGameCommand(self),
-            
+
             # quit
             ord('Q'): mode_commands.ExitGameCommand(self),
 
