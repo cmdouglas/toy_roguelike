@@ -2,7 +2,7 @@ import logging
 
 from rl.ui.terminal.modes import Mode
 from rl.ui.terminal.modes.menu.layout import MenuModeLayout
-from rl.ui.menu import Menu, MenuItem
+from rl.ui.menu import Menu
 from rl.ui.terminal.modes.menu import commands
 
 from termapp.term import term
