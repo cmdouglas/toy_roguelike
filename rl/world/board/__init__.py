@@ -215,10 +215,9 @@ class Board:
 
             region.connections = connections
 
-        from rl.world.ai.basic import BasicAI
-        from rl.world.ai.strategies.aggressive import AggressiveStrategy
         actors_by_id = {actor._save_id: actor for actor in self.actors}
 
+        # now that the board is restored, make sure that all creatures remember who they were
+        # hunting or whatever
         for actor in self.actors:
-            if isinstance(actor.intelligence, BasicAI) and isinstance(actor.intelligence.strategy, AggressiveStrategy):
-                actor.intelligence.strategy.target = actors_by_id.get(actor.intelligence.strategy.target)
+            actor.restore_intelligence(actors_by_id)

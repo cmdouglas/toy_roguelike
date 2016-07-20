@@ -1,11 +1,15 @@
 import os
 import gzip
+import logging
 from rl.world import World, serialize_world, deserialize_world
+
+
+logger = logging.getLogger('rl')
 
 SAVE_PATH = 'save'
 
 
-def save_world(world: World):
+def save_world(world: World) -> str:
     if not os.path.exists(SAVE_PATH):
         os.mkdir(SAVE_PATH)
 
@@ -15,6 +19,8 @@ def save_world(world: World):
     path = os.path.join(SAVE_PATH, filename)
     with open(path, 'wb') as f:
         f.write(data)
+
+    return filename
 
 
 def load_world(filename: str) -> World:
@@ -31,6 +37,11 @@ def load_world(filename: str) -> World:
     return world
 
 
+def delete_save(filename: str):
+    path = os.path.join(SAVE_PATH, filename)
+    os.unlink(path)
+
+
 def list_saves() -> [str]:
     return [save for save in os.listdir(SAVE_PATH) if save[-5:] == '.save']
 
@@ -42,15 +53,21 @@ def create_filename(world: World) -> str:
     name = world.player.name
     saves = os.listdir(SAVE_PATH)
 
-    filename = lambda n: "{n}.save".format(n=n)
-    is_valid = lambda n: filename(n) not in saves
-    permute = lambda n, i: "{n}_{i}".format(n=n, i=i)
+    def filename(n):
+        return "{n}.save".format(n=n)
+
+    def is_valid(n):
+        return filename(n) not in saves
+
+    def permute(n, i):
+        return "{n}_{i}".format(n=n, i=i)
 
     if is_valid(name):
+        logger.debug('saving with filename ' + filename(name))
         return filename(name)
 
     i = 1
-    while not is_valid(filename(permute(name, i))):
+    while not is_valid(permute(name, i)):
         i += 1
 
     return filename(permute(name, i))

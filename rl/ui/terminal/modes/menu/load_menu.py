@@ -11,6 +11,7 @@ class LoadGameMenuMode(BaseMenuMode):
         self.exit_on_select = True
         g = generate_menu_key()
         self.menu.items = [MenuItem(next(g), filename) for filename in list_saves()]
+        self.menu.empty_msg = "There are no saved games."
 
         def on_select(item):
             world = load_world(item)

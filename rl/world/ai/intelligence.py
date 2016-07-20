@@ -29,5 +29,8 @@ class Intelligence:
 
     def __setstate__(self, state):
         self._strategy = state['strategy']
-        self.strategy.intelligence = self
+        if self.strategy:
+            self.strategy.intelligence = self
 
+    def restore(self, actors_by_id):
+        pass

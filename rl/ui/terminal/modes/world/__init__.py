@@ -11,6 +11,7 @@ from rl.ui.terminal.modes.world import layout
 from rl.ui.terminal.modes.world import mode_commands
 from rl.util.geometry import Direction
 from rl.world import World
+from rl.save import delete_save
 from termapp.term import term
 
 logger = logging.getLogger('rl')
@@ -201,6 +202,8 @@ class WorldMode(Mode):
         self.is_game_over = True
 
         def _do_game_over():
+            if self.world.save_filename:
+                delete_save(self.world.save_filename)
             self.exit()
 
         self.confirm(_do_game_over)

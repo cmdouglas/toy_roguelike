@@ -120,3 +120,6 @@ class AggressiveStrategy(Strategy):
         super().__setstate__(state)
         self.saved_target = state['target']
         self.target_last_seen = state['target_last_seen']
+
+    def restore(self, actors_by_id):
+        self.target = actors_by_id.get(self.saved_target)

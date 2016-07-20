@@ -2,7 +2,7 @@ from rl.ui.menu import MenuItem
 from rl.ui.player_commands import item as item_commands
 from rl.ui.terminal.modes.menu.inventory import InventoryMode
 from rl.ui.terminal.modes import map_view
-from rl.save import save_world
+from rl.save import save_world, delete_save
 
 class WorldModeCommand:
     def __init__(self, mode):
@@ -70,4 +70,7 @@ class SaveGameCommand(WorldModeCommand):
 
 class ExitGameCommand(WorldModeCommand):
     def process(self):
+        filename = self.mode.world.save_filename
+        if filename:
+            delete_save(filename)
         self.mode.exit()

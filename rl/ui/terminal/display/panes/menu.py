@@ -18,7 +18,7 @@ class MenuPane(Pane):
                     self.set_line(i, FormatString().simple(line['line'], color=line['color']))
 
         else:
-            self.set_line(0, FormatString().simple(self.menu.empty))
+            self.set_line(0, FormatString().simple(self.menu.empty_msg))
 
     def refresh(self):
         self.draw_menu()

@@ -45,3 +45,6 @@ class Strategy(object):
     def __setstate__(self, state):
         self._tactics = state['tactics']
         self._tactics.strategy = self
+
+    def restore(self, actors_by_id):
+        pass

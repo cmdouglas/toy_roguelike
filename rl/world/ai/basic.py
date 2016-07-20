@@ -21,3 +21,7 @@ class BasicAI(Intelligence):
 
         except events.StrategyCompleteEvent:
             self.strategy = idle.IdleStrategy(self)
+
+    def restore(self, actors_by_id):
+        super().restore(actors_by_id)
+        self.strategy.restore(actors_by_id)

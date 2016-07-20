@@ -189,3 +189,8 @@ class Creature(Actor):
         self.inventory = bag.KeyedStackableBag().from_dict(state['inventory'])
         self.intelligence = state['intelligence']
         self.intelligence.actor = self
+
+    # sometimes restoring the intelligence can only be done once the entire board has been restored
+    def restore_intelligence(self, actors_by_id):
+        self.intelligence.restore(actors_by_id)
+

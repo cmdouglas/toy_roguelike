@@ -22,3 +22,6 @@ class UserInput():
 
     def __setstate__(self, state):
         return {}
+
+    def restore(self, actors_by_id):
+        pass
