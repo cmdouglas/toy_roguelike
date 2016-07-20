@@ -20,12 +20,14 @@ class World:
         self.current_actor = None
         self.ticks = 0
         self.save_filename = None
+        self.generated = False
 
-    def generate(self):
+    def generate(self, player_name=""):
         self.board = Generator().generate(world=self)
-        self.player = self.board.spawn_player()
+        self.player = self.board.spawn_player(name=player_name)
         self.current_actor = None
         self.ticks = 0
+        self.generated = True
 
     def tick(self):
         actors = []
@@ -68,7 +70,8 @@ class World:
     def __getstate__(self):
         return dict(
             ticks=self.ticks,
-            board=self.board
+            board=self.board,
+            generated=self.generated
         )
 
     def __setstate__(self, state):
@@ -77,6 +80,7 @@ class World:
         self.ticks = state['ticks']
         self.player = self.board.find_player()
         self.current_actor = None
+        self.generated = state['generated']
 
 
 def serialize_world(world: World) -> str:

@@ -1,7 +1,7 @@
 from rl.save import list_saves, load_world
 from rl.ui.terminal.modes.menu import BaseMenuMode
 from rl.ui.menu import MenuItem, generate_menu_key
-from rl.ui.terminal.modes.world import WorldMode
+from rl.ui.terminal.modes.game import GameMode
 
 
 class LoadGameMenuMode(BaseMenuMode):
@@ -15,6 +15,6 @@ class LoadGameMenuMode(BaseMenuMode):
 
         def on_select(item):
             world = load_world(item)
-            self.owner.enter_mode(WorldMode(world=world))
+            self.owner.enter_mode(GameMode(world=world))
 
         self.on_select = on_select

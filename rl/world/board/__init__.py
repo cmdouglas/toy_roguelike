@@ -41,8 +41,8 @@ class Board:
             for tile in row:
                 yield tile
 
-    def spawn_player(self):
-        player = Player()
+    def spawn_player(self, name):
+        player = Player(name)
         region = random.choice(self.regions)
         pos = random.choice(region.empty_points())
         self[pos].creature = player

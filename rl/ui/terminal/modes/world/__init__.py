@@ -9,6 +9,7 @@ from rl.ui.terminal.modes import Mode
 from rl.ui.terminal.modes.confirm import SimpleConfirmMode
 from rl.ui.terminal.modes.world import layout
 from rl.ui.terminal.modes.world import mode_commands
+from rl.ui.terminal.modes.prompt import PromptMode
 from rl.util.geometry import Direction
 from rl.world import World
 from rl.save import delete_save
@@ -25,15 +26,10 @@ class WorldMode(Mode):
     of events.
     """
 
-    def __init__(self, world=None):
+    def __init__(self, world):
         super().__init__()
 
-        if world:
-            self.world = world
-
-        else:
-            self.world = World()
-            self.world.generate()
+        self.world = world
 
         self.log = log.Log()
         self.layout = layout.WorldModeLayout(self.world, self.log)
@@ -207,6 +203,16 @@ class WorldMode(Mode):
             self.exit()
 
         self.confirm(_do_game_over)
+
+    def name_player(self):
+        def on_entry(text):
+            self.world.player.name = text
+
+        self.owner.enter_mode(PromptMode(
+            prompt="What is your name",
+            max_length = "16",
+            on_entry=on_entry
+        ))
 
     def force_redraw(self):
         self.rendered = False

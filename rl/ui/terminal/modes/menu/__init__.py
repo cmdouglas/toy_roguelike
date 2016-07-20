@@ -33,7 +33,6 @@ class BaseMenuMode(Mode):
             return self.layout.render()
 
     def handle_keypress(self, key):
-        logger.debug('BaseMenuMode: Recieved keypress ' + str(key))
         if key.is_sequence:
             letter = None
             code = key.code

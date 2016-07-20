@@ -37,9 +37,9 @@ class Player(Creature):
     sight_radius = 10
 
     is_player = True
-    def __init__(self):
+    def __init__(self, name=""):
         super().__init__()
-        self.name = u"Charlie"
+        self.name = name
         self.level = 1
         self.gold = 300
         self.is_alive = True
