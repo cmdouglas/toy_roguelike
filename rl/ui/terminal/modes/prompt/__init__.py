@@ -38,7 +38,13 @@ class PromptMode(Mode):
 
         else:
             char = str(key)
+
+            # disallow control characters
             if unicodedata.category(char) in ['Cc', 'Cn']:
+                return
+
+            # disallow characters with special shell meaning
+            if unicodedata.category(char) in './$*^~':
                 return
 
             if self.max_length and len(self.text) >= self.max_length:

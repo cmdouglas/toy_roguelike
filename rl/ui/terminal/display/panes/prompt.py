@@ -10,7 +10,7 @@ class PromptPane(Pane):
         self.mode = mode
 
     def draw_prompt(self):
-        line = "{prompt}: {text}".format(
+        line = "{prompt}: {text}_".format(
             prompt=self.mode.prompt,
             text=self.mode.text
         )
