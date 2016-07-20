@@ -9,6 +9,8 @@ logger = logging.getLogger('rl')
 
 class MeleeTactics(AggressiveTactics):
     def describe(self):
+        if not self.target:
+            return "fighting"
         return "fighting {target}".format(target=self.target.describe())
 
     def do_tactics(self):

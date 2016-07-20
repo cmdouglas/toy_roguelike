@@ -13,6 +13,8 @@ logger = logging.getLogger('rl')
 class HuntTactics(AggressiveTactics):
 
     def describe(self):
+        if not self.target:
+            return "hunting"
         return "hunting {target}".format(target=self.target.describe())
 
     def do_tactics(self):

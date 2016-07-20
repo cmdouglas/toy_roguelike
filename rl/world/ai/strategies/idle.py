@@ -29,4 +29,6 @@ class IdleStrategy(Strategy):
 
             
     def describe(self):
+        if not self.tactics:
+            return "idle"
         return self.tactics.describe()

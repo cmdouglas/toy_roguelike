@@ -12,6 +12,8 @@ logger = logging.getLogger('rl')
 class PursueTactics(AggressiveTactics):
 
     def describe(self):
+        if not self.target:
+            return "in pursuit"
         return "chasing {target}".format(target=self.target.describe())
 
     def do_tactics(self):
