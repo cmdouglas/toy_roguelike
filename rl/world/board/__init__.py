@@ -5,10 +5,7 @@ import copy
 from rl.world.board.tile import Tile, EntityPlacementException
 from rl.world.entities.actors.creatures.player import Player
 
-#from rl.save import rl_types
-
 logger = logging.getLogger('rl')
-
 
 
 class Board:
@@ -21,7 +18,7 @@ class Board:
         self.rows = [
             [Tile(self, (x, y)) for x in range(self.width)]
             for y in range(self.height)
-        ]
+            ]
 
         self.regions = []
         self.visible = set()
@@ -91,25 +88,26 @@ class Board:
             candidates = self[p].neighbors()
             for candidate in candidates:
                 if (not candidate.blocks_movement() and
-                   candidate.pos not in points):
+                            candidate.pos not in points):
 
                     points.append(candidate.pos)
                     if d > 0:
-                        _add_empty_neighbors(candidate.pos, d-1)
+                        _add_empty_neighbors(candidate.pos, d - 1)
+
         _add_empty_neighbors(pos, distance)
 
         return points
 
     def get_visible_points(self, pos, radius):
         directions = [
-            (1,  0,  0,  1),
-            (0,  1,  1,  0),
-            (0, -1,  1,  0),
-            (-1, 0,  0,  1),
-            (-1, 0,  0, -1),
-            (0, -1, -1,  0),
-            (0,  1, -1,  0),
-            (1,  0,  0, -1)
+            (1, 0, 0, 1),
+            (0, 1, 1, 0),
+            (0, -1, 1, 0),
+            (-1, 0, 0, 1),
+            (-1, 0, 0, -1),
+            (0, -1, -1, 0),
+            (0, 1, -1, 0),
+            (1, 0, 0, -1)
         ]
 
         visible = []
@@ -127,9 +125,9 @@ class Board:
 
             if start < end:
                 return
-            radius_squared = radius*radius
-            for j in range(row, radius+1):
-                dx, dy = -j-1, -j
+            radius_squared = radius * radius
+            for j in range(row, radius + 1):
+                dx, dy = -j - 1, -j
                 blocked = False
                 new_start = None
                 while dx <= 0:
@@ -138,14 +136,14 @@ class Board:
                     x, y = cx + dx * xx + dy * xy, cy + dx * yx + dy * yy
                     # l_slope and r_slope store the slopes of the left and
                     # right extremities of the square we're considering:
-                    l_slope, r_slope = (dx-0.5)/(dy+0.5), (dx+0.5)/(dy-0.5)
+                    l_slope, r_slope = (dx - 0.5) / (dy + 0.5), (dx + 0.5) / (dy - 0.5)
                     if start < r_slope:
                         continue
                     elif end > l_slope:
                         break
                     else:
                         # Our light beam is touching this square; light it:
-                        if dx*dx + dy*dy < radius_squared:
+                        if dx * dx + dy * dy < radius_squared:
                             visible.append((x, y))
                         if blocked:
                             # we're scanning a row of blocked squares:
@@ -159,8 +157,8 @@ class Board:
                             if is_blocked((x, y)) and j < radius:
                                 # This is a blocking square, start a child scan
                                 blocked = True
-                                cast_light(center, j+1, start, l_slope,
-                                           radius, mult, id+1)
+                                cast_light(center, j + 1, start, l_slope,
+                                           radius, mult, id + 1)
                                 new_start = r_slope
                 # Row is scanned; do next row unless last square was blocked:
                 if blocked:

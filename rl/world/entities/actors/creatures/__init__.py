@@ -22,13 +22,14 @@ class Creature(Actor):
     energy = 0
     level = 0
     timeout = 0
-    inventory = bag.KeyedStackableBag()
+    inventory = None
 
     intelligence = None
 
     def __init__(self):
         self.health = self.max_health
         self.energy = self.max_energy
+        self.inventory = bag.KeyedStackableBag()
 
     @property
     def str(self):
@@ -70,11 +71,6 @@ class Creature(Actor):
 
         return True
 
-    def persist_fields(self):
-        fields = super().persist_fields()
-        fields.extend([
-            'health', 'energy', 'level', 'timeout', 'inventory', 'intelligence'
-        ])
 
     def process_turn(self, world):
         if not self.intelligence:
