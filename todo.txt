@@ -1,25 +1,18 @@
+Bugs
+ - Doors are appearing, like, everywhere somehow.
 
 Refactoring:
- - separation of world logic and display logic:
-   - info about glyphs/colors can be moved out of entities and into some sort of entityview class in
-     ui.terminal.display
-   - event descriptions can go there too, or into an external data file.  yaml?
-   - maybe some entity info too?
-   - this means i can get rid of ui.colors and ui.glyphs, or move them under terminal where they belong
+ - event publish/subscribe system so that all my entities can react to one another cleanly
+ - don't make a huge mess doing this
 
 Features:
  UI
-  - windowed menus
+  - windowed menus/prompts
  Functionality
   - Game Over:
+    - sort of works, but need the game to generate a postmortem
     - Score/leaderboard
     - winning condition
-  - Save/Load
-    - pickling is easy, but not great for sharing save files or supporting old versions
-    - json:
-      - will need to serialize all of the savable state
-      - and decide what needs to be saved
-      -
   - projectiles/targeting mode/shooting things/pew pew
   - more than one map
   - xp, levelling, skills, ~progression~

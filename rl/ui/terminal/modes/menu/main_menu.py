@@ -15,7 +15,7 @@ class MainMenuMode(BaseMenuMode):
         self.menu.items = [
             MenuItem('n', self.new_game, 'New Game'),
             MenuItem('c', self.select_game_to_continue, 'Continue Game'),
-            MenuItem('e', self.exit_game, 'Exit')
+            MenuItem('x', self.exit_game, 'Exit')
         ]
 
         def on_select(item):

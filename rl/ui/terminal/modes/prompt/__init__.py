@@ -44,7 +44,7 @@ class PromptMode(Mode):
                 return
 
             # disallow characters with special shell meaning
-            if unicodedata.category(char) in './$*^~':
+            if char in './$*^~':
                 return
 
             if self.max_length and len(self.text) >= self.max_length:
