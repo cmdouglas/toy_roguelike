@@ -1,11 +1,10 @@
 from rl.util import geometry
 
 class Room(object):
-    walls = []
-    interior = []
-    doors = []
 
     def __init__(self, shape):
+        self.doors = []
+
         self.interior = set(shape.points)
         self.walls = set(shape.outline)
 
