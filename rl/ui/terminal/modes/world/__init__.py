@@ -11,7 +11,6 @@ from rl.ui.terminal.modes.world import layout
 from rl.ui.terminal.modes.world import mode_commands
 from rl.ui.terminal.modes.prompt import PromptMode
 from rl.util.geometry import Direction
-from rl.world import World
 from rl.save import delete_save
 from termapp.term import term
 
@@ -194,7 +193,6 @@ class WorldMode(Mode):
             command.process()
 
     def game_over(self):
-        logger.debug('game over called!')
         self.is_game_over = True
 
         def _do_game_over():

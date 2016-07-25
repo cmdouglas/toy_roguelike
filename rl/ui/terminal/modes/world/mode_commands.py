@@ -1,4 +1,3 @@
-from rl.ui.menu import MenuItem
 from rl.ui.player_commands import item as item_commands
 from rl.ui.terminal.modes.menu.inventory import InventoryMode
 from rl.ui.terminal.modes import map_view

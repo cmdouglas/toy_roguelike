@@ -43,8 +43,6 @@ class TerminalUI(application.TerminalApplication):
                 "There are no modes to handle a keypress."
             )
 
-        logger.debug(self.modes)
-        logger.debug(self.modes[0].handle_keypress)
         return self.modes[0].handle_keypress(key)
 
     def enter_mode(self, mode):
