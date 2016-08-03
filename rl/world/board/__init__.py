@@ -4,6 +4,7 @@ import copy
 
 from rl.world.board.tile import Tile, EntityPlacementException
 from rl.world.entities.actors.creatures.player import Player
+from rl.world.events import EventTypes
 
 logger = logging.getLogger('rl')
 
@@ -27,6 +28,27 @@ class Board:
     def __getitem__(self, pos):
         x, y = pos
         return self.rows[int(y)][int(x)]
+
+    def on_close(self, event):
+        self.update_fov(self.world.player)
+
+    def on_open(self, event):
+        self.update_fov(self.world.player)
+
+    def on_death(self, event):
+        actor = event.actor
+        actor.deactivate(self.world.event_manager)
+        tile = actor.tile
+        tile.creature = None
+        self.actors.remove(actor)
+
+    def activate(self, event_manager):
+        event_manager.subscribe(self.on_close, EventTypes.close)
+        event_manager.subscribe(self.on_open, EventTypes.open)
+        event_manager.subscribe(self.on_death, EventTypes.death)
+
+        for actor in self.actors:
+            actor.activate(event_manager)
 
     def position_is_valid(self, pos):
         x, y = pos
@@ -59,7 +81,6 @@ class Board:
         self.remembered[pos] = copy.deepcopy(tile)
 
     def update_fov(self, player):
-
         visible_points = self.get_visible_points(
             player.tile.pos, player.sight_radius
         )

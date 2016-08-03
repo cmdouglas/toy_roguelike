@@ -1,7 +1,8 @@
-from rl.world.events import Event
+from rl.world import events
 
 
-class DeathEvent(Event):
+class DeathEvent(events.Event):
+    type = events.EventTypes.death
     def __init__(self, actor):
         self.actor = actor
         # save this because the tile might get cleared out before this has a chance to report

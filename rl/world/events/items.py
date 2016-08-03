@@ -1,7 +1,9 @@
-from rl.world.events import Event
+from rl.world.events import Event, EventTypes
 
 
 class UseItemEvent(Event):
+    type = EventTypes.use_item
+
     def __init__(self, actor, item):
         self.actor = actor
         self.item = item
@@ -24,6 +26,8 @@ class UseItemEvent(Event):
 
 
 class PickUpItemEvent(Event):
+    type = EventTypes.get_item
+
     def __init__(self, actor, item):
         self.actor = actor
         self.item = item
@@ -40,6 +44,8 @@ class PickUpItemEvent(Event):
 
 
 class DropItemEvent(Event):
+    type = EventTypes.drop_item
+
     def __init__(self, actor, item):
         self.actor = actor
         self.item = item

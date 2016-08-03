@@ -1,12 +1,12 @@
-from rl.world.actions import Action
-from rl.world.events.movement import MoveEvent
+from rl.world import actions
+from rl.world.events import movement
 
-class MovementAction(Action):
+class MovementAction(actions.Action):
     def __init__(self, actor, movement):
         self.actor = actor
         self.movement = movement
 
-    def calculate_cost(self):
+    def cost(self):
         dx, dy = self.movement
 
         if abs(dx) == 1 and abs(dy) == 1:
@@ -22,4 +22,4 @@ class MovementAction(Action):
         new = self.actor.tile.pos
 
         if success:
-            return [MoveEvent(self.actor, old, new)]
+            return movement.MoveEvent(self.actor, old, new)

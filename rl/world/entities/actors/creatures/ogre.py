@@ -8,7 +8,9 @@ class Ogre(Creature):
     name = "ogre"
     name_plural = "ogres"
     interest_level = 18
-    base_str = 8
+    base_str = 12
+    base_dex = 4
+    base_mag = 8
     sight_radius = 8
     base_max_health = 25
     can_open_doors = True

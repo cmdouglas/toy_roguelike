@@ -1,7 +1,7 @@
 class Action(object):
 
-    def calculate_cost(self):
-        pass
+    def cost(self):
+        return 0
 
     def do_action(self):
         """

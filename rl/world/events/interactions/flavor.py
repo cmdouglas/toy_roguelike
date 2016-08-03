@@ -1,8 +1,9 @@
-from rl.world.events import Event
+from rl.world.events import Event, EventTypes
 
 
 class CreatureFlavorEvent(Event):
-    """The goblin scratches its head or whatever"""
+    type = EventTypes.flavor
+
     def __init__(self, actor, message):
         self.actor = actor
         self.message = message

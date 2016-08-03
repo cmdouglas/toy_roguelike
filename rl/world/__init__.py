@@ -7,6 +7,8 @@ from rl.world.board.generator import Generator, TestGenerator
 
 from rl.world.events.death import DeathEvent
 from rl.world.events.interactions.misc import OpenEvent, CloseEvent
+from rl.world.events.manager import EventManager
+from rl.world.events import EventTypes
 
 
 class GameOver(Exception):
@@ -21,6 +23,8 @@ class World:
         self.ticks = 0
         self.save_filename = None
         self.generated = False
+        self.event_manager = EventManager()
+        self.activated = False
 
     def generate(self, player_name=""):
         self.board = Generator().generate(world=self)
@@ -28,12 +32,23 @@ class World:
         self.current_actor = None
         self.ticks = 0
         self.generated = True
+        self.activate()
+
+    def activate(self):
+        if not self.activated:
+            self.board.activate(self.event_manager)
+
+        self.activated = True
+
+        # the world should respond to:
+        # when the game starts/loads: welcome the player
+        # player death/escape: notify the UI that the game is over
+        # when the player leaves the current board: load up/generate the new one, and persist the old one
 
     def tick(self):
-        actors = []
-        if not self.current_actor:
-            actors = sorted(self.board.actors, key=lambda actor: actor.timeout)
-            self.current_actor = actors[0]
+
+        actors = sorted(self.board.actors, key=lambda actor: actor.timeout)
+        self.current_actor = actors[0]
 
         timeout = self.current_actor.timeout
 
@@ -41,37 +56,33 @@ class World:
             for actor in actors:
                 actor.timeout -= timeout
 
-
-        events = self.current_actor.process_turn(self)
-
-        if events:
-            for event in events:
-                self.respond_to_event(event)
-            self.current_actor = None
-            self.ticks += 1
+        event = self.current_actor.process_turn(self)
+        events = []
+        if event:
+            events = self.respond_to_event(event)
 
         return events
 
     def respond_to_event(self, event):
-        if type(event) == DeathEvent:
-            actor = event.actor
-            if actor == self.player:
-                pass
-            else:
-                tile = actor.tile
-                board = tile.board
-                tile.creature = None
-                board.actors.remove(actor)
+        logger.debug(event)
+        events_to_process = [event]
+        processed = []
+        while events_to_process:
+            event_to_process = events_to_process.pop(0)
 
-        # if a door is opened or closed, recalculate FOV
-        if type(event) in [OpenEvent, CloseEvent] and event.perceptible(self.player):
-            self.board.update_fov(self.player)
+            new_events = self.event_manager.fire(event_to_process)
+            logger.debug(new_events)
+            events_to_process.extend(new_events)
+            processed.append(event_to_process)
+
+        return processed
 
     def __getstate__(self):
         return dict(
             ticks=self.ticks,
             board=self.board,
-            generated=self.generated
+            generated=self.generated,
+            activated=False
         )
 
     def __setstate__(self, state):
@@ -81,6 +92,8 @@ class World:
         self.player = self.board.find_player()
         self.current_actor = None
         self.generated = state['generated']
+        self.activated = False
+        self.activate()
 
 
 def serialize_world(world: World) -> str:

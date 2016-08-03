@@ -1,15 +1,16 @@
 import logging
 
-from rl.world.entities.actors import Actor
+from rl.world.entities import actors
 from rl.util import dice, tools, bag, geometry
 
-from rl.world.events.interactions.combat import AttackEvent, HitEvent
-from rl.world.events.death import DeathEvent
+from rl.world import events
+from rl.world.events import death as death_events
+from rl.world.events import health as health_events
 
 logger = logging.getLogger('rl')
 
 
-class Creature(Actor):
+class Creature(actors.Actor):
     type = 'creature'
     base_str = 0
     base_dex = 0
@@ -51,6 +52,30 @@ class Creature(Actor):
     def max_energy(self):
         return self.base_max_energy
 
+    def on_combat(self, event):
+        if self != event.defender:
+            return
+
+        if event.damage > 0:
+            self.take_damage(event.damage)
+            return health_events.LoseHealthEvent(self, event.damage)
+
+    def on_lose_health(self, event: health_events.LoseHealthEvent):
+        if self != event.actor:
+            return
+
+        if event.amount >= self.health:
+            self.die()
+            return death_events.DeathEvent(self)
+
+    def activate(self, event_manager):
+        event_manager.subscribe(self.on_combat, events.EventTypes.combat)
+        event_manager.subscribe(self.on_lose_health, events.EventTypes.lose_health)
+
+    def deactivate(self, event_manager):
+        event_manager.unsubscribe(self.on_combat, events.EventTypes.combat)
+        event_manager.unsubscribe(self.on_lose_health, events.EventTypes.lose_health)
+
     def move(self, dxdy):
         dx, dy = dxdy
         old_pos = self.tile.pos
@@ -71,7 +96,6 @@ class Creature(Actor):
 
         return True
 
-
     def process_turn(self, world):
         if not self.intelligence:
             raise Exception("{me} has no intelligence to control it.".format(
@@ -86,7 +110,7 @@ class Creature(Actor):
 
         event = action.do_action()
         if event:
-            self.timeout += action.calculate_cost()
+            self.timeout += action.cost()
 
         return event
 
@@ -102,37 +126,15 @@ class Creature(Actor):
 
         return r
 
-    def attack(self, other):
-        attack_power = self.str
-        damage = dice.d(1, attack_power)
-
-        result = [AttackEvent(self, other)]
-        attack_result = other.take_damage(damage, self)
-        result.extend(attack_result)
-
-        return result
-
     def heal(self, amount):
         self.health += amount
         self.health = tools.clamp(self.health, self.max_health)
 
-    def take_damage(self, damage, attacker=None):
+    def take_damage(self, damage, source=None):
         self.health -= damage
-        result = []
-        if attacker:
-            result.append(HitEvent(attacker, self))
-
-        if self.health <= 0:
-            self.die()
-            result.append(DeathEvent(self))
-
-        return result
 
     def die(self):
         pass
-
-    def __str__(self):
-        return "%s: (%s)" % (self.__class__, self.timeout)
 
     def can_see_entity(self, entity):
         return self.can_see_point(entity.tile.pos)
@@ -161,6 +163,9 @@ class Creature(Actor):
                 return False
 
         return True
+
+    def __str__(self):
+        return "%s: (%s)" % (self.__class__, self.timeout)
 
     def __getstate__(self):
         state = super().__getstate__()

@@ -1,7 +1,9 @@
-from rl.world.events import Event
+from rl.world.events import Event, EventTypes
 
 
 class MoveEvent(Event):
+    type = EventTypes.move
+
     def __init__(self, actor, from_pos, to_pos):
         self.actor = actor
         self.from_pos = from_pos
@@ -12,11 +14,15 @@ class MoveEvent(Event):
 
 
 class WaitEvent(Event):
+    type = EventTypes.wait
+
     def __init__(self, actor):
         self.actor = actor
 
 
 class TeleportEvent(MoveEvent):
+    type = EventTypes.teleport
+
     def perceptible(self, player):
         return self.actor == player or player.can_see_point(self.from_pos) or player.can_see_point(self.to_pos)
 

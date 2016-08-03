@@ -1,6 +1,9 @@
-from rl.world.events import Event
+from rl.world.events import Event, EventTypes
+
 
 class ExamineEvent(Event):
+    type = EventTypes.examine
+
     def __init__(self, examiner, obj):
         self.examiner = examiner
         self.obj = obj
@@ -13,6 +16,8 @@ class ExamineEvent(Event):
 
 
 class OpenEvent(Event):
+    type = EventTypes.open
+
     def __init__(self, opener, openee):
         self.opener = opener
         self.openee = openee
@@ -31,6 +36,8 @@ class OpenEvent(Event):
 
 
 class CloseEvent(Event):
+    type = EventTypes.close
+
     def __init__(self, closer, closee):
         self.closer = closer
         self.closee = closee
