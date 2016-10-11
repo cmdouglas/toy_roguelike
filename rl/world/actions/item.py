@@ -15,7 +15,6 @@ class UseItemAction(Action):
         UseItemEvent(self.actor, self.item)
 
 
-
 class GetItemAction(Action):
     def __init__(self, actor, item):
         self.actor = actor

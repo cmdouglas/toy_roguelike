@@ -1,8 +1,8 @@
-from rl.world.entities.terrain import Terrain
+from rl.world.entities import terrain
 from rl.world.actions import interact
 
 
-class ClosedDoor(Terrain):
+class ClosedDoor(terrain.Terrain):
     type = 'closed_door'
     blocks_movement = True
     blocks_vision = True
@@ -18,13 +18,8 @@ class ClosedDoor(Terrain):
     def default_interaction(self, actor):
         return interact.OpenAction(actor, self)
 
-    def on_first_seen(self):
-        surrounding_terrain = [t.terrain for t in self.tile.neighbors() if t.terrain.blocks_movement]
-        for terrain in surrounding_terrain:
-            terrain.should_update = True
 
-
-class OpenDoor(Terrain):
+class OpenDoor(terrain.Terrain):
     type = 'open_door'
     blocks_movement = False
     blocks_vision = False
@@ -39,8 +34,3 @@ class OpenDoor(Terrain):
 
     def default_interaction(self, actor):
         return interact.CloseAction(actor, self)
-
-    def on_first_seen(self):
-        surrounding_terrain = [t.terrain for t in self.tile.neighbors() if t.terrain.blocks_movement]
-        for terrain in surrounding_terrain:
-            terrain.should_update = True

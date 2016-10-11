@@ -1,9 +1,13 @@
 import math
+import logging
 
 from rl.util import dice
 from rl.world.entities.actors.creatures import Creature
 from rl.world.entities.items import potion
 from rl.world.ai import playercommand
+from rl.world.events import EventTypes
+
+logger = logging.getLogger('rl')
 
 
 def xp_table():
@@ -47,9 +51,18 @@ class Player(Creature):
 
         self.inventory.add(potion.HealingPotion(num=3))
 
-    def on_move(self, dx, dy):
-        self.tile.board.update_fov(self)
-        self.tile.visible = True
+    def activate(self, event_manager):
+        super().activate(event_manager)
+        event_manager.subscribe(self.on_move, EventTypes.move)
+
+    def deactivate(self, event_manager):
+        super().deactivate(event_manager)
+        event_manager.unsubscribe(self.on_move, EventTypes.move)
+
+    def on_move(self, event):
+        if event.actor == self:
+            self.tile.board.update_fov(self)
+            self.tile.visible = True
 
     def process_turn(self, world):
         events = super().process_turn(world)

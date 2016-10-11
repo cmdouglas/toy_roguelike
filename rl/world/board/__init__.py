@@ -90,9 +90,6 @@ class Board:
             if self.position_is_valid(point):
                 tile = self[point]
 
-                if tile.pos not in self.remembered.keys():
-                    tile.on_first_seen()
-
                 self.remember_tile(tile)
 
     def region_containing_point(self, point):

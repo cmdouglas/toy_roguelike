@@ -44,7 +44,7 @@ class ExamineModeLayout(Layout):
         self.examined_object_pane = examined_object.ObjectDetailsPane(
             examined_object_width, examined_object_height, self.mode.world
         )
-        self.log_pane = log.LogPane(log_width, log_height, self.mode.log)
+        self.log_pane = log.LogPane(log_width, log_height, mode.world.messages)
 
         self.panes = {
             viewport_pos: self.board_pane,

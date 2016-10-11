@@ -8,8 +8,8 @@ class BasicConfirmLayout(WorldModeLayout):
 
     # FIXME: this shouldn't need to have a world object passed to it
     # maybe layouts can be smart enough to only refresh a portion of the screen?
-    def __init__(self, world, log, prompt):
-        super().__init__(world, log)
+    def __init__(self, world, prompt):
+        super().__init__(world)
 
         log_width = term.width
         log_height = 4
@@ -17,5 +17,5 @@ class BasicConfirmLayout(WorldModeLayout):
 
         log_pos = (0, viewport_height)
 
-        self.log_pane = ConfirmLogPane(log_width, log_height, log)
+        self.log_pane = ConfirmLogPane(log_width, log_height, world.messages)
         self.panes[log_pos] = self.log_pane

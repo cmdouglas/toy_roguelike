@@ -13,20 +13,11 @@ class Entity(object):
     description = ""
     tile = None
 
-    def persist_fields(self):
-        return []
-
     @property
     def pos(self):
         if not self.tile:
             return None
         return self.tile.pos
-
-    def on_move(self, old_pos, new_pos):
-        pass
-
-    def on_first_seen(self):
-        pass
 
     def default_interaction(self, actor):
         return None

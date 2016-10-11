@@ -91,9 +91,6 @@ class Creature(actors.Actor):
 
         board[old_pos].creature = None
         board[new_pos].creature = self
-
-        self.on_move(old_pos, new_pos)
-
         return True
 
     def process_turn(self, world):
@@ -113,9 +110,6 @@ class Creature(actors.Actor):
             self.timeout += action.cost()
 
         return event
-
-    def on_move(self, old_pos, new_pos):
-        pass
 
     def describe(self, num=1, show_strategy=True):
         r = super().describe(num)

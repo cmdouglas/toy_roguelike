@@ -94,10 +94,6 @@ class Tile(object):
     def blocks_vision(self):
         return any(ent.blocks_vision for ent in self.entities)
 
-    def on_first_seen(self):
-        for ent in self.entities:
-            ent.on_first_seen()
-
     def neighbors(self, as_dict=False):
         x, y = self.pos
 

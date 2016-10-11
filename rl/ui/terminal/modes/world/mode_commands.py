@@ -60,7 +60,7 @@ class SelectItemToDropCommand(WorldModeCommand):
 
 class ExamineCommand(WorldModeCommand):
     def process(self):
-        self.mode.owner.enter_mode(map_view.ExamineMode(self.mode.world, self.mode.log))
+        self.mode.owner.enter_mode(map_view.ExamineMode(self.mode.world))
 
 class SaveGameCommand(WorldModeCommand):
     def process(self):

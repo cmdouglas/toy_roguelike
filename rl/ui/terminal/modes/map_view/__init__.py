@@ -15,11 +15,10 @@ class ExamineMode(Mode):
     This mode is entered into when the player wants to examine things.
     """
 
-    def __init__(self, world, log):
+    def __init__(self, world):
         super().__init__()
 
         self.world = world
-        self.log = log
         self.interesting_things = ui_tools.interesting_entities(self.world)
         logger.debug('interesting things: %s' % self.interesting_things)
         self.current_ooi = 0

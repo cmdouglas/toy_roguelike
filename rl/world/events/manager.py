@@ -1,4 +1,7 @@
+import logging
 from collections import defaultdict
+
+logger = logging.getLogger('rl')
 
 
 class EventManager:
@@ -16,11 +19,14 @@ class EventManager:
             self.unsubscribe(f, event_type)
 
     def fire(self, event):
-        # clone the list of subscribers in case one of them alters the list
+        # logger.debug('firing for event type %s:  %s listeners' % (event.type, len(self.subscriptions[event.type])))
         events = []
+
         for f in self.subscriptions[event.type][:]:
             new_event = f(event)
             if new_event:
                 events.append(new_event)
 
         return events
+
+

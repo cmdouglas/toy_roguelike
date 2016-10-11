@@ -1,9 +1,12 @@
-Bugs
- - Doors are appearing, like, everywhere somehow.
-
 Refactoring:
  - event publish/subscribe system so that all my entities can react to one another cleanly
- - don't make a huge mess doing this
+   - refactor ai using events.
+     - in particular, now they can react better to the player entering their los, etc
+   - make log/notifications part of the world (so that it can be saved, and various things can write to it)
+   - make 'tick' just inform the UI of whether it should redraw or not, rather than telling it everything that happened
+
+ - reasonable combat model
+
 
 Features:
  UI
@@ -14,6 +17,8 @@ Features:
     - Score/leaderboard
     - winning condition
   - projectiles/targeting mode/shooting things/pew pew
+    - this can lead to spells
+    - and launchers/etc
   - more than one map
   - xp, levelling, skills, ~progression~
 

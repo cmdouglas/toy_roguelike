@@ -1,13 +1,11 @@
-from rl.world.entities import Entity
+from rl.world import entities
 
-class Actor(Entity):
+
+class Actor(entities.Entity):
     blocks_movement = True
     can_open_doors = False
     is_player = False
     type = 'actor'
-
-    def on_move(self, old_pos, new_pos):
-        pass
 
     def process_turn(self, world):
         return False

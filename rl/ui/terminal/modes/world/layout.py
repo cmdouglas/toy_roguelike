@@ -12,10 +12,9 @@ logger = logging.getLogger('rl')
 
 
 class WorldModeLayout(Layout):
-    def __init__(self, world, log):
+    def __init__(self, world):
         super().__init__()
         self.world = world
-        self.log = log
 
         log_width = term.width
         log_height = 4
@@ -39,7 +38,7 @@ class WorldModeLayout(Layout):
         self.ooi_pane = objects_of_interest.ObjectsOfInterestPane(
             ooi_width, ooi_height, self.world
         )
-        self.log_pane = log_mod.LogPane(log_width, log_height, self.log)
+        self.log_pane = log_mod.LogPane(log_width, log_height, self.world.messages)
 
         self.panes = {
             viewport_pos: self.board_pane,

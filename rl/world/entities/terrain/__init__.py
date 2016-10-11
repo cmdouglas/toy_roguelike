@@ -1,8 +1,8 @@
-from rl.world.entities import Entity
+from rl.world import entities
 from rl.world.actions import interact
 
 
-class Terrain(Entity):
+class Terrain(entities.Entity):
     type = 'terrain'
     blocks_movement = True
     blocks_vision = True

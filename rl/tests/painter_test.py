@@ -43,12 +43,10 @@ def main():
             if tile_is_empty(tile):
                 tile.visible = True
                 tile.has_been_seen = True
-                tile.on_first_seen()
             for n in tile.neighbors():
                 if tile_is_empty(n):
                     tile.visible = True
                     tile.has_been_seen = True
-                    tile.on_first_seen()
 
 
     out = []

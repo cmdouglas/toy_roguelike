@@ -1,3 +1,4 @@
+import textwrap
 from rl.ui.terminal.display import colors
 from termapp.formatstring import FormatString
 from termapp.layout import Pane
@@ -21,10 +22,19 @@ class LogPane(Pane):
         self.log = log
 
     def refresh(self):
-        lines = self.log.get_last_lines(num_lines=self.height)
+        lines = self.get_lines(self.height)
 
         for i, line in enumerate(lines):
             self.set_line(i, FormatString().simple(line['message'], color=line['color']))
+
+    def get_lines(self, num_lines):
+        messages = self.log[-num_lines:]
+        lines = []
+        for message, color in messages:
+            new_lines = textwrap.wrap(message, self.width)
+            lines.extend(new_lines)
+
+        return lines[-num_lines:]
 
 
 class ConfirmLogPane(LogPane):
@@ -37,7 +47,7 @@ class ConfirmLogPane(LogPane):
         self.prompt = prompt
 
     def refresh(self):
-        lines = self.log.get_last_lines(num_lines=self.height - 1)
+        lines = self.get_lines(self.height)
 
         for i, line in enumerate(lines):
             self.set_line(i, FormatString().simple(line['message'], color=line['color']))

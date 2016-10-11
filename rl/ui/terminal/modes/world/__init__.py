@@ -4,8 +4,7 @@ from rl.ui import debug_commands
 from rl.ui import player_commands
 from rl.ui.player_commands import item as item_commands
 from rl.ui.player_commands import travel as travel_commands
-from rl.ui.terminal import log
-from rl.ui.terminal.modes import Mode
+from rl.ui.terminal import modes
 from rl.ui.terminal.modes.confirm import SimpleConfirmMode
 from rl.ui.terminal.modes.world import layout
 from rl.ui.terminal.modes.world import mode_commands
@@ -17,7 +16,7 @@ from termapp.term import term
 logger = logging.getLogger('rl')
 
 
-class WorldMode(Mode):
+class WorldMode(modes.Mode):
     """
     This mode owns the game world, and processes most of the commands that
     affect it.  It displays a viewport of the world, and a HUD for the player
@@ -30,8 +29,7 @@ class WorldMode(Mode):
 
         self.world = world
 
-        self.log = log.Log()
-        self.layout = layout.WorldModeLayout(self.world, self.log)
+        self.layout = layout.WorldModeLayout(self.world)
         self.rendered = False
         self.is_game_over = False
 
@@ -137,42 +135,25 @@ class WorldMode(Mode):
         self.rendered = False
 
     def next_frame(self):
-        ##
-        # Convoluted logic:
-        #   return a frame if:
-        #     - The mode has just been entered/reentered and nothing has been drawn
-        #     - OR something has visibly changed
-        #   return nothing if:
-        #     - it's the player's turn and we're waiting for input
-        #
-        # TODO: refactor this.  Maybe use a generator?
+
         while True:
-            changed = False
             # is the player dead?  make the player confirm and then exit if so.
             if not self.world.player.is_alive:
                 if not self.is_game_over:
                     self.game_over()
                 return
 
-            events = self.world.tick()
-            if events:
-                for event in events:
-                    if event.perceptible(self.world.player):
-                        message = event.describe(self.world.player)
-                        if message:
-                            self.log.add_message(message)
-                        changed = True
-            if changed or not self.rendered:
+            redraw_screen = self.world.tick()
+            if redraw_screen or not self.rendered:
                 self.rendered = True
                 return self.layout.render()
 
             if self.world.current_actor == self.world.player:
                 return
 
-
     def confirm(self, callback, prompt="--MORE--"):
         self.owner.enter_mode(SimpleConfirmMode(
-            self.world, self.log, prompt, callback
+            self.world, prompt, callback
         ))
 
     def handle_keypress(self, key):

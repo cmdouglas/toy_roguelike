@@ -1,7 +1,7 @@
-from rl.world.entities.terrain import Terrain
+from rl.world.entities import terrain
 
 
-class Floor(Terrain):
+class Floor(terrain.Terrain):
     type = 'floor'
     article = 'the'
     name = 'floor'

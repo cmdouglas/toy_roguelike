@@ -1,6 +1,6 @@
-from rl.world.entities.terrain import Terrain
+from rl.world.entities import terrain
 
-class Wall(Terrain):
+class Wall(terrain.Terrain):
     type = 'wall'
     blocks_movement=True
     blocks_vision=True

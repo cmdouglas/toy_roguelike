@@ -1,6 +1,5 @@
 import logging
 
-from rl.ui.terminal.log import Log
 from rl.ui.terminal.modes.menu.main_menu import MainMenuMode
 from termapp import application
 
@@ -21,7 +20,6 @@ class TerminalUI(application.TerminalApplication):
     def __init__(self):
         super().__init__()
         self.modes = []
-        self.log = Log()
 
     def on_start(self):
         self.enter_mode(MainMenuMode())
