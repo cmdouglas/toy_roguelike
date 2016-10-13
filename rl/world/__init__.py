@@ -1,14 +1,11 @@
 import logging
 import jsonpickle
+from rl.world.board import generator
+from rl.world import events
+from rl.world.events import manager
+
 
 logger = logging.getLogger('rl')
-
-from rl.world.board.generator import Generator, TestGenerator
-
-from rl.world.events.death import DeathEvent
-from rl.world.events.interactions.misc import OpenEvent, CloseEvent
-from rl.world.events.manager import EventManager
-from rl.world.events import EventTypes
 
 
 class GameOver(Exception):
@@ -24,11 +21,11 @@ class World:
         self.ticks = 0
         self.save_filename = None
         self.generated = False
-        self.event_manager = EventManager()
+        self.event_manager = manager.EventManager()
         self.activated = False
 
     def generate(self, player_name=""):
-        self.board = Generator().generate(world=self)
+        self.board = generator.Generator().generate(world=self)
         self.player = self.board.spawn_player(name=player_name)
         self.current_actor = None
         self.ticks = 0
@@ -91,7 +88,7 @@ class World:
         self.generated = state['generated']
         self.activated = False
         self.messages = state['messages']
-        self.event_manager = EventManager()
+        self.event_manager = manager.EventManager()
         self.activate()
 
 
