@@ -20,7 +20,6 @@ class World:
         self.board = None
         self.player = None
         self.messages = []
-        self.events_to_process = []
         self.current_actor = None
         self.ticks = 0
         self.save_filename = None
@@ -50,35 +49,29 @@ class World:
     def tick(self):
         # only tell the ui to update if something noticable happened
         should_update = False
+        events_to_process = []
 
-        # if there are outstanding events, process the first one (this may spawn more events)
-        if self.events_to_process:
-            event = self.events_to_process.pop(0)
-            self.process_event(event)
+        actors = sorted(self.board.actors, key=lambda actor: actor.timeout)
+        self.current_actor = actors[0]
 
-            should_update = event.perceptible(self.player)
+        timeout = self.current_actor.timeout
 
-        # if/when the event queue is empty, the next actor can take its turn
-        else:
-            actors = sorted(self.board.actors, key=lambda actor: actor.timeout)
-            self.current_actor = actors[0]
+        if timeout > 0:
+            for actor in actors:
+                actor.timeout -= timeout
 
-            timeout = self.current_actor.timeout
+        event = self.current_actor.process_turn(self)
 
-            if timeout > 0:
-                for actor in actors:
-                    actor.timeout -= timeout
+        if event:
+            events_to_process.append(event)
 
-            event = self.current_actor.process_turn(self)
-
-            if event:
-                self.events_to_process.append(event)
+        while events_to_process:
+            event = events_to_process.pop(0)
+            new_events = self.event_manager.fire(event)
+            events_to_process.extend(new_events)
+            should_update = should_update or event.perceptible(self.player)
 
         return should_update
-
-    def process_event(self, event):
-        new_events = self.event_manager.fire(event)
-        self.events_to_process.extend(new_events)
 
     def __getstate__(self):
         return dict(
@@ -98,7 +91,7 @@ class World:
         self.generated = state['generated']
         self.activated = False
         self.messages = state['messages']
-        self.events_to_process = []
+        self.event_manager = EventManager()
         self.activate()
 
 
