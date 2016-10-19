@@ -44,7 +44,12 @@ class World:
         # when the player leaves the current board: load up/generate the new one, and persist the old one
 
     def tick(self):
-        # only tell the ui to update if something noticable happened
+        """This is where state changes occur in the world.  When tick() is called, the actors on the current board are
+        sorted to determine whose turn it is.  That actor is given an opportunity to perform an action, either by
+        consulting its AI, or if it's the player, by looking for a command.  If an action occurs, then any resulting
+        events are processed.
+
+        The return value is a bool indicating if the UI should redraw the screen or not."""
         should_update = False
         events_to_process = []
 
@@ -57,13 +62,14 @@ class World:
             for actor in actors:
                 actor.timeout -= timeout
 
-        event = self.current_actor.process_turn(self)
+        events = self.current_actor.process_turn(self)
 
-        if event:
-            events_to_process.append(event)
+        if events:
+            events_to_process.extend(events)
 
         while events_to_process:
             event = events_to_process.pop(0)
+            # logger.debug('event: %r' % (event,))
             new_events = self.event_manager.fire(event)
             events_to_process.extend(new_events)
             should_update = should_update or event.perceptible(self.player)

@@ -18,7 +18,7 @@ class AttackAction(Action):
     def do_action(self):
         attack_result = fight(self.actor, self.other)
 
-        return attack_result
+        return [attack_result]
 
 
 class ExamineAction(Action):
@@ -30,7 +30,7 @@ class ExamineAction(Action):
         return 0
 
     def do_action(self):
-        return ExamineEvent(self.actor, self.other)
+        return [ExamineEvent(self.actor, self.other)]
 
 
 class OpenAction(Action):
@@ -46,7 +46,7 @@ class OpenAction(Action):
         tile = self.other.tile
 
         self.other.open()
-        return OpenEvent(self.actor, tile.terrain)
+        return [OpenEvent(self.actor, tile.terrain)]
 
 
 class CloseAction(Action):
@@ -62,4 +62,4 @@ class CloseAction(Action):
         tile = self.other.tile
 
         self.other.close()
-        return CloseEvent(self.actor, tile.terrain)
+        return [CloseEvent(self.actor, tile.terrain)]

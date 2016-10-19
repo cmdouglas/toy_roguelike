@@ -64,7 +64,7 @@ class Creature(actors.Actor):
         if self != event.actor:
             return
 
-        if event.amount >= self.health:
+        if self.health <= 0:
             self.die()
             return death_events.DeathEvent(self)
 

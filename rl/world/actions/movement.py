@@ -22,4 +22,4 @@ class MovementAction(actions.Action):
         new = self.actor.tile.pos
 
         if success:
-            return movement.MoveEvent(self.actor, old, new)
+            return [movement.MoveEvent(self.actor, old, new)]
