@@ -63,7 +63,6 @@ class Player(Creature):
 
     def on_move(self, event):
         if event.actor == self:
-            logger.debug('updating fov')
             self.tile.board.update_fov(self)
             self.tile.visible = True
 

@@ -22,7 +22,16 @@ class CombatResultTypes(Enum):
 
 
 def fight(attacker, defender):
-    hit_chance = (attacker.dex + 10) / (defender.dex + 10)
+    to_hit = 3
+    to_miss = 1
+
+    if attacker.dex > defender.dex:
+        to_hit += attacker.dex - defender.dex
+    else:
+        to_miss += defender.dex - attacker.dex
+
+    hit_chance = to_hit / (to_hit + to_miss)
+
     logger.debug('hit_chance: {hit_chance:2}'.format(hit_chance=hit_chance))
 
     attack_power = attacker.str

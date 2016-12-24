@@ -3,6 +3,7 @@ import random
 from rl.world.entities.items import Item
 from rl.world.events.movement import TeleportEvent
 
+
 class Scroll(Item):
     type = 'scroll'
     usable = True
