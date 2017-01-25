@@ -52,18 +52,16 @@ class Creature(actors.Actor):
     def max_energy(self):
         return self.base_max_energy
 
-    def on_combat(self, event):
-        if self != event.defender:
-            return
-
+    @events.fire_if_object
+    def on_combat(self, event, world):
         if event.damage > 0:
+            logger.debug("Taking {damage} damage".format(damage=event.damage))
             self.take_damage(event.damage)
             return health_events.LoseHealthEvent(self, event.damage)
 
-    def on_lose_health(self, event: health_events.LoseHealthEvent):
-        if self != event.actor:
-            return
-
+    @events.fire_if_subject
+    def on_lose_health(self, event: health_events.LoseHealthEvent, world):
+        logger.debug("Losing health!")
         if self.health <= 0:
             self.die()
             return death_events.DeathEvent(self)

@@ -18,12 +18,12 @@ class EventManager:
         for event_type in self.subscriptions.keys():
             self.unsubscribe(f, event_type)
 
-    def fire(self, event):
+    def fire(self, event, world):
         # logger.debug('firing for event type %s:  %s listeners' % (event.type, len(self.subscriptions[event.type])))
         events = []
 
         for f in self.subscriptions[event.type][:]:
-            new_event = f(event)
+            new_event = f(event, world)
             if new_event:
                 events.append(new_event)
 

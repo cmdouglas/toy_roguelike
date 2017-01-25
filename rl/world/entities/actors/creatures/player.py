@@ -5,7 +5,7 @@ from rl.util import dice
 from rl.world.entities.actors.creatures import Creature
 from rl.world.entities.items import potion
 from rl.world.ai import playercommand
-from rl.world.events import EventTypes
+from rl.world import events
 
 logger = logging.getLogger('rl')
 
@@ -53,18 +53,18 @@ class Player(Creature):
 
     def activate(self, event_manager):
         super().activate(event_manager)
-        event_manager.subscribe(self.on_move, EventTypes.move)
-        event_manager.subscribe(self.on_move, EventTypes.teleport)
+        event_manager.subscribe(self.on_move, events.EventTypes.move)
+        event_manager.subscribe(self.on_move, events.EventTypes.teleport)
 
     def deactivate(self, event_manager):
         super().deactivate(event_manager)
-        event_manager.unsubscribe(self.on_move, EventTypes.move)
-        event_manager.unsubscribe(self.on_move, EventTypes.teleport)
+        event_manager.unsubscribe(self.on_move, events.EventTypes.move)
+        event_manager.unsubscribe(self.on_move, events.EventTypes.teleport)
 
-    def on_move(self, event):
-        if event.actor == self:
-            self.tile.board.update_fov(self)
-            self.tile.visible = True
+    @events.fire_if_subject
+    def on_move(self, event, world):
+        self.tile.board.update_fov(self)
+        self.tile.visible = True
 
     def process_turn(self, world):
         events = super().process_turn(world)

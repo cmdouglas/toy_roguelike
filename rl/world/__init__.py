@@ -24,7 +24,7 @@ class World:
         self.event_manager = manager.EventManager()
         self.activated = False
 
-    def generate(self, player_name=""):
+    def generate(self, player_name: str=""):
         self.board = generator.Generator().generate(world=self)
         self.player = self.board.spawn_player(name=player_name)
         self.current_actor = None
@@ -43,7 +43,7 @@ class World:
         # player death/escape: notify the UI that the game is over
         # when the player leaves the current board: load up/generate the new one, and persist the old one
 
-    def tick(self):
+    def tick(self) -> bool:
         """This is where state changes occur in the world.  When tick() is called, the actors on the current board are
         sorted to determine whose turn it is.  That actor is given an opportunity to perform an action, either by
         consulting its AI, or if it's the player, by looking for a command.  If an action occurs, then any resulting
@@ -70,13 +70,13 @@ class World:
         while events_to_process:
             event = events_to_process.pop(0)
             # logger.debug('event: %r' % (event,))
-            new_events = self.event_manager.fire(event)
+            new_events = self.event_manager.fire(event, self)
             events_to_process.extend(new_events)
             should_update = should_update or event.perceptible(self.player)
 
         return should_update
 
-    def __getstate__(self):
+    def __getstate__(self) -> dict:
         return dict(
             ticks=self.ticks,
             board=self.board,
@@ -85,7 +85,7 @@ class World:
             messages=self.messages,
         )
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: dict):
         self.board = state['board']
         self.board.world = self
         self.ticks = state['ticks']

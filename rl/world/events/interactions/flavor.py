@@ -5,14 +5,14 @@ class CreatureFlavorEvent(Event):
     type = EventTypes.flavor
 
     def __init__(self, actor, message):
-        self.actor = actor
+        self.subject = actor
         self.message = message
 
     def perceptible(self, player):
-        return player.can_see_point(self.actor.tile.pos)
+        return player.can_see_point(self.subject.tile.pos)
 
     def describe(self, player):
         return "The {actor} {acts}".format(
-            actor=self.actor.name,
+            actor=self.subject.name,
             acts=self.message
         )

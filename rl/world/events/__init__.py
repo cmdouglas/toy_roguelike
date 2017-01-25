@@ -1,5 +1,8 @@
 from enum import Enum
 
+import logging
+
+logger = logging.getLogger('rl');
 
 class EventTypes(Enum):
     null = ''
@@ -23,16 +26,32 @@ class EventTypes(Enum):
     examine = 'examine'
     flavor = 'flavor'
 
+
 class Event:
     type = EventTypes.null
-
-    def describe(self, player):
-        """ :returns a short string describing what happened, as perceived by the player.  In general, this is what
-        is printed to the game log.
-        """
-        return ""
+    subject = None
+    object = None
 
     def perceptible(self, player):
         """ :returns a boolean indicating whether the event was perceived by the player. """
 
         return False
+
+
+def fire_if_subject(func):
+    """ decorator to apply to event listeners on objects that only fires if the object is the event's subject"""
+    def _fire_if_subject(self, event, world):
+        if event.subject == self:
+            return func(self, event, world)
+
+    return _fire_if_subject
+
+
+def fire_if_object(func):
+    """ decorator to apply to event listeners on objects that only fires if the object is the event's object"""
+    def _fire_if_object(self, event, world):
+        if event.object == self:
+            return func(self, event, world)
+
+    return _fire_if_object
+

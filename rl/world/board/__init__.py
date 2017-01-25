@@ -29,14 +29,14 @@ class Board:
         x, y = pos
         return self.rows[int(y)][int(x)]
 
-    def on_close(self, event):
+    def on_close(self, event, world):
         self.update_fov(self.world.player)
 
-    def on_open(self, event):
+    def on_open(self, event, world):
         self.update_fov(self.world.player)
 
-    def on_death(self, event):
-        actor = event.actor
+    def on_death(self, event, world):
+        actor = event.subject
         actor.deactivate(self.world.event_manager)
         tile = actor.tile
         tile.creature = None
