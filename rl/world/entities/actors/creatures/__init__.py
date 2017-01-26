@@ -54,6 +54,7 @@ class Creature(actors.Actor):
 
     @events.fire_if_object
     def on_combat(self, event, world):
+        world.messages.append(event.describe(world.player))
         if event.damage > 0:
             logger.debug("Taking {damage} damage".format(damage=event.damage))
             self.take_damage(event.damage)
@@ -66,13 +67,19 @@ class Creature(actors.Actor):
             self.die()
             return death_events.DeathEvent(self)
 
+    @events.fire_if_subject
+    def on_death(self, event, world):
+        world.messages.append("[red:{the_creature} dies.]".format(the_creature=self.describe()))
+
     def activate(self, event_manager):
         event_manager.subscribe(self.on_combat, events.EventTypes.combat)
         event_manager.subscribe(self.on_lose_health, events.EventTypes.lose_health)
+        event_manager.subscribe(self.on_death, events.EventTypes.death)
 
     def deactivate(self, event_manager):
         event_manager.unsubscribe(self.on_combat, events.EventTypes.combat)
         event_manager.unsubscribe(self.on_lose_health, events.EventTypes.lose_health)
+        event_manager.unsubscribe(self.on_death, events.EventTypes.death)
 
     def move(self, dxdy):
         dx, dy = dxdy

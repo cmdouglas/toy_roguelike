@@ -10,10 +10,6 @@ class Item(Entity, Stackable):
     name = ""
     name_plural = ""
 
-    def persist_fields(self):
-        fields = super().persist_fields()
-        fields.extend(['stack_size'])
-
     def describe(self, num=0):
         if num == 0:
             num=self.stack_size

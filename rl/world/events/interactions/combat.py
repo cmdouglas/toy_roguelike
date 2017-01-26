@@ -14,7 +14,7 @@ class CombatEvent(events.Event):
         if player == self.subject:
             return "You {attack} the {defender} ({damage} damage).".format(
                 defender=self.object.name,
-                attack=self.result_type.first_person(),
+                attack=self.result_type.second_person(),
                 damage=self.damage
             )
 

@@ -25,12 +25,12 @@ class LogPane(Pane):
         lines = self.get_lines(self.height)
 
         for i, line in enumerate(lines):
-            self.set_line(i, FormatString().simple(line['message'], color=line['color']))
+            self.set_line(i, FormatString(line))
 
     def get_lines(self, num_lines):
         messages = self.log[-num_lines:]
         lines = []
-        for message, color in messages:
+        for message in messages:
             new_lines = textwrap.wrap(message, self.width)
             lines.extend(new_lines)
 
@@ -50,6 +50,6 @@ class ConfirmLogPane(LogPane):
         lines = self.get_lines(self.height)
 
         for i, line in enumerate(lines):
-            self.set_line(i, FormatString().simple(line['message'], color=line['color']))
+            self.set_line(i, FormatString(line))
 
         self.set_line(self.height - 1, FormatString().simple(self.prompt, color=colors.bright_white))

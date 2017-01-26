@@ -11,13 +11,6 @@ class GainHealthEvent(events.Event):
     def perceptible(self, player):
         return self.subject == player or player.can_see_point(self.subject.tile.pos)
 
-    def describe(self, player):
-        if self.subject == player:
-            return "You feel better."
-
-        else:
-            return "The {0} looks healthier.".format(self.subject.name)
-
 
 class LoseHealthEvent(events.Event):
     type = events.EventTypes.lose_health

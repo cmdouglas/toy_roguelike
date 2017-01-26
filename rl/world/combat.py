@@ -14,6 +14,9 @@ class CombatResultTypes(Enum):
     def first_person(self):
         return self.value
 
+    def second_person(self):
+        return self.value
+
     def third_person(self):
         return {
             'hit': 'hits',

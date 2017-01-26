@@ -2,6 +2,7 @@ from rl.util import dice
 from rl.world.entities.items import Item
 
 from rl.world.events.health import GainHealthEvent
+from rl.world import events
 
 
 class Potion(Item):

@@ -41,6 +41,7 @@ class Player(Creature):
     sight_radius = 10
 
     is_player = True
+
     def __init__(self, name=""):
         super().__init__()
         self.name = name
@@ -65,6 +66,10 @@ class Player(Creature):
     def on_move(self, event, world):
         self.tile.board.update_fov(self)
         self.tile.visible = True
+
+    @events.fire_if_subject
+    def on_death(self, event, world):
+        world.messages.append("[red:You die.]")
 
     def process_turn(self, world):
         events = super().process_turn(world)
