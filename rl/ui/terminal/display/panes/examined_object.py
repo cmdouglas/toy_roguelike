@@ -9,7 +9,7 @@ logger = logging.getLogger('rl')
 
 
 class ObjectDetailsPane(Pane):
-    def __init__(self, width, height, world, pos=(0,0)):
+    def __init__(self, width, height, world, pos=(0, 0)):
         super().__init__(width, height)
         self.world = world
         self.object = object
@@ -22,7 +22,6 @@ class ObjectDetailsPane(Pane):
         color = None
         bgcolor = None
         desc = ''
-
 
         if self.pos in self.world.board.visible:
             seen = True
@@ -43,7 +42,6 @@ class ObjectDetailsPane(Pane):
             ent = visible_entity(remembered_tile)
             desc = ent.describe()
 
-
         self.set_line(
             0, FormatString().simple(see, color=colors.cyan)
         )
@@ -51,7 +49,7 @@ class ObjectDetailsPane(Pane):
             if glyph and desc:
                 self.set_line(
                     1, FormatString().simple(
-                            "   {glyph}".format(glyph=glyph),
+                        "   {glyph}".format(glyph=glyph),
                         color=color,
                         bgcolor=bgcolor) +
                        FormatString().simple(": {desc}".format(desc=desc.capitalize()))

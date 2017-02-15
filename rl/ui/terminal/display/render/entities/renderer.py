@@ -26,7 +26,8 @@ class EntityRenderer:
 
     def render(self, entity, tile):
         if entity not in self.entity_displays.keys():
-            display_type, args = self.display_types.get(entity.type, (BasicEntityDisplay, ('?', colors.light_gray, None)))
+            display_type, args = self.display_types.get(entity.type,
+                                                        (BasicEntityDisplay, ('?', colors.light_gray, None)))
             self.entity_displays[entity] = display_type(entity, *args)
 
         return self.entity_displays[entity].draw(tile)

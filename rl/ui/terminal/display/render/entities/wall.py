@@ -36,7 +36,7 @@ class WallDisplay(EntityDisplay):
             pos: t for pos, t in
             neighbors.items()
             if t.terrain.artificial
-        }
+            }
         filled = set(neighboring_artificial_walls.keys())
         glyph = self.choose_glyph(filled)
 
@@ -54,11 +54,9 @@ class WallDisplay(EntityDisplay):
             for s in seen_sides:
                 seen.update(Direction.quadrant(s))
 
-
             new_filled = filled.intersection(seen)
 
             glyph = self.choose_glyph(new_filled)
-
 
         self.glyph = glyph
 
@@ -320,7 +318,7 @@ class WallDisplay(EntityDisplay):
                 tdirs = [t(dir) for dir in dirs]
 
             if (contains_all(tdirs, pattern['filled']) and
-               contains_none(tdirs, pattern['empty'])):
+                    contains_none(tdirs, pattern['empty'])):
                 return True
 
         return False
